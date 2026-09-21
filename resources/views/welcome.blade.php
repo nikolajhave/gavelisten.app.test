@@ -22,7 +22,10 @@
     <body class="bg-[#FDFDFC] dark:bg-[#0a0a0a] text-[#1b1b18] dark:text-[#EDEDEC] min-h-screen flex items-center justify-center p-6 antialiased" style="min-height: 100vh; display: flex; align-items: center; justify-content: center; margin: 0; padding: 1.5rem; text-align: center;">
         <main class="max-w-xl text-center">
             <p class="text-xl sm:text-2xl font-medium leading-relaxed" style="font-size: 1.25rem; line-height: 1.75; font-weight: 500;">
-                Oops - gavelisten.app er lige gået i stykker. Nikolaj arbejder i døgndrift (eller noget) på at fixe det! 😁
+                Ups - Gavelisten er lige gået i stykker 🎁💥🫪<br>
+                Nikolaj arbejder i døgndrift 🌙<br>
+                (eller noget)<br>
+                på at fixe det! 😁
             </p>
         </main>
     </body>
