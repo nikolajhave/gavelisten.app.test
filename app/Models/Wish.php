@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Database\Factories\WishFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -31,6 +32,26 @@ class Wish extends Model
     public function wishlist(): BelongsTo
     {
         return $this->belongsTo(Wishlist::class);
+    }
+
+    /**
+     * Get the formatted price string (e.g. '260 kr' or '260,50 kr').
+     *
+     * @return Attribute<string|null, never>
+     */
+    protected function formattedPrice(): Attribute
+    {
+        return Attribute::get(function (mixed $value, array $attributes): ?string {
+            $rawPrice = $attributes['price'] ?? $this->price;
+            if ($rawPrice === null || $rawPrice === '') {
+                return null;
+            }
+
+            $price = (float) $rawPrice;
+            $decimals = (fmod(round($price * 100), 100) == 0.0) ? 0 : 2;
+
+            return number_format($price, $decimals, ',', '.') . ' ' . __('kr');
+        });
     }
 
     /**

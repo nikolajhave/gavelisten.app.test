@@ -32,7 +32,7 @@ test('guest can view a public wishlist by share token', function () {
     $response->assertSee('Mine juleønsker');
     $response->assertSee('Lego Star Wars Millennium Falcon');
     $response->assertSee('Collector edition set 75192');
-    $response->assertSee('6.499,00 kr.');
+    $response->assertSee('6.499 kr');
     $response->assertSee('https://example.com/lego-falcon');
     $response->assertSee('target="_blank"', false);
     $response->assertSee('rel="noopener"', false);
@@ -100,7 +100,7 @@ test('wishes without price or url are rendered gracefully without broken element
     $response->assertStatus(200);
     $response->assertSee('Cozy Warm Socks');
     $response->assertSee('Size 42-44, wool');
-    $response->assertDontSee('kr.');
+    $response->assertDontSee('kr');
     $response->assertDontSee(__('See Product'));
 });
 
@@ -136,7 +136,7 @@ test('livewire public wishlist component mounts and retrieves data properly', fu
         ->assertStatus(200)
         ->assertSee('Christmas 2026')
         ->assertSee('Espresso Machine')
-        ->assertSee('4.500,00 kr.');
+        ->assertSee('4.500 kr');
 });
 
 test('public wishlist displays user name and does not display phone number when owner has phone only', function () {

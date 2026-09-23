@@ -261,9 +261,9 @@
                                             {{ $wish->title }}
                                         </h2>
 
-                                        @if ($wish->price !== null)
+                                        @if ($wish->formatted_price)
                                             <span class="inline-flex items-center px-2.5 py-1 rounded-xl text-xs font-semibold bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800/80 text-emerald-700 dark:text-emerald-300 shrink-0">
-                                                {{ number_format((float) $wish->price, 2, ',', '.') }} {{ __('kr.') }}
+                                                {{ $wish->formatted_price }}
                                             </span>
                                         @endif
                                     </div>

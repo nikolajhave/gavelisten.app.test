@@ -295,9 +295,9 @@
                                             {{ $wish->title }}
                                         </button>
 
-                                        @if ($wish->price !== null)
+                                        @if ($wish->formatted_price)
                                             <span class="inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800/80 text-emerald-700 dark:text-emerald-300">
-                                                {{ number_format((float) $wish->price, 2, ',', '.') }} {{ __('kr.') }}
+                                                {{ $wish->formatted_price }}
                                             </span>
                                         @endif
                                     </div>
@@ -411,7 +411,7 @@
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div>
                             <label for="wish-price" class="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1.5">
-                                {{ __('Price (kr.)') }}
+                                {{ __('Price (kr)') }}
                             </label>
                             <input
                                 type="text"
