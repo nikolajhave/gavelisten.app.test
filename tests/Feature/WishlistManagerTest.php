@@ -15,11 +15,14 @@ test('unauthenticated users are redirected to login', function () {
 });
 
 test('authenticated user can view their wishlist manager', function () {
-    $user = User::factory()->create();
+    $user = User::factory()->create([
+        'name' => 'Nikolaj',
+    ]);
 
     $response = $this->actingAs($user)->get('/wishlist');
 
     $response->assertStatus(200);
+    $response->assertSee('Nikolaj');
     $response->assertSee(__('My Wishlist'));
     $response->assertSee(__('Add Wish'));
 });

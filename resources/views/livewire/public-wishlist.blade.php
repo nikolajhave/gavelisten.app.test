@@ -80,7 +80,7 @@
                                         @foreach ($this->friends as $friend)
                                             @php
                                                 $friendWishlist = $friend->wishlists->first();
-                                                $friendName = $friend->name ?: ($friend->email ?: ($friend->phone ?: __('Friend')));
+                                                $friendName = $friend->name ?: __('Friend');
                                                 $initial = mb_substr($friendName, 0, 1);
                                             @endphp
                                             <div
@@ -154,6 +154,14 @@
             {{-- Wishlist Header --}}
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-8 border-b border-neutral-200 dark:border-neutral-800">
                 <div>
+                    @php
+                        $ownerName = $this->wishlist->user?->name;
+                    @endphp
+                    @if ($ownerName)
+                        <p class="text-sm font-medium text-neutral-500 dark:text-neutral-400 mb-1">
+                            {{ $ownerName }}
+                        </p>
+                    @endif
                     <div class="flex flex-wrap items-center gap-3">
                         <h1 class="text-3xl sm:text-4xl font-extrabold tracking-tight text-neutral-900 dark:text-neutral-100">
                             {{ $this->wishlist->title }}

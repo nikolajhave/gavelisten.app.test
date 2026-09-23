@@ -10,9 +10,11 @@ use Livewire\Livewire;
 uses(RefreshDatabase::class);
 
 test('guest can view a public wishlist by share token', function () {
-    $user = User::factory()->create();
+    $user = User::factory()->create([
+        'name' => 'Nikolaj',
+    ]);
     $wishlist = Wishlist::factory()->for($user)->create([
-        'title' => 'Birthday Wishes 2026',
+        'title' => 'Mine juleønsker',
         'share_token' => 'customtoken12',
     ]);
 
@@ -26,7 +28,8 @@ test('guest can view a public wishlist by share token', function () {
     $response = $this->get('/w/customtoken12');
 
     $response->assertStatus(200);
-    $response->assertSee('Birthday Wishes 2026');
+    $response->assertSee('Nikolaj');
+    $response->assertSee('Mine juleønsker');
     $response->assertSee('Lego Star Wars Millennium Falcon');
     $response->assertSee('Collector edition set 75192');
     $response->assertSee('6.499,00 kr.');
@@ -134,4 +137,43 @@ test('livewire public wishlist component mounts and retrieves data properly', fu
         ->assertSee('Christmas 2026')
         ->assertSee('Espresso Machine')
         ->assertSee('4.500,00 kr.');
+});
+
+test('public wishlist displays user name and does not display phone number when owner has phone only', function () {
+    $userWithPhone = User::factory()->phoneOnly()->create([
+        'name' => null,
+        'phone' => '+4520231120',
+    ]);
+
+    $wishlist = Wishlist::factory()->for($userWithPhone)->create([
+        'title' => 'Min ønskeliste',
+        'share_token' => 'phonelisttoken',
+    ]);
+
+    $response = $this->get('/w/phonelisttoken');
+
+    $response->assertStatus(200);
+    $response->assertSee('Min ønskeliste');
+    $response->assertDontSee('+4520231120');
+    $response->assertDontSee('20231120');
+});
+
+test('public wishlist displays user name when owner has a name', function () {
+    $user = User::factory()->create([
+        'name' => 'Christer',
+        'phone' => '+4520246575',
+    ]);
+
+    $wishlist = Wishlist::factory()->for($user)->create([
+        'title' => 'Fødselsdag',
+        'share_token' => 'namelisttoken',
+    ]);
+
+    $response = $this->get('/w/namelisttoken');
+
+    $response->assertStatus(200);
+    $response->assertSee('Christer');
+    $response->assertSee('Fødselsdag');
+    $response->assertDontSee('+4520246575');
+    $response->assertDontSee('20246575');
 });

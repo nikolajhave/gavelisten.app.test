@@ -285,6 +285,9 @@ class LegacyDataImporter
             if ($user->legacy_id === null && $configured['legacy_id'] !== null) {
                 $updates['legacy_id'] = $configured['legacy_id'];
             }
+            if (empty($user->name) && ! empty($configured['name'])) {
+                $updates['name'] = $configured['name'];
+            }
             if ($user->phone === null && ! empty($normalizedPhone)) {
                 $updates['phone'] = $normalizedPhone;
                 if ($user->phone_verified_at === null) {

@@ -3,6 +3,15 @@
         {{-- Header Section --}}
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-neutral-200 dark:border-neutral-800">
             <div class="min-w-0 flex-1">
+                @php
+                    $owner = $this->wishlist->user ?? auth()->user();
+                    $ownerName = $owner?->name;
+                @endphp
+                @if ($ownerName)
+                    <p class="text-sm font-medium text-neutral-500 dark:text-neutral-400 mb-1">
+                        {{ $ownerName }}
+                    </p>
+                @endif
                 @if ($isEditingWishlistTitle)
                     <form wire:submit="saveWishlistTitle" class="flex flex-wrap items-center gap-2">
                         <div class="flex-1 min-w-[220px] max-w-md">
@@ -132,7 +141,7 @@
                                 @foreach ($this->friends as $friend)
                                     @php
                                         $friendWishlist = $friend->wishlists->first();
-                                        $friendName = $friend->name ?: ($friend->email ?: ($friend->phone ?: __('Friend')));
+                                        $friendName = $friend->name ?: __('Friend');
                                         $initial = mb_substr($friendName, 0, 1);
                                     @endphp
                                     <div

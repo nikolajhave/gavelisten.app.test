@@ -3,7 +3,6 @@
 use App\Livewire\PublicWishlist;
 use App\Livewire\WishlistManager;
 use App\Models\User;
-use App\Models\Wish;
 use App\Models\Wishlist;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Livewire\Livewire;
@@ -83,8 +82,8 @@ test('owner viewing their own shared wishlist does not see add friend button', f
     $response = $this->actingAs($owner)->get('/w/ownlist123');
 
     $response->assertStatus(200);
-    $response->assertDontSee(__('Add friend'));
-    $response->assertDontSee(__('Friend added'));
+    $response->assertDontSee('wire:click="addFriend"', false);
+    $response->assertDontSee('wire:click="removeFriend"', false);
 });
 
 test('authenticated user can add friend on shared wishlist via livewire', function () {
@@ -205,4 +204,31 @@ test('user can remove friend directly from wishlist manager burger menu', functi
         ->assertSee(__('No friends yet'));
 
     expect($user->fresh()->friends()->count())->toBe(0);
+});
+
+test('burger menu does not display friend phone number when friend has no name', function () {
+    $user = User::factory()->create(['name' => 'Me']);
+    $friend = User::factory()->phoneOnly()->create([
+        'name' => null,
+        'phone' => '+4587654321',
+    ]);
+
+    Wishlist::factory()->for($friend)->create([
+        'title' => 'Vens Ønsker',
+        'share_token' => 'friendphonetoken',
+    ]);
+
+    $user->addFriend($friend);
+
+    $this->actingAs($user);
+
+    $response = $this->get('/wishlist');
+    $response->assertStatus(200);
+    $response->assertDontSee('+4587654321');
+    $response->assertDontSee('87654321');
+
+    Livewire::test(WishlistManager::class)
+        ->assertDontSee('+4587654321')
+        ->assertDontSee('87654321')
+        ->assertSee(__('Friend'));
 });

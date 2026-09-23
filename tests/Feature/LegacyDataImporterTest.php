@@ -341,3 +341,54 @@ test('legacy importer links to existing user by phone or email without duplicate
 
     File::delete($tempFile);
 });
+
+test('legacy importer updates existing user with null name to configured name', function () {
+    $existingUser = User::factory()->phoneOnly()->create([
+        'name' => null,
+        'phone' => '+4520231120',
+        'legacy_id' => null,
+    ]);
+
+    $importer = new LegacyDataImporter;
+
+    $fakeJson = json_encode([
+        [
+            'name' => 'Have',
+            'users' => [
+                [
+                    'id' => 8,
+                    'name' => 'Nikolaj',
+                    'wishes' => [
+                        [
+                            'id' => 8904,
+                            'name' => 'Oplevelser',
+                            'deleted' => false,
+                        ],
+                    ],
+                ],
+            ],
+        ],
+    ]);
+
+    $tempFile = storage_path('framework/testing/test_link_name.json');
+    File::ensureDirectoryExists(dirname($tempFile));
+    File::put($tempFile, $fakeJson);
+
+    $userConfig = [
+        'Nikolaj' => [
+            'name' => 'Nikolaj Have',
+            'phone' => '20231120',
+            'legacy_id' => 8,
+        ],
+    ];
+
+    $importer->import(
+        filePath: $tempFile,
+        customUserConfig: $userConfig,
+    );
+
+    $existingUser->refresh();
+    expect($existingUser->name)->toBe('Nikolaj Have');
+
+    File::delete($tempFile);
+});

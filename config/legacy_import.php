@@ -41,6 +41,6 @@ return [
             'phone' => '20246575',
             'email' => null,
             'legacy_id' => 12,
-        ]
+        ],
     ],
 ];

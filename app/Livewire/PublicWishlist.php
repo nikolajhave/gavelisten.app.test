@@ -32,6 +32,7 @@ class PublicWishlist extends Component
     public function wishlist(): Wishlist
     {
         return Wishlist::query()
+            ->with('user')
             ->where('share_token', $this->share_token)
             ->firstOrFail();
     }
@@ -84,14 +85,14 @@ class PublicWishlist extends Component
     public function friends(): Collection
     {
         if (! Auth::check()) {
-            return new Collection();
+            return new Collection;
         }
 
         /** @var User $user */
         $user = Auth::user();
 
         return $user->friends()
-            ->with(['wishlists' => fn ($query) => $query->withCount('wishes')])
+            ->with(['wishlists' => fn ($query) => $query->latest('id')->withCount('wishes')])
             ->orderBy('name')
             ->get();
     }

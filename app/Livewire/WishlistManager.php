@@ -88,7 +88,7 @@ class WishlistManager extends Component
         $user = Auth::user();
 
         return $user->friends()
-            ->with(['wishlists' => fn ($query) => $query->withCount('wishes')])
+            ->with(['wishlists' => fn ($query) => $query->latest('id')->withCount('wishes')])
             ->orderBy('name')
             ->get();
     }
