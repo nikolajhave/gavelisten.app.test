@@ -27,4 +27,14 @@ class WishFactory extends Factory
             'sort_order' => 0,
         ];
     }
+
+    /**
+     * Indicate the legacy ID for the wish.
+     */
+    public function withLegacyId(?int $legacyId = null): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'legacy_id' => $legacyId ?? fake()->unique()->numberBetween(1, 99999),
+        ]);
+    }
 }

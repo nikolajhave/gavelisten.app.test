@@ -2,15 +2,63 @@
     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         {{-- Header Section --}}
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-neutral-200 dark:border-neutral-800">
-            <div>
-                <div class="flex items-center gap-3">
-                    <h1 class="text-2xl sm:text-3xl font-bold tracking-tight text-neutral-900 dark:text-neutral-100">
-                        {{ $this->wishlist->title }}
-                    </h1>
-                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-neutral-100 dark:bg-neutral-800 text-neutral-700 dark:text-neutral-300">
-                        {{ trans_choice(':count wish|:count wishes', $this->wishes->count()) }}
-                    </span>
-                </div>
+            <div class="min-w-0 flex-1">
+                @if ($isEditingWishlistTitle)
+                    <form wire:submit="saveWishlistTitle" class="flex flex-wrap items-center gap-2">
+                        <div class="flex-1 min-w-[220px] max-w-md">
+                            <input
+                                type="text"
+                                wire:model="wishlistTitle"
+                                wire:keydown.escape="cancelEditingWishlistTitle"
+                                placeholder="{{ __('Wishlist title') }}"
+                                class="w-full text-xl sm:text-2xl font-bold px-3.5 py-1.5 rounded-xl border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-800 text-neutral-900 dark:text-neutral-100 placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-neutral-900 dark:focus:ring-white transition shadow-xs"
+                                autofocus
+                            >
+                            @error('wishlistTitle')
+                                <p class="text-xs text-red-600 dark:text-red-400 mt-1.5">{{ $message }}</p>
+                            @enderror
+                        </div>
+                        <div class="flex items-center gap-1.5">
+                            <button
+                                type="submit"
+                                class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-neutral-900 dark:bg-white text-white dark:text-neutral-900 text-xs font-semibold hover:bg-neutral-800 dark:hover:bg-neutral-100 transition shadow-xs cursor-pointer data-loading:opacity-75"
+                                title="{{ __('Save') }}"
+                            >
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
+                                </svg>
+                                <span>{{ __('Save') }}</span>
+                            </button>
+                            <button
+                                type="button"
+                                wire:click="cancelEditingWishlistTitle"
+                                class="inline-flex items-center px-3 py-2 rounded-xl border border-neutral-300 dark:border-neutral-700 text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800 text-xs font-medium transition cursor-pointer"
+                                title="{{ __('Cancel') }}"
+                            >
+                                {{ __('Cancel') }}
+                            </button>
+                        </div>
+                    </form>
+                @else
+                    <div class="flex items-center gap-2.5 flex-wrap">
+                        <h1 class="text-2xl sm:text-3xl font-bold tracking-tight text-neutral-900 dark:text-neutral-100">
+                            {{ $this->wishlist->title }}
+                        </h1>
+                        <button
+                            type="button"
+                            wire:click="startEditingWishlistTitle"
+                            class="p-1.5 rounded-xl text-neutral-400 hover:text-neutral-900 dark:text-neutral-500 dark:hover:text-white hover:bg-neutral-100 dark:hover:bg-neutral-800 transition cursor-pointer"
+                            title="{{ __('Edit wishlist title') }}"
+                        >
+                            <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                            </svg>
+                        </button>
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-neutral-100 dark:bg-neutral-800 text-neutral-700 dark:text-neutral-300">
+                            {{ trans_choice(':count wish|:count wishes', $this->wishes->count()) }}
+                        </span>
+                    </div>
+                @endif
                 <p class="text-sm text-neutral-500 dark:text-neutral-400 mt-1">
                     {{ __('Manage your wishes, drag and drop to reorder, and share your list with family & friends.') }}
                 </p>
@@ -49,7 +97,7 @@
                 <svg class="w-4 h-4 shrink-0 text-neutral-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
                 </svg>
-                <span class="font-medium text-neutral-700 dark:text-neutral-300 shrink-0">{{ __('Public Share Link:') }}</span>
+                <span class="font-medium text-neutral-700 dark:text-neutral-300 shrink-0">{{ __('Public Link:') }}</span>
                 <span class="truncate font-mono text-xs text-neutral-500 select-all" x-text="shareUrl"></span>
             </div>
             <button
@@ -118,9 +166,14 @@
 
                                 <div class="min-w-0 flex-1">
                                     <div class="flex flex-wrap items-center gap-x-3 gap-y-1">
-                                        <h3 class="font-semibold text-neutral-900 dark:text-neutral-100 text-base">
+                                        <button
+                                            type="button"
+                                            wire:click="openEditModal({{ $wish->id }})"
+                                            class="font-semibold text-neutral-900 dark:text-neutral-100 text-base text-left hover:text-neutral-600 dark:hover:text-neutral-300 hover:underline underline-offset-2 transition cursor-pointer focus:outline-none"
+                                            title="{{ __('Edit wish') }}"
+                                        >
                                             {{ $wish->title }}
-                                        </h3>
+                                        </button>
 
                                         @if ($wish->price !== null)
                                             <span class="inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800/80 text-emerald-700 dark:text-emerald-300">

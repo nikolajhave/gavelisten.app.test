@@ -14,7 +14,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
 #[ObservedBy(UserObserver::class)]
-#[Fillable(['name', 'email', 'phone', 'email_verified_at', 'phone_verified_at', 'password'])]
+#[Fillable(['name', 'email', 'phone', 'legacy_id', 'email_verified_at', 'phone_verified_at', 'password'])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
 {
@@ -53,6 +53,7 @@ class User extends Authenticatable
             'phone_verified_at' => 'datetime',
             'phone' => E164PhoneNumberCast::class,
             'password' => 'hashed',
+            'legacy_id' => 'integer',
         ];
     }
 }

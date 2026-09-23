@@ -252,3 +252,57 @@ test('closing modal resets form values and error bag', function () {
         ->assertSet('price', null)
         ->assertHasNoErrors();
 });
+
+test('user can start editing, cancel editing, and save updated wishlist title', function () {
+    $user = User::factory()->create();
+    $wishlist = $user->wishlists()->first();
+
+    $this->actingAs($user);
+
+    Livewire::test(WishlistManager::class)
+        ->assertSet('isEditingWishlistTitle', false)
+        ->call('startEditingWishlistTitle')
+        ->assertSet('isEditingWishlistTitle', true)
+        ->assertSet('wishlistTitle', $wishlist->title)
+        ->set('wishlistTitle', 'Temporary Title')
+        ->call('cancelEditingWishlistTitle')
+        ->assertSet('isEditingWishlistTitle', false)
+        ->assertSet('wishlistTitle', '')
+        ->call('startEditingWishlistTitle')
+        ->set('wishlistTitle', 'Nikolajs Fødselsdag 2026')
+        ->call('saveWishlistTitle')
+        ->assertSet('isEditingWishlistTitle', false)
+        ->assertSee('Nikolajs Fødselsdag 2026');
+
+    expect($wishlist->fresh()->title)->toBe('Nikolajs Fødselsdag 2026');
+});
+
+test('validates wishlist title rules when updating wishlist title', function () {
+    $user = User::factory()->create();
+    $this->actingAs($user);
+
+    Livewire::test(WishlistManager::class)
+        ->call('startEditingWishlistTitle')
+        ->set('wishlistTitle', '')
+        ->call('saveWishlistTitle')
+        ->assertHasErrors(['wishlistTitle' => 'required']);
+});
+
+test('wish title button triggers openEditModal', function () {
+    $user = User::factory()->create();
+    $wishlist = $user->wishlists()->first();
+
+    $wish = Wish::factory()->for($wishlist)->create([
+        'title' => 'Bose QuietComfort Ultra',
+        'price' => 2799.00,
+    ]);
+
+    $this->actingAs($user);
+
+    Livewire::test(WishlistManager::class)
+        ->call('openEditModal', $wish->id)
+        ->assertSet('showFormModal', true)
+        ->assertSet('editingWishId', $wish->id)
+        ->assertSet('title', 'Bose QuietComfort Ultra')
+        ->assertSet('price', '2799.00');
+});

@@ -34,6 +34,9 @@ test('danish translations are returned for key ui strings and pluralization', fu
         ->and(__('Link Copied!'))->toBe('Link kopieret!')
         ->and(__('The verification code is invalid or has expired.'))->toBe('Bekræftelseskoden er ugyldig eller udløbet.')
         ->and(__('Google authentication failed. Please try again.'))->toBe('Google-godkendelse mislykkedes. Prøv venligst igen.')
+        ->and(__('Edit wishlist title'))->toBe('Rediger ønskelistens titel')
+        ->and(__('Wishlist title'))->toBe('Ønskelistens titel')
+        ->and(__('Save'))->toBe('Gem')
         ->and(trans_choice(':count wish|:count wishes', 1))->toBe('1 ønske')
         ->and(trans_choice(':count wish|:count wishes', 2))->toBe('2 ønsker');
 });
@@ -60,6 +63,9 @@ test('english translations are preserved and returned when locale is english', f
         ->and(__('Link Copied!'))->toBe('Link Copied!')
         ->and(__('The verification code is invalid or has expired.'))->toBe('The verification code is invalid or has expired.')
         ->and(__('Google authentication failed. Please try again.'))->toBe('Google authentication failed. Please try again.')
+        ->and(__('Edit wishlist title'))->toBe('Edit wishlist title')
+        ->and(__('Wishlist title'))->toBe('Wishlist title')
+        ->and(__('Save'))->toBe('Save')
         ->and(trans_choice(':count wish|:count wishes', 1))->toBe('1 wish')
         ->and(trans_choice(':count wish|:count wishes', 2))->toBe('2 wishes');
 });

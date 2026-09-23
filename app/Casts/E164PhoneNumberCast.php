@@ -39,6 +39,8 @@ class E164PhoneNumberCast implements CastsAttributes
 
         if (str_contains($cleaned, '+')) {
             $cleaned = '+'.str_replace('+', '', $cleaned);
+        } elseif (strlen($cleaned) === 8 && ctype_digit($cleaned)) {
+            $cleaned = '+45'.$cleaned;
         } elseif ($cleaned !== '') {
             $cleaned = '+'.$cleaned;
         }

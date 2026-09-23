@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-#[Fillable(['wishlist_id', 'title', 'description', 'url', 'price', 'sort_order'])]
+#[Fillable(['wishlist_id', 'legacy_id', 'title', 'description', 'url', 'price', 'sort_order'])]
 class Wish extends Model
 {
     /** @use HasFactory<WishFactory> */
@@ -43,6 +43,7 @@ class Wish extends Model
         return [
             'price' => 'decimal:2',
             'sort_order' => 'integer',
+            'legacy_id' => 'integer',
         ];
     }
 }

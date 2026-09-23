@@ -28,6 +28,10 @@ class WishlistManager extends Component
     #[Validate(['nullable', 'numeric', 'min:0', 'max:9999999.99'], as: 'price')]
     public ?string $price = null;
 
+    public string $wishlistTitle = '';
+
+    public bool $isEditingWishlistTitle = false;
+
     public bool $showFormModal = false;
 
     public ?int $editingWishId = null;
@@ -70,6 +74,46 @@ class WishlistManager extends Component
             ->orderBy('sort_order')
             ->orderBy('id')
             ->get();
+    }
+
+    /**
+     * Start editing the wishlist title.
+     */
+    public function startEditingWishlistTitle(): void
+    {
+        $this->wishlistTitle = $this->wishlist->title;
+        $this->isEditingWishlistTitle = true;
+        $this->resetErrorBag('wishlistTitle');
+    }
+
+    /**
+     * Cancel editing the wishlist title.
+     */
+    public function cancelEditingWishlistTitle(): void
+    {
+        $this->isEditingWishlistTitle = false;
+        $this->wishlistTitle = '';
+        $this->resetErrorBag('wishlistTitle');
+    }
+
+    /**
+     * Save the updated wishlist title.
+     */
+    public function saveWishlistTitle(): void
+    {
+        $this->validate([
+            'wishlistTitle' => ['required', 'string', 'max:255'],
+        ], [], [
+            'wishlistTitle' => __('Wishlist title'),
+        ]);
+
+        $this->wishlist->update([
+            'title' => trim($this->wishlistTitle),
+        ]);
+
+        unset($this->wishlist);
+
+        $this->isEditingWishlistTitle = false;
     }
 
     /**

@@ -67,4 +67,14 @@ class UserFactory extends Factory
             'phone_verified_at' => null,
         ]);
     }
+
+    /**
+     * Indicate the legacy ID for the user.
+     */
+    public function withLegacyId(?int $legacyId = null): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'legacy_id' => $legacyId ?? fake()->unique()->numberBetween(1, 99999),
+        ]);
+    }
 }
