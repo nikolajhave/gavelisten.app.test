@@ -8,7 +8,11 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return view('welcome');
+    if (Auth::check()) {
+        return app()->call(WishlistManager::class);
+    }
+
+    return app()->call(PhoneAuth::class);
 })->name('home');
 
 Route::get('/w/{share_token}', PublicWishlist::class)->name('wishlist.public');
