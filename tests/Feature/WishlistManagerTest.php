@@ -329,3 +329,19 @@ test('editing a wish formats price with comma decimal separator', function () {
 
     expect($wish->fresh()->price)->toBe('124.50');
 });
+
+test('wishlist manager renders share dropdown button and responsive actions', function () {
+    $user = User::factory()->create();
+    $wishlist = $user->wishlists()->first();
+
+    $this->actingAs($user);
+
+    $component = Livewire::test(WishlistManager::class);
+
+    $component->assertSee(__('Share Wishlist'))
+        ->assertSee(__('Copy Link'))
+        ->assertSee(__('See Public Wishlist'))
+        ->assertSee($wishlist->share_token)
+        ->assertSee(__('Friends'))
+        ->assertSee(__('Sign out'));
+});

@@ -37,7 +37,7 @@
                 <button
                     type="submit"
                     wire:loading.attr="disabled"
-                    class="w-full py-3 px-4 rounded-xl bg-neutral-900 dark:bg-white text-white dark:text-neutral-900 font-medium hover:bg-neutral-800 dark:hover:bg-neutral-100 disabled:opacity-50 transition cursor-pointer"
+                    class="w-full py-3 px-4 rounded-xl bg-blue-50 dark:bg-blue-950/60 border border-blue-200 dark:border-blue-800/80 text-blue-700 dark:text-blue-300 font-medium hover:bg-blue-100 dark:hover:bg-blue-900/60 hover:text-blue-800 dark:hover:text-blue-200 disabled:opacity-50 transition cursor-pointer"
                 >
                     <span wire:loading.remove wire:target="sendOtp">{{ __('Continue with Phone') }}</span>
                     <span wire:loading wire:target="sendOtp">{{ __('Sending code...') }}</span>
@@ -103,7 +103,7 @@
                 <button
                     type="submit"
                     wire:loading.attr="disabled"
-                    class="w-full py-3 px-4 rounded-xl bg-neutral-900 dark:bg-white text-white dark:text-neutral-900 font-medium hover:bg-neutral-800 dark:hover:bg-neutral-100 disabled:opacity-50 transition cursor-pointer"
+                    class="w-full py-3 px-4 rounded-xl bg-blue-50 dark:bg-blue-950/60 border border-blue-200 dark:border-blue-800/80 text-blue-700 dark:text-blue-300 font-medium hover:bg-blue-100 dark:hover:bg-blue-900/60 hover:text-blue-800 dark:hover:text-blue-200 disabled:opacity-50 transition cursor-pointer"
                 >
                     <span wire:loading.remove wire:target="verifyOtp">{{ __('Verify and Continue') }}</span>
                     <span wire:loading wire:target="verifyOtp">{{ __('Verifying...') }}</span>
