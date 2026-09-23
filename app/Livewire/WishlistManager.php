@@ -168,7 +168,7 @@ class WishlistManager extends Component
         $this->title = $wish->title;
         $this->description = $wish->description;
         $this->url = $wish->url;
-        $this->price = $wish->price !== null ? (string) $wish->price : null;
+        $this->price = $wish->price !== null ? str_replace('.', ',', (string) $wish->price) : null;
 
         $this->showFormModal = true;
     }

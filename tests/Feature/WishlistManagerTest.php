@@ -113,10 +113,10 @@ test('user can edit an existing wish', function () {
         ->assertSet('editingWishId', $wish->id)
         ->assertSet('title', 'Original Title')
         ->assertSet('description', 'Old description')
-        ->assertSet('price', '100.00')
+        ->assertSet('price', '100,00')
         ->assertSet('url', 'https://example.com/old')
         ->set('title', 'Brand New Title')
-        ->set('price', '149.95')
+        ->set('price', '149,95')
         ->call('saveWish')
         ->assertSet('showFormModal', false);
 
@@ -307,5 +307,25 @@ test('wish title button triggers openEditModal', function () {
         ->assertSet('showFormModal', true)
         ->assertSet('editingWishId', $wish->id)
         ->assertSet('title', 'Bose QuietComfort Ultra')
-        ->assertSet('price', '2799.00');
+        ->assertSet('price', '2799,00');
+});
+
+test('editing a wish formats price with comma decimal separator', function () {
+    $user = User::factory()->create();
+    $wishlist = $user->wishlists()->first();
+
+    $wish = Wish::factory()->for($wishlist)->create([
+        'title' => 'Special Wish',
+        'price' => 123.99,
+    ]);
+
+    $this->actingAs($user);
+
+    Livewire::test(WishlistManager::class)
+        ->call('openEditModal', $wish->id)
+        ->assertSet('price', '123,99')
+        ->set('price', '124,50')
+        ->call('saveWish');
+
+    expect($wish->fresh()->price)->toBe('124.50');
 });
