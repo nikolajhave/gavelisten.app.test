@@ -453,7 +453,7 @@
             ></div>
 
             {{-- Modal Dialog --}}
-            <div class="relative transform overflow-hidden rounded-3xl bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 text-left shadow-2xl transition-all sm:my-8 sm:w-full sm:max-w-lg p-6 sm:p-8">
+            <div class="relative transform overflow-hidden rounded-3xl bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 text-left shadow-2xl transition-all w-full sm:my-8 sm:max-w-lg p-6 sm:p-8">
                 <div class="flex items-center justify-between pb-4 border-b border-neutral-200 dark:border-neutral-800">
                     <h3 class="text-xl font-bold text-neutral-900 dark:text-neutral-100">
                         {{ $editingWishId ? __('Edit Wish') : __('Add a New Wish') }}
@@ -581,7 +581,7 @@
                 class="fixed inset-0 bg-neutral-900/60 backdrop-blur-xs transition-opacity cursor-pointer"
             ></div>
 
-            <div class="relative transform overflow-hidden rounded-3xl bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 text-left shadow-2xl transition-all sm:my-8 sm:w-full sm:max-w-md p-6 sm:p-7">
+            <div class="relative transform overflow-hidden rounded-3xl bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 text-left shadow-2xl transition-all w-full sm:my-8 sm:max-w-md p-6 sm:p-7">
                 <div class="flex items-center gap-4">
                     <div class="w-12 h-12 rounded-2xl bg-red-100 dark:bg-red-950/60 flex items-center justify-center shrink-0 text-red-600 dark:text-red-400">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
