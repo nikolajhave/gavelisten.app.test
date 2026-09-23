@@ -40,7 +40,7 @@ return [
             'name' => 'Nilas',
             'phone' => null,
             'email' => 'nilas.have@gmail.com',
-            'legacy_id' => 2055,
+            'legacy_id' => null,
         ],
     ],
 ];

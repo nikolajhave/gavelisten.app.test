@@ -135,7 +135,7 @@
                                     </h3>
                                 </div>
                                 <p class="text-xs text-neutral-500 dark:text-neutral-400 leading-relaxed">
-                                    {{ __('Anyone with this link can view your wishlist and reserve items.') }}
+                                    {{ __('Anyone with this link can view your wishlist.') }}
                                 </p>
                             </div>
 
@@ -317,7 +317,10 @@
         {{-- Wishlist Items Container --}}
         <div class="mt-8">
             @if ($this->wishes->isEmpty())
-                <div class="text-center py-16 px-4 bg-white dark:bg-neutral-900 border border-dashed border-neutral-300 dark:border-neutral-800 rounded-3xl">
+                <div
+                    wire:key="wishlist-empty-state"
+                    class="text-center py-16 px-4 bg-white dark:bg-neutral-900 border border-dashed border-neutral-300 dark:border-neutral-800 rounded-3xl"
+                >
                     <div class="w-16 h-16 mx-auto mb-4 rounded-2xl bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center text-neutral-400 dark:text-neutral-500">
                         <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
@@ -341,6 +344,7 @@
             @else
                 {{-- Livewire 4 wire:sort for drag & drop --}}
                 <div
+                    wire:key="wishlist-items-list"
                     wire:sort="reorderWishes"
                     class="space-y-3"
                 >

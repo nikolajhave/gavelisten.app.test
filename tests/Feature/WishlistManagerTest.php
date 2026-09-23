@@ -345,3 +345,69 @@ test('wishlist manager renders share dropdown button and responsive actions', fu
         ->assertSee(__('Friends'))
         ->assertSee(__('Sign out'));
 });
+
+test('renders empty state with distinct wire:key when wishlist has no wishes', function () {
+    $user = User::factory()->create();
+    $this->actingAs($user);
+
+    Livewire::test(WishlistManager::class)
+        ->assertSeeHtml('wire:key="wishlist-empty-state"')
+        ->assertDontSeeHtml('wire:key="wishlist-items-list"')
+        ->assertSee(__('No wishes yet'));
+});
+
+test('transitions from empty state to sortable list on first run and allows immediate reordering', function () {
+    $user = User::factory()->create();
+    $this->actingAs($user);
+
+    $component = Livewire::test(WishlistManager::class)
+        ->assertSeeHtml('wire:key="wishlist-empty-state"')
+        ->assertDontSeeHtml('wire:key="wishlist-items-list"')
+        ->call('openCreateModal')
+        ->set('title', 'First Wish')
+        ->call('saveWish')
+        ->assertSeeHtml('wire:key="wishlist-items-list"')
+        ->assertSeeHtml('wire:sort="reorderWishes"')
+        ->call('openCreateModal')
+        ->set('title', 'Second Wish')
+        ->call('saveWish');
+
+    $wishlist = $user->wishlists()->first();
+    $wishes = $wishlist->wishes()->orderBy('sort_order')->get();
+
+    expect($wishes)->toHaveCount(2);
+
+    $firstWish = $wishes->firstWhere('title', 'First Wish');
+    $secondWish = $wishes->firstWhere('title', 'Second Wish');
+
+    // Reorder immediately without page reload
+    $component->call('reorderWishes', [$secondWish->id, $firstWish->id]);
+
+    expect($secondWish->fresh()->sort_order)->toBe(0)
+        ->and($firstWish->fresh()->sort_order)->toBe(1);
+});
+
+test('transitions back to empty state after deleting all wishes and can create sortable wishes again', function () {
+    $user = User::factory()->create();
+    $this->actingAs($user);
+
+    $component = Livewire::test(WishlistManager::class)
+        ->call('openCreateModal')
+        ->set('title', 'Temporary Wish')
+        ->call('saveWish')
+        ->assertSeeHtml('wire:key="wishlist-items-list"');
+
+    $wish = $user->wishlists()->first()->wishes()->first();
+
+    $component->call('confirmDeleteWish', $wish->id)
+        ->call('deleteWish')
+        ->assertSeeHtml('wire:key="wishlist-empty-state"')
+        ->assertDontSeeHtml('wire:key="wishlist-items-list"');
+
+    // Create again and check transition back to sortable list
+    $component->call('openCreateModal')
+        ->set('title', 'New Wish After Delete')
+        ->call('saveWish')
+        ->assertSeeHtml('wire:key="wishlist-items-list"')
+        ->assertSeeHtml('wire:sort="reorderWishes"');
+});

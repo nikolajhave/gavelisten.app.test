@@ -14,9 +14,9 @@ class GatewayApiSmsService implements SmsService
         protected ?string $sender = null,
         protected ?string $baseUrl = null
     ) {
-        $this->token = $token ?? config('services.sms.gatewayapi.token');
-        $this->sender = $sender ?? config('services.sms.sender') ?? 'Gavelisten';
-        $this->baseUrl = $baseUrl ?? config('services.sms.gatewayapi.endpoint') ?? 'https://messaging.gatewayapi.com/mobile/single';
+        $this->token = $token ?? (config('services.sms.gatewayapi.token') ?: null);
+        $this->sender = $sender ?? (config('services.sms.sender') ?: 'Gavelisten');
+        $this->baseUrl = $baseUrl ?? (config('services.sms.gatewayapi.endpoint') ?: 'https://messaging.gatewayapi.com/mobile/single');
     }
 
     /**

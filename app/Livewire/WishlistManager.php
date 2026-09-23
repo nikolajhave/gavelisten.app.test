@@ -216,6 +216,7 @@ class WishlistManager extends Component
             ]);
         }
 
+        unset($this->wishes);
         $this->closeFormModal();
     }
 
@@ -249,6 +250,8 @@ class WishlistManager extends Component
                 }
             }
         }
+
+        unset($this->wishes);
     }
 
     /**
@@ -279,6 +282,7 @@ class WishlistManager extends Component
     {
         if ($this->deletingWishId) {
             $this->wishlist->wishes()->where('id', $this->deletingWishId)->delete();
+            unset($this->wishes);
         }
 
         $this->closeDeleteModal();
