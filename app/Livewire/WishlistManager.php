@@ -77,6 +77,35 @@ class WishlistManager extends Component
     }
 
     /**
+     * Get the authenticated user's friends with their wishlists.
+     *
+     * @return Collection<int, User>
+     */
+    #[Computed]
+    public function friends(): Collection
+    {
+        /** @var User $user */
+        $user = Auth::user();
+
+        return $user->friends()
+            ->with(['wishlists' => fn ($query) => $query->withCount('wishes')])
+            ->orderBy('name')
+            ->get();
+    }
+
+    /**
+     * Remove a friend from the authenticated user's friends list.
+     */
+    public function removeFriend(int $friendId): void
+    {
+        /** @var User $user */
+        $user = Auth::user();
+
+        $user->friends()->detach($friendId);
+        unset($this->friends);
+    }
+
+    /**
      * Start editing the wishlist title.
      */
     public function startEditingWishlistTitle(): void

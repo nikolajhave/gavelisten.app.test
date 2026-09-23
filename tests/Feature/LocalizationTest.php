@@ -37,6 +37,11 @@ test('danish translations are returned for key ui strings and pluralization', fu
         ->and(__('Edit wishlist title'))->toBe('Rediger ønskelistens titel')
         ->and(__('Wishlist title'))->toBe('Ønskelistens titel')
         ->and(__('Save'))->toBe('Gem')
+        ->and(__('Friends'))->toBe('Venner')
+        ->and(__('Add friend'))->toBe('Tilføj ven')
+        ->and(__('Friend added'))->toBe('Ven tilføjet')
+        ->and(__('Remove friend'))->toBe('Fjern ven')
+        ->and(__('No friends yet'))->toBe('Ingen venner endnu')
         ->and(trans_choice(':count wish|:count wishes', 1))->toBe('1 ønske')
         ->and(trans_choice(':count wish|:count wishes', 2))->toBe('2 ønsker');
 });
@@ -66,6 +71,11 @@ test('english translations are preserved and returned when locale is english', f
         ->and(__('Edit wishlist title'))->toBe('Edit wishlist title')
         ->and(__('Wishlist title'))->toBe('Wishlist title')
         ->and(__('Save'))->toBe('Save')
+        ->and(__('Friends'))->toBe('Friends')
+        ->and(__('Add friend'))->toBe('Add friend')
+        ->and(__('Friend added'))->toBe('Friend added')
+        ->and(__('Remove friend'))->toBe('Remove friend')
+        ->and(__('No friends yet'))->toBe('No friends yet')
         ->and(trans_choice(':count wish|:count wishes', 1))->toBe('1 wish')
         ->and(trans_choice(':count wish|:count wishes', 2))->toBe('2 wishes');
 });

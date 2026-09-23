@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -39,6 +40,54 @@ class User extends Authenticatable
     public function wishlists(): HasMany
     {
         return $this->hasMany(Wishlist::class);
+    }
+
+    /**
+     * Get the friends associated with the user.
+     *
+     * @return BelongsToMany<User, $this>
+     */
+    public function friends(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class, 'friends', 'user_id', 'friend_id')
+            ->withTimestamps();
+    }
+
+    /**
+     * Get the users who added this user as a friend.
+     *
+     * @return BelongsToMany<User, $this>
+     */
+    public function friendedBy(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class, 'friends', 'friend_id', 'user_id')
+            ->withTimestamps();
+    }
+
+    /**
+     * Add a user as a friend.
+     */
+    public function addFriend(User $friend): void
+    {
+        if ($this->id !== $friend->id) {
+            $this->friends()->syncWithoutDetaching([$friend->id]);
+        }
+    }
+
+    /**
+     * Remove a user from friends.
+     */
+    public function removeFriend(User $friend): void
+    {
+        $this->friends()->detach($friend->id);
+    }
+
+    /**
+     * Check if the user has added another user as a friend.
+     */
+    public function isFriendWith(User $user): bool
+    {
+        return $this->friends()->where('friend_id', $user->id)->exists();
     }
 
     /**

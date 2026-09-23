@@ -86,6 +86,19 @@ test('user has many wishlists', function () {
         ->and($wishlist->user->id)->toBe($user->id);
 });
 
+test('user has many friends and friendedBy relations', function () {
+    $user1 = User::factory()->create();
+    $user2 = User::factory()->create();
+    $user3 = User::factory()->create();
+
+    $user1->addFriend($user2);
+    $user1->addFriend($user3);
+
+    expect($user1->fresh()->friends)->toHaveCount(2)
+        ->and($user1->fresh()->friends->pluck('id')->all())->toEqualCanonicalizing([$user2->id, $user3->id])
+        ->and($user2->fresh()->friendedBy->pluck('id')->all())->toEqualCanonicalizing([$user1->id]);
+});
+
 test('password and remember_token are hidden from array serialization', function () {
     $user = User::factory()->create();
 
