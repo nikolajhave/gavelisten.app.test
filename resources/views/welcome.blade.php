@@ -22,10 +22,11 @@
     <body class="bg-[#FDFDFC] dark:bg-[#0a0a0a] text-[#1b1b18] dark:text-[#EDEDEC] min-h-screen flex items-center justify-center p-6 antialiased" style="min-height: 100vh; display: flex; align-items: center; justify-content: center; margin: 0; padding: 1.5rem; text-align: center;">
         <main class="max-w-xl text-center">
             <p class="text-xl sm:text-2xl font-medium leading-relaxed" style="font-size: 1.25rem; line-height: 1.75; font-weight: 500;">
-                Ups - Gavelisten er lige gået i stykker 🎁💥🫪<br>
-                Nikolaj arbejder i døgndrift 🌙<br>
-                (eller noget)<br>
-                på at fixe det! 😁
+                Så varer det ikke længe! Hold ud!<br>
+                Point til de mest utålmodige:<br>
+                - Moster Birte og Moster Hanne (selvfølgelig 🙄)<br>
+                <br>
+                ... men først var selvfølgelig ... Fætter Anders 🥳
             </p>
         </main>
     </body>
