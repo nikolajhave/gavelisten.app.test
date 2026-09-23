@@ -36,11 +36,11 @@ return [
             'email' => null,
             'legacy_id' => 8,
         ],
-        'Christer' => [
-            'name' => 'Christer',
-            'phone' => '20246575',
-            'email' => null,
-            'legacy_id' => 12,
+        'Nilas' => [
+            'name' => 'Nilas',
+            'phone' => null,
+            'email' => 'nilas.have@gmail.com',
+            'legacy_id' => 2055,
         ],
     ],
 ];
