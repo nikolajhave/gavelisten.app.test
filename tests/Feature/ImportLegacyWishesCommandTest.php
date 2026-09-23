@@ -15,6 +15,15 @@ test('import legacy wishes command runs successfully with configured users', fun
 });
 
 test('import legacy wishes command executes actual import and saves to database', function () {
+    config()->set('legacy_import.users', [
+        'Nikolaj' => [
+            'name' => 'Nikolaj',
+            'phone' => '20231120',
+            'email' => null,
+            'legacy_id' => 8,
+        ],
+    ]);
+
     $this->artisan('import:legacy-wishes')
         ->expectsOutputToContain('Starting Legacy Data Import...')
         ->expectsOutputToContain('Nikolaj')

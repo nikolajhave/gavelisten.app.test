@@ -14,6 +14,7 @@ test('login page can be rendered', function () {
 
     $response->assertStatus(200)
         ->assertSeeLivewire(PhoneAuth::class)
+        ->assertSee('Gavelisten')
         ->assertSee(__('Log in or Sign up'))
         ->assertSee(__('Continue with Google'));
 });
