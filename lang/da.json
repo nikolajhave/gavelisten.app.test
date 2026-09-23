@@ -37,6 +37,7 @@
     "Didn't receive code? Resend": "Modtog du ikke koden? Send igen",
     "Sending new code...": "Sender ny kode...",
     "The verification code is invalid or has expired.": "Bekræftelseskoden er ugyldig eller udløbet.",
+    "Your verification code for Gavelisten is: :code": "Din engangskode til Gavelisten er: :code",
     "Google authentication failed. Please try again.": "Google-godkendelse mislykkedes. Prøv venligst igen.",
     "Wishlist Manager": "Administrer ønskeliste",
     "Drag and drop to reorder, and share your list with family & friends.": "Træk og slip for at ændre rækkefølgen, og del din liste med familie og venner.",

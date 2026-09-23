@@ -25,7 +25,7 @@
                         type="tel"
                         id="phone"
                         wire:model="phone"
-                        placeholder="+45 12 34 56 78"
+                        placeholder="12 34 56 78"
                         class="w-full px-4 py-3 rounded-xl border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-800 text-neutral-900 dark:text-neutral-100 placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-neutral-900 dark:focus:ring-white transition"
                         autofocus
                     >

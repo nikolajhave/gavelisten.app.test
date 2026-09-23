@@ -124,6 +124,84 @@ test('verify otp logs in existing user', function () {
     $this->assertAuthenticatedAs($user);
 });
 
+test('send otp accepts 8-digit danish phone number without country code', function () {
+    $mockSms = Mockery::mock(SmsService::class);
+    $mockSms->shouldReceive('sendOtp')->with('+4520231120', Mockery::any())->once()->andReturnTrue();
+    $this->app->instance(SmsService::class, $mockSms);
+
+    Livewire::test(PhoneAuth::class)
+        ->set('phone', '20231120')
+        ->call('sendOtp')
+        ->assertHasNoErrors()
+        ->assertSet('step', 'otp');
+
+    $this->assertDatabaseHas('phone_verification_codes', [
+        'phone' => '+4520231120',
+    ]);
+});
+
+test('send otp accepts phone number with spaces and formatting', function () {
+    $mockSms = Mockery::mock(SmsService::class);
+    $mockSms->shouldReceive('sendOtp')->with('+4520231120', Mockery::any())->once()->andReturnTrue();
+    $this->app->instance(SmsService::class, $mockSms);
+
+    Livewire::test(PhoneAuth::class)
+        ->set('phone', '20 23 11 20')
+        ->call('sendOtp')
+        ->assertHasNoErrors()
+        ->assertSet('step', 'otp');
+
+    $this->assertDatabaseHas('phone_verification_codes', [
+        'phone' => '+4520231120',
+    ]);
+});
+
+test('20231120 and +4520231120 log into the exact same user account', function () {
+    // 1. User originally created via 8-digit phone without +45
+    $user = User::factory()->phoneOnly()->create([
+        'phone' => '20231120',
+    ]);
+
+    expect($user->phone)->toBe('+4520231120');
+
+    // 2. User logs in entering +4520231120
+    PhoneVerificationCode::factory()->create([
+        'phone' => '+4520231120',
+        'code' => '654321',
+        'expires_at' => now()->addMinutes(10),
+    ]);
+
+    Livewire::test(PhoneAuth::class)
+        ->set('phone', '+4520231120')
+        ->set('step', 'otp')
+        ->set('code', '654321')
+        ->call('verifyOtp')
+        ->assertHasNoErrors()
+        ->assertRedirect('/');
+
+    $this->assertAuthenticatedAs($user);
+
+    auth()->logout();
+
+    // 3. User logs in entering 20231120 without +45
+    PhoneVerificationCode::factory()->create([
+        'phone' => '20231120',
+        'code' => '123456',
+        'expires_at' => now()->addMinutes(10),
+    ]);
+
+    Livewire::test(PhoneAuth::class)
+        ->set('phone', '20231120')
+        ->set('step', 'otp')
+        ->set('code', '123456')
+        ->call('verifyOtp')
+        ->assertHasNoErrors()
+        ->assertRedirect('/');
+
+    $this->assertAuthenticatedAs($user);
+    expect(User::where('phone', '+4520231120')->count())->toBe(1);
+});
+
 test('resend otp sends a new code', function () {
     $mockSms = Mockery::mock(SmsService::class);
     $mockSms->shouldReceive('sendOtp')->once()->andReturnTrue();
