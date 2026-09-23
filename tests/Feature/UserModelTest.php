@@ -82,7 +82,7 @@ test('user has many wishlists', function () {
     $wishlist = Wishlist::factory()->create(['user_id' => $user->id, 'title' => 'Birthday 2026']);
 
     expect($user->fresh()->wishlists)->toHaveCount(2)
-        ->and($user->fresh()->wishlists->pluck('title')->all())->toContain('My Wishlist', 'Birthday 2026')
+        ->and($user->fresh()->wishlists->pluck('title')->all())->toContain(__('My Wishlist'), 'Birthday 2026')
         ->and($wishlist->user->id)->toBe($user->id);
 });
 

@@ -13,7 +13,7 @@ class UserObserver
     {
         if ($user->wishlists()->doesntExist()) {
             $user->wishlists()->create([
-                'title' => 'My Wishlist',
+                'title' => __('My Wishlist'),
             ]);
         }
     }

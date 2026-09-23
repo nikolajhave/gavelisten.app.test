@@ -79,7 +79,7 @@ test('verify phone verification code creates a new verified user and auto-provis
         ->and($user->phone)->toBe('+4599887766')
         ->and($user->phone_verified_at)->not->toBeNull()
         ->and($user->wishlists)->toHaveCount(1)
-        ->and($user->wishlists->first()->title)->toBe('My Wishlist');
+        ->and($user->wishlists->first()->title)->toBe(__('My Wishlist'));
 
     $this->assertDatabaseMissing('phone_verification_codes', [
         'phone' => '+4599887766',

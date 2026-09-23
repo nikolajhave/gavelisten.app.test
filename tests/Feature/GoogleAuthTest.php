@@ -54,7 +54,7 @@ test('google callback creates a new user, social identity, and auto-provisions w
         ->and($user->socialIdentities->first()->provider_name)->toBe('google')
         ->and($user->socialIdentities->first()->provider_id)->toBe('google-unique-id-123')
         ->and($user->wishlists)->toHaveCount(1)
-        ->and($user->wishlists->first()->title)->toBe('My Wishlist');
+        ->and($user->wishlists->first()->title)->toBe(__('My Wishlist'));
 });
 
 test('google callback links social identity to existing user matching email', function () {
@@ -131,7 +131,7 @@ test('google callback redirects to login with error on exception', function () {
     $response = $this->get(route('auth.google.callback'));
 
     $response->assertRedirect(route('login'))
-        ->assertSessionHas('error', 'Google authentication failed. Please try again.');
+        ->assertSessionHas('error', __('Google authentication failed. Please try again.'));
 
     $this->assertGuest();
 });

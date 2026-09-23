@@ -8,11 +8,11 @@
                         {{ $this->wishlist->title }}
                     </h1>
                     <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-neutral-100 dark:bg-neutral-800 text-neutral-700 dark:text-neutral-300">
-                        {{ $this->wishes->count() }} {{ \Illuminate\Support\Str::plural('wish', $this->wishes->count()) }}
+                        {{ trans_choice(':count wish|:count wishes', $this->wishes->count()) }}
                     </span>
                 </div>
                 <p class="text-sm text-neutral-500 dark:text-neutral-400 mt-1">
-                    Manage your wishes, drag and drop to reorder, and share your list with family & friends.
+                    {{ __('Manage your wishes, drag and drop to reorder, and share your list with family & friends.') }}
                 </p>
             </div>
 
@@ -25,7 +25,7 @@
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
                     </svg>
-                    <span>Add Wish</span>
+                    <span>{{ __('Add Wish') }}</span>
                 </button>
 
                 <form method="POST" action="{{ route('logout') }}" class="inline">
@@ -33,7 +33,7 @@
                     <button
                         type="submit"
                         class="inline-flex items-center px-3 py-2.5 rounded-xl border border-neutral-200 dark:border-neutral-800 text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-100 hover:bg-neutral-50 dark:hover:bg-neutral-900 text-sm font-medium transition cursor-pointer"
-                        title="Sign out"
+                        title="{{ __('Sign out') }}"
                     >
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
@@ -49,7 +49,7 @@
                 <svg class="w-4 h-4 shrink-0 text-neutral-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
                 </svg>
-                <span class="font-medium text-neutral-700 dark:text-neutral-300 shrink-0">Public Share Link:</span>
+                <span class="font-medium text-neutral-700 dark:text-neutral-300 shrink-0">{{ __('Public Share Link:') }}</span>
                 <span class="truncate font-mono text-xs text-neutral-500 select-all" x-text="shareUrl"></span>
             </div>
             <button
@@ -63,7 +63,7 @@
                 <svg x-show="copied" style="display: none;" class="w-3.5 h-3.5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                 </svg>
-                <span x-text="copied ? 'Copied!' : 'Copy Link'"></span>
+                <span x-text="copied ? '{{ __('Copied!') }}' : '{{ __('Copy Link') }}'"></span>
             </button>
         </div>
 
@@ -76,9 +76,9 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
                         </svg>
                     </div>
-                    <h3 class="text-lg font-semibold text-neutral-900 dark:text-neutral-100">No wishes yet</h3>
+                    <h3 class="text-lg font-semibold text-neutral-900 dark:text-neutral-100">{{ __('No wishes yet') }}</h3>
                     <p class="text-sm text-neutral-500 dark:text-neutral-400 mt-1 max-w-sm mx-auto">
-                        Your wishlist is empty. Start adding gifts you'd love to receive!
+                        {{ __("Your wishlist is empty. Start adding gifts you'd love to receive!") }}
                     </p>
                     <button
                         type="button"
@@ -88,7 +88,7 @@
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
                         </svg>
-                        <span>Add Your First Wish</span>
+                        <span>{{ __('Add Your First Wish') }}</span>
                     </button>
                 </div>
             @else
@@ -109,7 +109,7 @@
                                     type="button"
                                     wire:sort:handle
                                     class="mt-1 sm:mt-0 p-1.5 rounded-lg text-neutral-400 hover:text-neutral-700 dark:text-neutral-500 dark:hover:text-neutral-200 hover:bg-neutral-100 dark:hover:bg-neutral-800 cursor-grab active:cursor-grabbing transition"
-                                    title="Drag to reorder"
+                                    title="{{ __('Drag to reorder') }}"
                                 >
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8h16M4 16h16" />
@@ -124,7 +124,7 @@
 
                                         @if ($wish->price !== null)
                                             <span class="inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800/80 text-emerald-700 dark:text-emerald-300">
-                                                {{ number_format((float) $wish->price, 2, ',', '.') }} kr.
+                                                {{ number_format((float) $wish->price, 2, ',', '.') }} {{ __('kr.') }}
                                             </span>
                                         @endif
                                     </div>
@@ -159,7 +159,7 @@
                                     type="button"
                                     wire:click="openEditModal({{ $wish->id }})"
                                     class="p-2 rounded-xl text-neutral-500 hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-white hover:bg-neutral-100 dark:hover:bg-neutral-800 transition cursor-pointer"
-                                    title="Edit wish"
+                                    title="{{ __('Edit wish') }}"
                                 >
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
@@ -169,7 +169,7 @@
                                     type="button"
                                     wire:click="confirmDeleteWish({{ $wish->id }})"
                                     class="p-2 rounded-xl text-neutral-500 hover:text-red-600 dark:text-neutral-400 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/50 transition cursor-pointer"
-                                    title="Delete wish"
+                                    title="{{ __('Delete wish') }}"
                                 >
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
@@ -202,7 +202,7 @@
             <div class="relative transform overflow-hidden rounded-3xl bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 text-left shadow-2xl transition-all sm:my-8 sm:w-full sm:max-w-lg p-6 sm:p-8">
                 <div class="flex items-center justify-between pb-4 border-b border-neutral-200 dark:border-neutral-800">
                     <h3 class="text-xl font-bold text-neutral-900 dark:text-neutral-100">
-                        {{ $editingWishId ? 'Edit Wish' : 'Add a New Wish' }}
+                        {{ $editingWishId ? __('Edit Wish') : __('Add a New Wish') }}
                     </h3>
                     <button
                         type="button"
@@ -219,13 +219,13 @@
                     {{-- Title --}}
                     <div>
                         <label for="wish-title" class="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1.5">
-                            Title <span class="text-red-500">*</span>
+                            {{ __('Title') }} <span class="text-red-500">*</span>
                         </label>
                         <input
                             type="text"
                             id="wish-title"
                             wire:model="title"
-                            placeholder="e.g. Sony WH-1000XM5 Headphones"
+                            placeholder="{{ __('e.g. Sony WH-1000XM5 Headphones') }}"
                             class="w-full px-4 py-2.5 rounded-xl border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-800 text-neutral-900 dark:text-neutral-100 placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-neutral-900 dark:focus:ring-white transition text-sm"
                             autofocus
                         >
@@ -238,13 +238,13 @@
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div>
                             <label for="wish-price" class="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1.5">
-                                Price (kr.)
+                                {{ __('Price (kr.)') }}
                             </label>
                             <input
                                 type="text"
                                 id="wish-price"
                                 wire:model="price"
-                                placeholder="e.g. 2499.00"
+                                placeholder="{{ __('e.g. 2499.00') }}"
                                 class="w-full px-4 py-2.5 rounded-xl border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-800 text-neutral-900 dark:text-neutral-100 placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-neutral-900 dark:focus:ring-white transition text-sm"
                             >
                             @error('price')
@@ -254,7 +254,7 @@
 
                         <div>
                             <label for="wish-url" class="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1.5">
-                                Link / URL
+                                {{ __('Link / URL') }}
                             </label>
                             <input
                                 type="url"
@@ -272,13 +272,13 @@
                     {{-- Description --}}
                     <div>
                         <label for="wish-description" class="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1.5">
-                            Description / Notes
+                            {{ __('Description / Notes') }}
                         </label>
                         <textarea
                             id="wish-description"
                             wire:model="description"
                             rows="3"
-                            placeholder="Add details like color, size, where to buy, or specific preferences..."
+                            placeholder="{{ __('Add details like color, size, where to buy, or specific preferences...') }}"
                             class="w-full px-4 py-2.5 rounded-xl border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-800 text-neutral-900 dark:text-neutral-100 placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-neutral-900 dark:focus:ring-white transition text-sm resize-none"
                         ></textarea>
                         @error('description')
@@ -293,7 +293,7 @@
                             wire:click="closeFormModal"
                             class="px-4 py-2.5 rounded-xl border border-neutral-300 dark:border-neutral-700 text-neutral-700 dark:text-neutral-300 hover:bg-neutral-50 dark:hover:bg-neutral-800 text-sm font-medium transition cursor-pointer"
                         >
-                            Cancel
+                            {{ __('Cancel') }}
                         </button>
                         <button
                             type="submit"
@@ -301,10 +301,10 @@
                             class="px-5 py-2.5 rounded-xl bg-neutral-900 dark:bg-white text-white dark:text-neutral-900 text-sm font-medium hover:bg-neutral-800 dark:hover:bg-neutral-100 disabled:opacity-50 transition cursor-pointer data-loading:opacity-75"
                         >
                             <span wire:loading.remove wire:target="saveWish">
-                                {{ $editingWishId ? 'Update Wish' : 'Save Wish' }}
+                                {{ $editingWishId ? __('Update Wish') : __('Save Wish') }}
                             </span>
                             <span wire:loading wire:target="saveWish">
-                                Saving...
+                                {{ __('Saving...') }}
                             </span>
                         </button>
                     </div>
@@ -336,10 +336,10 @@
                     </div>
                     <div>
                         <h3 class="text-lg font-bold text-neutral-900 dark:text-neutral-100">
-                            Delete Wish
+                            {{ __('Delete Wish') }}
                         </h3>
                         <p class="text-sm text-neutral-500 dark:text-neutral-400 mt-1">
-                            Are you sure you want to delete <span class="font-semibold text-neutral-800 dark:text-neutral-200">"{{ $deletingWishTitle }}"</span>? This action cannot be undone.
+                            {{ __('Are you sure you want to delete :title? This action cannot be undone.', ['title' => '"' . $deletingWishTitle . '"']) }}
                         </p>
                     </div>
                 </div>
@@ -350,7 +350,7 @@
                         wire:click="closeDeleteModal"
                         class="px-4 py-2.5 rounded-xl border border-neutral-300 dark:border-neutral-700 text-neutral-700 dark:text-neutral-300 hover:bg-neutral-50 dark:hover:bg-neutral-800 text-sm font-medium transition cursor-pointer"
                     >
-                        Cancel
+                        {{ __('Cancel') }}
                     </button>
                     <button
                         type="button"
@@ -359,10 +359,10 @@
                         class="px-5 py-2.5 rounded-xl bg-red-600 text-white text-sm font-medium hover:bg-red-700 disabled:opacity-50 transition cursor-pointer data-loading:opacity-75"
                     >
                         <span wire:loading.remove wire:target="deleteWish">
-                            Delete
+                            {{ __('Delete') }}
                         </span>
                         <span wire:loading wire:target="deleteWish">
-                            Deleting...
+                            {{ __('Deleting...') }}
                         </span>
                     </button>
                 </div>

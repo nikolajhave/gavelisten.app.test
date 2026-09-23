@@ -32,7 +32,7 @@ class PhoneAuth extends Component
         $sender->execute($this->phone);
 
         $this->step = 'otp';
-        $this->statusMessage = "A 6-digit code has been sent to {$this->phone}.";
+        $this->statusMessage = __('A 6-digit code has been sent to :phone.', ['phone' => $this->phone]);
         $this->code = '';
         $this->resetErrorBag();
     }
@@ -62,7 +62,7 @@ class PhoneAuth extends Component
     {
         $sender->execute($this->phone);
 
-        $this->statusMessage = "A new verification code has been sent to {$this->phone}.";
+        $this->statusMessage = __('A new verification code has been sent to :phone.', ['phone' => $this->phone]);
         $this->code = '';
         $this->resetErrorBag();
     }
@@ -80,6 +80,7 @@ class PhoneAuth extends Component
 
     public function render(): View
     {
-        return view('livewire.auth.phone-auth');
+        return view('livewire.auth.phone-auth')
+            ->title(__('Sign in with Phone').' — '.config('app.name', 'Gavelisten'));
     }
 }

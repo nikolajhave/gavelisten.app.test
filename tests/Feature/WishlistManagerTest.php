@@ -20,8 +20,8 @@ test('authenticated user can view their wishlist manager', function () {
     $response = $this->actingAs($user)->get('/wishlist');
 
     $response->assertStatus(200);
-    $response->assertSee('My Wishlist');
-    $response->assertSee('Add Wish');
+    $response->assertSee(__('My Wishlist'));
+    $response->assertSee(__('Add Wish'));
 });
 
 test('wishes are rendered in ascending sort_order', function () {

@@ -2,10 +2,10 @@
     <div class="bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-2xl p-6 sm:p-8 shadow-sm">
         <div class="text-center mb-8">
             <h1 class="text-2xl font-semibold tracking-tight text-neutral-900 dark:text-neutral-100">
-                {{ $step === 'phone' ? 'Log in or Sign up' : 'Verify Your Phone' }}
+                {{ $step === 'phone' ? __('Log in or Sign up') : __('Verify Your Phone') }}
             </h1>
             <p class="text-sm text-neutral-600 dark:text-neutral-400 mt-2">
-                {{ $step === 'phone' ? 'Enter your mobile phone number to receive a one-time login code.' : 'Enter the 6-digit verification code sent to your phone.' }}
+                {{ $step === 'phone' ? __('Enter your mobile phone number to receive a one-time login code.') : __('Enter the 6-digit verification code sent to your phone.') }}
             </p>
         </div>
 
@@ -19,7 +19,7 @@
             <form wire:submit="sendOtp" class="space-y-5">
                 <div>
                     <label for="phone" class="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2">
-                        Phone Number
+                        {{ __('Phone Number') }}
                     </label>
                     <input
                         type="tel"
@@ -39,8 +39,8 @@
                     wire:loading.attr="disabled"
                     class="w-full py-3 px-4 rounded-xl bg-neutral-900 dark:bg-white text-white dark:text-neutral-900 font-medium hover:bg-neutral-800 dark:hover:bg-neutral-100 disabled:opacity-50 transition cursor-pointer"
                 >
-                    <span wire:loading.remove wire:target="sendOtp">Continue with Phone</span>
-                    <span wire:loading wire:target="sendOtp">Sending code...</span>
+                    <span wire:loading.remove wire:target="sendOtp">{{ __('Continue with Phone') }}</span>
+                    <span wire:loading wire:target="sendOtp">{{ __('Sending code...') }}</span>
                 </button>
             </form>
 
@@ -50,7 +50,7 @@
                 </div>
                 <div class="relative flex justify-center text-xs uppercase">
                     <span class="bg-white dark:bg-neutral-900 px-3 text-neutral-500 dark:text-neutral-400">
-                        Or continue with
+                        {{ __('Or continue with') }}
                     </span>
                 </div>
             </div>
@@ -66,7 +66,7 @@
                         <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
                         <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
                     </svg>
-                    Continue with Google
+                    {{ __('Continue with Google') }}
                 </a>
             </div>
         @else
@@ -74,14 +74,14 @@
                 <div>
                     <div class="flex items-center justify-between mb-2">
                         <label for="code" class="block text-sm font-medium text-neutral-700 dark:text-neutral-300">
-                            Verification Code
+                            {{ __('Verification Code') }}
                         </label>
                         <button
                             type="button"
                             wire:click="editPhone"
                             class="text-xs font-medium text-neutral-500 hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-white underline cursor-pointer"
                         >
-                            Change phone
+                            {{ __('Change phone') }}
                         </button>
                     </div>
                     <input
@@ -105,8 +105,8 @@
                     wire:loading.attr="disabled"
                     class="w-full py-3 px-4 rounded-xl bg-neutral-900 dark:bg-white text-white dark:text-neutral-900 font-medium hover:bg-neutral-800 dark:hover:bg-neutral-100 disabled:opacity-50 transition cursor-pointer"
                 >
-                    <span wire:loading.remove wire:target="verifyOtp">Verify and Continue</span>
-                    <span wire:loading wire:target="verifyOtp">Verifying...</span>
+                    <span wire:loading.remove wire:target="verifyOtp">{{ __('Verify and Continue') }}</span>
+                    <span wire:loading wire:target="verifyOtp">{{ __('Verifying...') }}</span>
                 </button>
 
                 <div class="text-center pt-2">
@@ -116,8 +116,8 @@
                         wire:loading.attr="disabled"
                         class="text-sm text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white cursor-pointer"
                     >
-                        <span wire:loading.remove wire:target="resendOtp">Didn't receive code? Resend</span>
-                        <span wire:loading wire:target="resendOtp">Sending new code...</span>
+                        <span wire:loading.remove wire:target="resendOtp">{{ __("Didn't receive code? Resend") }}</span>
+                        <span wire:loading wire:target="resendOtp">{{ __('Sending new code...') }}</span>
                     </button>
                 </div>
             </form>

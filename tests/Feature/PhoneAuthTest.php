@@ -14,8 +14,8 @@ test('login page can be rendered', function () {
 
     $response->assertStatus(200)
         ->assertSeeLivewire(PhoneAuth::class)
-        ->assertSee('Log in or Sign up')
-        ->assertSee('Continue with Google');
+        ->assertSee(__('Log in or Sign up'))
+        ->assertSee(__('Continue with Google'));
 });
 
 test('authenticated user is redirected away from login', function () {
@@ -44,8 +44,8 @@ test('send otp dispatches code and switches to otp step', function () {
         ->call('sendOtp')
         ->assertHasNoErrors()
         ->assertSet('step', 'otp')
-        ->assertSee('Verify Your Phone')
-        ->assertSee('A 6-digit code has been sent to +4512345678');
+        ->assertSee(__('Verify Your Phone'))
+        ->assertSee(__('A 6-digit code has been sent to :phone.', ['phone' => '+4512345678']));
 
     $this->assertDatabaseHas('phone_verification_codes', [
         'phone' => '+4512345678',
@@ -99,7 +99,7 @@ test('verify otp logs in user and creates user and wishlist if new', function ()
     expect($user->phone)->toBe('+4512345678')
         ->and($user->phone_verified_at)->not->toBeNull()
         ->and($user->wishlists)->toHaveCount(1)
-        ->and($user->wishlists->first()->title)->toBe('My Wishlist');
+        ->and($user->wishlists->first()->title)->toBe(__('My Wishlist'));
 });
 
 test('verify otp logs in existing user', function () {
@@ -133,7 +133,7 @@ test('resend otp sends a new code', function () {
         ->set('phone', '+4512345678')
         ->set('step', 'otp')
         ->call('resendOtp')
-        ->assertSee('A new verification code has been sent');
+        ->assertSee(__('A new verification code has been sent to :phone.', ['phone' => '+4512345678']));
 });
 
 test('edit phone returns component to phone input step', function () {

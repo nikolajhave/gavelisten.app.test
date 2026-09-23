@@ -51,7 +51,7 @@ class WishlistManager extends Component
 
         if (! $wishlist) {
             $wishlist = $user->wishlists()->create([
-                'title' => 'My Wishlist',
+                'title' => __('My Wishlist'),
             ]);
         }
 

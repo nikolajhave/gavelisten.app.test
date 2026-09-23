@@ -15,13 +15,13 @@ test('newly registered user automatically gets default My Wishlist with share to
 
     $wishlist = $user->wishlists->first();
 
-    expect($wishlist->title)->toBe('My Wishlist')
+    expect($wishlist->title)->toBe(__('My Wishlist'))
         ->and($wishlist->share_token)->toBeString()
         ->and(strlen($wishlist->share_token))->toBe(12);
 
     $this->assertDatabaseHas('wishlists', [
         'user_id' => $user->id,
-        'title' => 'My Wishlist',
+        'title' => __('My Wishlist'),
         'share_token' => $wishlist->share_token,
     ]);
 });
