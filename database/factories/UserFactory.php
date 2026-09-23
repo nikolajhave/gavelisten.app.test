@@ -69,6 +69,16 @@ class UserFactory extends Factory
     }
 
     /**
+     * Indicate that the user does not have a password set.
+     */
+    public function passwordless(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'password' => null,
+        ]);
+    }
+
+    /**
      * Indicate the legacy ID for the user.
      */
     public function withLegacyId(?int $legacyId = null): static
