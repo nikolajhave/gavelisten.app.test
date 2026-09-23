@@ -101,6 +101,20 @@
                             </svg>
                         </button>
 
+                        {{-- Mobile Backdrop --}}
+                        <div
+                            x-show="open"
+                            @click="open = false"
+                            class="fixed inset-0 bg-neutral-900/40 backdrop-blur-xs z-40 sm:hidden"
+                            x-transition:enter="transition ease-out duration-100"
+                            x-transition:enter-start="opacity-0"
+                            x-transition:enter-end="opacity-100"
+                            x-transition:leave="transition ease-in duration-75"
+                            x-transition:leave-start="opacity-100"
+                            x-transition:leave-end="opacity-0"
+                            style="display: none;"
+                        ></div>
+
                         <div
                             x-show="open"
                             @click.outside="open = false"
@@ -111,7 +125,7 @@
                             x-transition:leave="transition ease-in duration-75"
                             x-transition:leave-start="transform opacity-100 scale-100"
                             x-transition:leave-end="transform opacity-0 scale-95"
-                            class="absolute left-0 sm:left-auto sm:right-0 top-full mt-2 w-72 sm:w-80 max-w-[calc(100vw-2rem)] bg-white dark:bg-neutral-900 rounded-2xl shadow-xl border border-neutral-200 dark:border-neutral-800 p-4 z-50 divide-y divide-neutral-100 dark:divide-neutral-800"
+                            class="fixed sm:absolute inset-x-4 sm:inset-x-auto sm:left-auto sm:right-0 top-24 sm:top-full sm:mt-2 mx-auto sm:mx-0 w-auto sm:w-80 max-w-sm sm:max-w-none bg-white dark:bg-neutral-900 rounded-2xl shadow-xl border border-neutral-200 dark:border-neutral-800 p-4 z-50 divide-y divide-neutral-100 dark:divide-neutral-800"
                             style="display: none;"
                         >
                             <div class="pb-3">
@@ -172,6 +186,20 @@
                             </svg>
                         </button>
 
+                        {{-- Mobile Backdrop --}}
+                        <div
+                            x-show="open"
+                            @click="open = false"
+                            class="fixed inset-0 bg-neutral-900/40 backdrop-blur-xs z-40 sm:hidden"
+                            x-transition:enter="transition ease-out duration-100"
+                            x-transition:enter-start="opacity-0"
+                            x-transition:enter-end="opacity-100"
+                            x-transition:leave="transition ease-in duration-75"
+                            x-transition:leave-start="opacity-100"
+                            x-transition:leave-end="opacity-0"
+                            style="display: none;"
+                        ></div>
+
                         <div
                             x-show="open"
                             @click.outside="open = false"
@@ -182,7 +210,7 @@
                             x-transition:leave="transition ease-in duration-75"
                             x-transition:leave-start="transform opacity-100 scale-100"
                             x-transition:leave-end="transform opacity-0 scale-95"
-                            class="absolute left-0 sm:left-auto sm:right-0 top-full mt-2 w-72 sm:w-80 max-w-[calc(100vw-2rem)] bg-white dark:bg-neutral-900 rounded-2xl shadow-xl border border-neutral-200 dark:border-neutral-800 py-3 z-50 divide-y divide-neutral-100 dark:divide-neutral-800"
+                            class="fixed sm:absolute inset-x-4 sm:inset-x-auto sm:left-auto sm:right-0 top-24 sm:top-full sm:mt-2 mx-auto sm:mx-0 w-auto sm:w-80 max-w-sm sm:max-w-none bg-white dark:bg-neutral-900 rounded-2xl shadow-xl border border-neutral-200 dark:border-neutral-800 py-3 z-50 divide-y divide-neutral-100 dark:divide-neutral-800"
                             style="display: none;"
                         >
                             <div class="px-4 py-2 flex items-center justify-between">
