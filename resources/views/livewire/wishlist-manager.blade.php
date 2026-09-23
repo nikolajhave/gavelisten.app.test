@@ -303,9 +303,7 @@
                                     </div>
 
                                     @if ($wish->description)
-                                        <p class="text-sm text-neutral-600 dark:text-neutral-400 mt-1 whitespace-pre-line line-clamp-2">
-                                            {{ $wish->description }}
-                                        </p>
+                                        <p class="text-sm text-neutral-600 dark:text-neutral-400 mt-2 whitespace-pre-line line-clamp-2">{{ $wish->description }}</p>
                                     @endif
 
                                     @if ($wish->url)

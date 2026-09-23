@@ -270,9 +270,7 @@
 
                                     {{-- Description --}}
                                     @if ($wish->description)
-                                        <p class="text-sm text-neutral-600 dark:text-neutral-400 whitespace-pre-line leading-relaxed line-clamp-4">
-                                            {{ $wish->description }}
-                                        </p>
+                                        <p class="text-sm text-neutral-600 dark:text-neutral-400 whitespace-pre-line leading-relaxed line-clamp-4">{{ $wish->description }}</p>
                                     @endif
                                 </div>
 

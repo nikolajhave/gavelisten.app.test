@@ -50,7 +50,7 @@ class Wish extends Model
             $price = (float) $rawPrice;
             $decimals = (fmod(round($price * 100), 100) == 0.0) ? 0 : 2;
 
-            return number_format($price, $decimals, ',', '.') . ' ' . __('kr');
+            return number_format($price, $decimals, ',', '.').' '.__('kr');
         });
     }
 
