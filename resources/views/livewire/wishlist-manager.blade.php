@@ -460,13 +460,15 @@
                         <div
                             wire:sort:item="{{ $wish->id }}"
                             wire:key="wish-{{ $wish->id }}"
-                            class="group relative flex items-start sm:items-center justify-between gap-4 bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 hover:border-neutral-300 dark:hover:border-neutral-700 rounded-2xl p-4 sm:p-5 shadow-xs transition"
+                            wire:click="openEditModal({{ $wish->id }})"
+                            class="group relative flex items-start sm:items-center justify-between gap-4 bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 hover:border-neutral-300 dark:hover:border-neutral-700 rounded-2xl p-4 sm:p-5 shadow-xs transition cursor-pointer"
                         >
                             <div class="flex items-start sm:items-center gap-3.5 min-w-0 flex-1">
                                 {{-- Drag Handle --}}
                                 <button
                                     type="button"
                                     wire:sort:handle
+                                    @click.stop
                                     class="mt-1 sm:mt-0 p-1.5 rounded-lg text-neutral-400 hover:text-neutral-700 dark:text-neutral-500 dark:hover:text-neutral-200 hover:bg-neutral-100 dark:hover:bg-neutral-800 cursor-grab active:cursor-grabbing transition shrink-0"
                                     title="{{ __('Drag to reorder') }}"
                                 >
@@ -479,7 +481,7 @@
                                     <div class="flex flex-wrap items-center gap-x-3 gap-y-1">
                                         <button
                                             type="button"
-                                            wire:click="openEditModal({{ $wish->id }})"
+                                            wire:click.stop="openEditModal({{ $wish->id }})"
                                             class="font-semibold text-neutral-900 dark:text-neutral-100 text-base text-left hover:text-neutral-600 dark:hover:text-neutral-300 hover:underline underline-offset-2 transition cursor-pointer focus:outline-none"
                                             title="{{ __('Edit wish') }}"
                                         >
@@ -503,6 +505,7 @@
                                                 href="{{ $wish->url }}"
                                                 target="_blank"
                                                 rel="noopener noreferrer"
+                                                @click.stop
                                                 class="inline-flex items-center gap-1.5 max-w-full text-xs font-medium text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white transition group/link"
                                             >
                                                 <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -519,7 +522,7 @@
                             <div class="flex items-center gap-1 shrink-0">
                                 <button
                                     type="button"
-                                    wire:click="openEditModal({{ $wish->id }})"
+                                    wire:click.stop="openEditModal({{ $wish->id }})"
                                     class="p-2 rounded-xl text-neutral-500 hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-white hover:bg-neutral-100 dark:hover:bg-neutral-800 transition cursor-pointer"
                                     title="{{ __('Edit wish') }}"
                                 >
@@ -529,7 +532,7 @@
                                 </button>
                                 <button
                                     type="button"
-                                    wire:click="confirmDeleteWish({{ $wish->id }})"
+                                    wire:click.stop="confirmDeleteWish({{ $wish->id }})"
                                     class="p-2 rounded-xl text-neutral-500 hover:text-red-600 dark:text-neutral-400 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/50 transition cursor-pointer"
                                     title="{{ __('Delete wish') }}"
                                 >
@@ -552,6 +555,7 @@
         class="fixed inset-0 z-50 overflow-y-auto"
         role="dialog"
         aria-modal="true"
+        @keydown.escape.window="$wire.showFormModal && $wire.closeFormModal()"
     >
         <div class="flex min-h-full items-center justify-center p-4 text-center sm:p-0">
             {{-- Backdrop --}}
@@ -682,6 +686,7 @@
         class="fixed inset-0 z-50 overflow-y-auto"
         role="dialog"
         aria-modal="true"
+        @keydown.escape.window="$wire.showDeleteModal && $wire.closeDeleteModal()"
     >
         <div class="flex min-h-full items-center justify-center p-4 text-center sm:p-0">
             <div

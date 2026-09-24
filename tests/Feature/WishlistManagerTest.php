@@ -414,3 +414,39 @@ test('transitions back to empty state after deleting all wishes and can create s
         ->assertSeeHtml('wire:key="wishlist-items-list"')
         ->assertSeeHtml('wire:sort="reorderWishes"');
 });
+
+test('wish div container triggers openEditModal and has pointer cursor', function () {
+    $user = User::factory()->create();
+    $wishlist = $user->wishlists()->first();
+
+    $wish = Wish::factory()->for($wishlist)->create([
+        'title' => 'AirPods Pro',
+        'price' => 1899.00,
+    ]);
+
+    $this->actingAs($user);
+
+    $component = Livewire::test(WishlistManager::class);
+
+    $component->assertSeeHtml('wire:click="openEditModal('.$wish->id.')"')
+        ->assertSeeHtml('cursor-pointer')
+        ->call('openEditModal', $wish->id)
+        ->assertSet('showFormModal', true)
+        ->assertSet('editingWishId', $wish->id);
+});
+
+test('modals support escape key to close', function () {
+    $user = User::factory()->create();
+    $this->actingAs($user);
+
+    $component = Livewire::test(WishlistManager::class);
+
+    $component->assertSeeHtml('@keydown.escape.window="$wire.showFormModal && $wire.closeFormModal()"')
+        ->assertSeeHtml('@keydown.escape.window="$wire.showDeleteModal && $wire.closeDeleteModal()"');
+
+    // Test form modal close
+    $component->call('openCreateModal')
+        ->assertSet('showFormModal', true)
+        ->call('closeFormModal')
+        ->assertSet('showFormModal', false);
+});
