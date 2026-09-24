@@ -177,7 +177,7 @@
                                             type="text"
                                             wire:model.live.debounce.250ms="friendSearchQuery"
                                             placeholder="{{ __('Search name, email or phone...') }}"
-                                            class="w-full pl-9 pr-8 py-2 rounded-xl text-xs bg-neutral-50 dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 text-neutral-900 dark:text-neutral-100 placeholder-neutral-400 dark:placeholder-neutral-500 focus:outline-none focus:ring-2 focus:ring-neutral-900 dark:focus:ring-white transition"
+                                            class="w-full pl-9 pr-8 py-2 rounded-xl text-base sm:text-sm bg-neutral-50 dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 text-neutral-900 dark:text-neutral-100 placeholder-neutral-400 dark:placeholder-neutral-500 focus:outline-none focus:ring-2 focus:ring-neutral-900 dark:focus:ring-white transition"
                                         >
                                         @if ($friendSearchQuery !== '')
                                             <button
