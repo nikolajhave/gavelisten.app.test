@@ -290,14 +290,14 @@
 
                                 {{-- External Link --}}
                                 @if ($wish->url)
-                                    <div class="mt-6 pt-4 border-t border-neutral-100 dark:border-neutral-800">
+                                    <div class="mt-6 pt-4 border-t border-neutral-100 dark:border-neutral-800 flex justify-end">
                                         <a
                                             href="{{ $wish->url }}"
                                             target="_blank"
                                             rel="noopener"
-                                            class="inline-flex items-center justify-between w-full px-4 py-2.5 rounded-xl bg-blue-50 dark:bg-blue-950/60 border border-blue-200/80 dark:border-blue-800/80 text-blue-700 dark:text-blue-300 text-sm font-medium hover:bg-blue-100 dark:hover:bg-blue-900/60 hover:text-blue-800 dark:hover:text-blue-200 transition shadow-xs group/btn"
+                                            class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-blue-50 dark:bg-blue-950/60 border border-blue-200/80 dark:border-blue-800/80 text-blue-700 dark:text-blue-300 text-sm font-medium hover:bg-blue-100 dark:hover:bg-blue-900/60 hover:text-blue-800 dark:hover:text-blue-200 transition shadow-xs group/btn"
                                         >
-                                            <span class="truncate">{{ __('See Product') }}</span>
+                                            <span>{{ __('See Product') }}</span>
                                             <svg class="w-4 h-4 shrink-0 transition-transform group-hover/btn:translate-x-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                                             </svg>
