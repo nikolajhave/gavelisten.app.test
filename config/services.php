@@ -35,4 +35,20 @@ return [
         ],
     ],
 
+    'google' => [
+        'client_id' => env('GOOGLE_CLIENT_ID'),
+        'client_secret' => env('GOOGLE_CLIENT_SECRET'),
+        'redirect' => env('GOOGLE_REDIRECT_URI', '/auth/google/callback'),
+    ],
+
+    'sms' => [
+        'driver' => env('SMS_DRIVER', 'log'),
+        'sender' => env('SMS_SENDER', 'Gavelisten'),
+
+        'gatewayapi' => [
+            'token' => env('GATEWAYAPI_TOKEN'),
+            'endpoint' => env('GATEWAYAPI_ENDPOINT', 'https://messaging.gatewayapi.com/mobile/single'),
+        ],
+    ],
+
 ];
