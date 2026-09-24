@@ -47,3 +47,27 @@ test('wish supports nullable description, url, and price with default sort_order
         'sort_order' => 0,
     ]);
 });
+
+test('wish url_domain attribute extracts clean host from various url formats', function () {
+    $wishlist = Wishlist::factory()->create();
+
+    $wish1 = Wish::factory()->for($wishlist)->create([
+        'url' => 'http://www.gastrotools.dk/something/something',
+    ]);
+    expect($wish1->url_domain)->toBe('www.gastrotools.dk');
+
+    $wish2 = Wish::factory()->for($wishlist)->create([
+        'url' => 'https://gastrotools.dk/products/knife?ref=123#reviews',
+    ]);
+    expect($wish2->url_domain)->toBe('gastrotools.dk');
+
+    $wish3 = Wish::factory()->for($wishlist)->create([
+        'url' => 'www.gastrotools.dk/shop',
+    ]);
+    expect($wish3->url_domain)->toBe('www.gastrotools.dk');
+
+    $wish4 = Wish::factory()->for($wishlist)->create([
+        'url' => null,
+    ]);
+    expect($wish4->url_domain)->toBeNull();
+});

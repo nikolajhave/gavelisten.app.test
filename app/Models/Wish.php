@@ -55,6 +55,28 @@ class Wish extends Model
     }
 
     /**
+     * Get the domain / host string from the URL for clean display.
+     *
+     * @return Attribute<string|null, never>
+     */
+    protected function urlDomain(): Attribute
+    {
+        return Attribute::get(function (mixed $value, array $attributes): ?string {
+            $url = $attributes['url'] ?? $this->url;
+            if ($url === null || $url === '') {
+                return null;
+            }
+
+            $host = parse_url((string) $url, PHP_URL_HOST);
+            if (! $host) {
+                $host = parse_url('https://'.(string) $url, PHP_URL_HOST);
+            }
+
+            return $host ?: (string) $url;
+        });
+    }
+
+    /**
      * Get the attributes that should be cast.
      *
      * @return array<string, string>

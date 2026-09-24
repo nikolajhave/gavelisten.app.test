@@ -450,3 +450,20 @@ test('modals support escape key to close', function () {
         ->call('closeFormModal')
         ->assertSet('showFormModal', false);
 });
+
+test('wishlist manager displays domain name for wish url instead of full url', function () {
+    $user = User::factory()->create();
+    $wishlist = $user->wishlists()->first();
+
+    Wish::factory()->for($wishlist)->create([
+        'title' => 'Stegepande',
+        'url' => 'http://www.gastrotools.dk/something/something',
+    ]);
+
+    $this->actingAs($user);
+
+    Livewire::test(WishlistManager::class)
+        ->assertSee('www.gastrotools.dk')
+        ->assertSeeHtml('href="http://www.gastrotools.dk/something/something"')
+        ->assertSeeHtml('<span class="truncate underline underline-offset-2">www.gastrotools.dk</span>');
+});
