@@ -11,6 +11,18 @@
             </a>
         </div>
 
+        <div class="mb-6 p-4 sm:p-5 rounded-2xl bg-blue-50/70 dark:bg-blue-950/40 border border-blue-200/80 dark:border-blue-900/60 text-sm text-neutral-700 dark:text-neutral-300 leading-relaxed shadow-xs">
+            <p class="font-semibold text-neutral-900 dark:text-white mb-1.5">
+                Velkommen til den nye udgave af Gavelisten
+            </p>
+            <p>
+                Du kan logge ind med mobilnummer eller en google-konto. Hvis du ikke ser dine ønsker fra den gamle gaveliste, er du velkommen til at skrive til mig på <a href="tel:20231120" class="font-medium text-blue-600 dark:text-blue-400 underline hover:text-blue-700 dark:hover:text-blue-300">20231120</a>.
+            </p>
+            <p class="mt-2 text-xs text-neutral-600 dark:text-neutral-400">
+                Kh Nikolaj
+            </p>
+        </div>
+
         <div class="bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-2xl p-6 sm:p-8 shadow-sm">
             <div class="text-center mb-8">
                 <h1 class="text-2xl font-semibold tracking-tight text-neutral-900 dark:text-neutral-100">

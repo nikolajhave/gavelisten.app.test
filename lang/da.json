@@ -1,6 +1,7 @@
 {
     "Gavelisten": "Gavelisten",
     "My Wishlist": "Min gaveliste",
+    ":name's Wishlist": ":names gaveliste",
     "Create Your Wishlist": "Opret din gaveliste",
     "Friends": "Venner",
     "Friend": "Ven",
@@ -26,7 +27,7 @@
     "A new verification code has been sent to :phone.": "Der er sendt en ny bekræftelseskode til :phone.",
     "Phone Number": "Telefonnummer",
     "+45 12 34 56 78": "+45 12 34 56 78",
-    "Continue with Phone": "Fortsæt med telefon",
+    "Continue with Phone": "Fortsæt med mobil",
     "Sending code...": "Sender kode...",
     "Or continue with": "Eller fortsæt med",
     "Continue with Google": "Fortsæt med Google",

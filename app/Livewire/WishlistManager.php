@@ -9,11 +9,9 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Computed;
-use Livewire\Attributes\Title;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
 
-#[Title('Wishlist Manager')]
 class WishlistManager extends Component
 {
     #[Validate(['required', 'string', 'max:255'], as: 'title')]
@@ -303,6 +301,7 @@ class WishlistManager extends Component
 
     public function render(): View
     {
-        return view('livewire.wishlist-manager');
+        return view('livewire.wishlist-manager')
+            ->title($this->wishlist->title);
     }
 }

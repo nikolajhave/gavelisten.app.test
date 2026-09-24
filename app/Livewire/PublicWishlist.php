@@ -143,6 +143,6 @@ class PublicWishlist extends Component
     public function render(): View
     {
         return view('livewire.public-wishlist')
-            ->title($this->wishlist->title.' — Gavelisten');
+            ->title($this->wishlist->title);
     }
 }

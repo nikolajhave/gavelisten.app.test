@@ -18,12 +18,15 @@ test('authenticated user can view their wishlist manager', function () {
     $user = User::factory()->create([
         'name' => 'Nikolaj',
     ]);
+    $wishlist = $user->wishlists()->first();
+    $wishlist->update(['title' => 'Min Fødselsdagsliste']);
 
     $response = $this->actingAs($user)->get('/wishlist');
 
     $response->assertStatus(200);
+    $response->assertSee('<title>Min Fødselsdagsliste</title>', false);
     $response->assertSee('Nikolaj');
-    $response->assertSee(__('My Wishlist'));
+    $response->assertSee('Min Fødselsdagsliste');
     $response->assertSee(__('Add Wish'));
 });
 

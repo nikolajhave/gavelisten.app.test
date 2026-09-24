@@ -14,7 +14,10 @@ test('login page can be rendered', function () {
 
     $response->assertStatus(200)
         ->assertSeeLivewire(PhoneAuth::class)
+        ->assertSee('<title>Gavelisten</title>', false)
         ->assertSee('Gavelisten')
+        ->assertSee('Velkommen til den nye udgave af Gavelisten')
+        ->assertSee('20231120')
         ->assertSee(__('Log in or Sign up'))
         ->assertSee(__('Continue with Google'));
 });

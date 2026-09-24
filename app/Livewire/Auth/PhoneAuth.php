@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 
-#[Title('Sign in with Phone')]
+#[Title('Gavelisten')]
 class PhoneAuth extends Component
 {
     public string $phone = '';
@@ -81,6 +81,6 @@ class PhoneAuth extends Component
     public function render(): View
     {
         return view('livewire.auth.phone-auth')
-            ->title(__('Sign in with Phone').' — '.config('app.name', 'Gavelisten'));
+            ->title('Gavelisten');
     }
 }
