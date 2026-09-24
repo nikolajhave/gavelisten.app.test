@@ -1,8 +1,8 @@
 # Gavelisten
 
 ## Wishlist – high priority
-- Title fix: 
 - Support admin for other users (parent / child)
+- Edit profile
 - Login with email
 
 ## Wishlist – low priority

@@ -81,14 +81,14 @@ return [
         ],
         'Mor Lene' => [
             'name' => 'Mor Lene',
-            'phone' => null,
-            'email' => null,
+            'phone' => '40962454',
+            'email' => 'lene.have@gmail.com',
             'legacy_id' => null,
         ],
         'Far Jørgen' => [
             'name' => 'Far Jørgen',
-            'phone' => null,
-            'email' => null,
+            'phone' => '22264254',
+            'email' => 'hj.have@gmail.com',
             'legacy_id' => null,
         ],
 
@@ -125,7 +125,7 @@ return [
         ],
         'Hanne' => [
             'name' => 'Hanne',
-            'phone' => null,
+            'phone' => '28560948',
             'email' => null,
             'legacy_id' => null,
         ],
@@ -151,7 +151,7 @@ return [
         ],
         'Lise' => [
             'name' => 'Lise',
-            'phone' => null,
+            'phone' => '60670898',
             'email' => null,
             'legacy_id' => null,
         ],
@@ -193,7 +193,7 @@ return [
         ],
         'Lisbeth' => [
             'name' => 'Lisbeth',
-            'phone' => null,
+            'phone' => '20219307',
             'email' => null,
             'legacy_id' => null,
         ],
@@ -227,12 +227,6 @@ return [
             'email' => null,
             'legacy_id' => null,
         ],
-        //        'Peter' => [
-        //            'name' => 'Peter',
-        //            'phone' => null,
-        //            'email' => null,
-        //            'legacy_id' => null,
-        //        ],
         'Laura' => [
             'name' => 'Laura',
             'phone' => null,
@@ -287,13 +281,13 @@ return [
         /* CHRISTENSEN */
         'Mona' => [
             'name' => 'Mona',
-            'phone' => null,
+            'phone' => '23432973',
             'email' => null,
             'legacy_id' => null,
         ],
         'Thorkild' => [
             'name' => 'Thorkild',
-            'phone' => null,
+            'phone' => '29648639',
             'email' => null,
             'legacy_id' => null,
         ],
