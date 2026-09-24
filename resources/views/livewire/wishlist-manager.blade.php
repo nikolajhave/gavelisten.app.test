@@ -467,7 +467,7 @@
                                 <button
                                     type="button"
                                     wire:sort:handle
-                                    class="mt-1 sm:mt-0 p-1.5 rounded-lg text-neutral-400 hover:text-neutral-700 dark:text-neutral-500 dark:hover:text-neutral-200 hover:bg-neutral-100 dark:hover:bg-neutral-800 cursor-grab active:cursor-grabbing transition"
+                                    class="mt-1 sm:mt-0 p-1.5 rounded-lg text-neutral-400 hover:text-neutral-700 dark:text-neutral-500 dark:hover:text-neutral-200 hover:bg-neutral-100 dark:hover:bg-neutral-800 cursor-grab active:cursor-grabbing transition shrink-0"
                                     title="{{ __('Drag to reorder') }}"
                                 >
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -498,17 +498,17 @@
                                     @endif
 
                                     @if ($wish->url)
-                                        <div class="mt-2">
+                                        <div class="mt-2 max-w-full">
                                             <a
                                                 href="{{ $wish->url }}"
                                                 target="_blank"
                                                 rel="noopener noreferrer"
-                                                class="inline-flex items-center gap-1.5 text-xs font-medium text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white transition group/link"
+                                                class="inline-flex items-center gap-1.5 max-w-full text-xs font-medium text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white transition group/link"
                                             >
                                                 <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                                                 </svg>
-                                                <span class="truncate max-w-xs sm:max-w-md underline underline-offset-2">{{ $wish->url }}</span>
+                                                <span class="truncate underline underline-offset-2">{{ $wish->url }}</span>
                                             </a>
                                         </div>
                                     @endif
