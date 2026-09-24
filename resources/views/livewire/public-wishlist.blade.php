@@ -370,7 +370,7 @@
                     </div>
                 @else
                     {{-- Clean Card Grid Layout --}}
-                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 items-start">
                         @foreach ($this->wishes as $wish)
                             <article
                                 wire:key="public-wish-{{ $wish->id }}"
@@ -409,7 +409,7 @@
 
                                     {{-- Description --}}
                                     @if ($wish->description)
-                                        <p class="text-sm text-neutral-600 dark:text-neutral-400 whitespace-pre-line leading-relaxed line-clamp-4">{{ $wish->description }}</p>
+                                        <p class="text-sm text-neutral-600 dark:text-neutral-400 whitespace-pre-line leading-relaxed">{{ $wish->description }}</p>
                                     @endif
                                 </div>
                             </article>
