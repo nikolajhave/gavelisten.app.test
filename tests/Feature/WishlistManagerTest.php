@@ -24,7 +24,7 @@ test('authenticated user can view their wishlist manager', function () {
     $response = $this->actingAs($user)->get('/wishlist');
 
     $response->assertStatus(200);
-    $response->assertSee('<title>Min Fødselsdagsliste</title>', false);
+    $response->assertSee('<title>Min Fødselsdagsliste / Nikolaj / Gavelisten</title>', false);
     $response->assertSee('Nikolaj');
     $response->assertSee('Min Fødselsdagsliste');
     $response->assertSee(__('Add Wish'));

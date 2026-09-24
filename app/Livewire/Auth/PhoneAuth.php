@@ -4,6 +4,7 @@ namespace App\Livewire\Auth;
 
 use App\Actions\Auth\SendPhoneVerificationCode;
 use App\Actions\Auth\VerifyPhoneVerificationCode;
+use App\Models\User;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Title;
@@ -15,6 +16,8 @@ class PhoneAuth extends Component
     public string $phone = '';
 
     public string $code = '';
+
+    public string $name = '';
 
     public string $step = 'phone';
 
@@ -52,6 +55,37 @@ class PhoneAuth extends Component
 
         session()->regenerate();
 
+        if (filled($user->name)) {
+            return redirect()->intended('/');
+        }
+
+        $this->step = 'name';
+        $this->statusMessage = null;
+        $this->resetErrorBag();
+
+        return null;
+    }
+
+    /**
+     * Save the user's name and complete login.
+     */
+    public function saveName(): mixed
+    {
+        $this->validate([
+            'name' => ['required', 'string', 'min:2', 'max:100'],
+        ], [], [
+            'name' => __('Your Name'),
+        ]);
+
+        /** @var User|null $user */
+        $user = Auth::user();
+
+        if ($user !== null) {
+            $user->update([
+                'name' => trim($this->name),
+            ]);
+        }
+
         return redirect()->intended('/');
     }
 
@@ -74,6 +108,7 @@ class PhoneAuth extends Component
     {
         $this->step = 'phone';
         $this->code = '';
+        $this->name = '';
         $this->statusMessage = null;
         $this->resetErrorBag();
     }

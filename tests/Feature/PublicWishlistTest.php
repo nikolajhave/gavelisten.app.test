@@ -28,7 +28,7 @@ test('guest can view a public wishlist by share token', function () {
     $response = $this->get('/w/customtoken12');
 
     $response->assertStatus(200);
-    $response->assertSee('<title>Mine juleønsker</title>', false);
+    $response->assertSee('<title>Mine juleønsker / Nikolaj / Gavelisten</title>', false);
     $response->assertSee('Nikolaj');
     $response->assertSee('Mine juleønsker');
     $response->assertSee('Lego Star Wars Millennium Falcon');

@@ -142,7 +142,13 @@ class PublicWishlist extends Component
 
     public function render(): View
     {
+        $titleParts = array_filter([
+            $this->wishlist->title,
+            $this->wishlist->user?->name,
+            'Gavelisten',
+        ]);
+
         return view('livewire.public-wishlist')
-            ->title($this->wishlist->title);
+            ->title(implode(' / ', $titleParts));
     }
 }

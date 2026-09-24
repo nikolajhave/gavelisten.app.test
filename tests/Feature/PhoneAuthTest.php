@@ -82,7 +82,7 @@ test('verify otp with invalid code shows error', function () {
     $this->assertGuest();
 });
 
-test('verify otp logs in user and creates user and wishlist if new', function () {
+test('verify otp logs in user and transitions to name step if new', function () {
     PhoneVerificationCode::factory()->create([
         'phone' => '+4512345678',
         'code' => '654321',
@@ -95,20 +95,60 @@ test('verify otp logs in user and creates user and wishlist if new', function ()
         ->set('code', '654321')
         ->call('verifyOtp')
         ->assertHasNoErrors()
+        ->assertSet('step', 'name')
+        ->assertSee(__('What should we call you?'))
+        ->assertSee(__('Enter your name so friends and family can recognize your wishlist when sharing.'))
+        ->set('name', 'Nikolaj')
+        ->call('saveName')
+        ->assertHasNoErrors()
         ->assertRedirect('/');
 
     $this->assertAuthenticated();
 
     $user = auth()->user();
     expect($user->phone)->toBe('+4512345678')
+        ->and($user->name)->toBe('Nikolaj')
         ->and($user->phone_verified_at)->not->toBeNull()
         ->and($user->wishlists)->toHaveCount(1)
         ->and($user->wishlists->first()->title)->toBe(__('My Wishlist'));
 });
 
-test('verify otp logs in existing user', function () {
+test('name is required and validated when saving name', function () {
     $user = User::factory()->phoneOnly()->create([
         'phone' => '+4512345678',
+        'name' => null,
+    ]);
+
+    PhoneVerificationCode::factory()->create([
+        'phone' => '+4512345678',
+        'code' => '654321',
+        'expires_at' => now()->addMinutes(10),
+    ]);
+
+    Livewire::test(PhoneAuth::class)
+        ->set('phone', '+4512345678')
+        ->set('step', 'otp')
+        ->set('code', '654321')
+        ->call('verifyOtp')
+        ->assertSet('step', 'name')
+        ->set('name', '')
+        ->call('saveName')
+        ->assertHasErrors(['name' => 'required'])
+        ->set('name', 'A')
+        ->call('saveName')
+        ->assertHasErrors(['name' => 'min'])
+        ->set('name', 'Nikolaj')
+        ->call('saveName')
+        ->assertHasNoErrors()
+        ->assertRedirect('/');
+
+    expect($user->fresh()->name)->toBe('Nikolaj');
+});
+
+test('verify otp logs in existing user with name and redirects immediately', function () {
+    $user = User::factory()->phoneOnly()->create([
+        'phone' => '+4512345678',
+        'name' => 'Existing User',
     ]);
 
     PhoneVerificationCode::factory()->create([
@@ -223,7 +263,37 @@ test('edit phone returns component to phone input step', function () {
         ->set('phone', '+4512345678')
         ->set('step', 'otp')
         ->set('code', '123456')
+        ->set('name', 'Test Name')
+        ->set('statusMessage', 'Some message')
         ->call('editPhone')
         ->assertSet('step', 'phone')
-        ->assertSet('code', '');
+        ->assertSet('code', '')
+        ->assertSet('name', '')
+        ->assertSet('statusMessage', null);
+});
+
+test('saving name trims surrounding whitespace', function () {
+    $user = User::factory()->phoneOnly()->create([
+        'phone' => '+4512345678',
+        'name' => null,
+    ]);
+
+    PhoneVerificationCode::factory()->create([
+        'phone' => '+4512345678',
+        'code' => '654321',
+        'expires_at' => now()->addMinutes(10),
+    ]);
+
+    Livewire::test(PhoneAuth::class)
+        ->set('phone', '+4512345678')
+        ->set('step', 'otp')
+        ->set('code', '654321')
+        ->call('verifyOtp')
+        ->assertSet('step', 'name')
+        ->set('name', '   Nikolaj Jensen   ')
+        ->call('saveName')
+        ->assertHasNoErrors()
+        ->assertRedirect('/');
+
+    expect($user->fresh()->name)->toBe('Nikolaj Jensen');
 });

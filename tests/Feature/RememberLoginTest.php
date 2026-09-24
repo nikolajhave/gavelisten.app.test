@@ -63,12 +63,16 @@ test('phone otp verification sets remember cookie for passwordless user', functi
         ->set('step', 'otp')
         ->set('code', '654321')
         ->call('verifyOtp')
+        ->assertSet('step', 'name')
+        ->set('name', 'Remember User')
+        ->call('saveName')
         ->assertRedirect('/');
 
     $this->assertAuthenticated();
 
     $user = auth()->user();
-    expect($user->password)->toBeNull();
+    expect($user->password)->toBeNull()
+        ->and($user->name)->toBe('Remember User');
 
     $recallerName = Auth::guard('web')->getRecallerName();
     $queuedCookies = Cookie::queued($recallerName);

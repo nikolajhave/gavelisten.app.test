@@ -301,7 +301,13 @@ class WishlistManager extends Component
 
     public function render(): View
     {
+        $titleParts = array_filter([
+            $this->wishlist->title,
+            $this->wishlist->user?->name ?? Auth::user()?->name,
+            'Gavelisten',
+        ]);
+
         return view('livewire.wishlist-manager')
-            ->title($this->wishlist->title);
+            ->title(implode(' / ', $titleParts));
     }
 }

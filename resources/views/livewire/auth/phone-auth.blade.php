@@ -26,10 +26,22 @@
         <div class="bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-2xl p-6 sm:p-8 shadow-sm">
             <div class="text-center mb-8">
                 <h1 class="text-2xl font-semibold tracking-tight text-neutral-900 dark:text-neutral-100">
-                    {{ $step === 'phone' ? __('Log in or Sign up') : __('Verify Your Phone') }}
+                    @if ($step === 'phone')
+                        {{ __('Log in or Sign up') }}
+                    @elseif ($step === 'otp')
+                        {{ __('Verify Your Phone') }}
+                    @else
+                        {{ __('What should we call you?') }}
+                    @endif
                 </h1>
                 <p class="text-sm text-neutral-600 dark:text-neutral-400 mt-2">
-                    {{ $step === 'phone' ? __('Enter your mobile phone number to receive a one-time login code.') : __('Enter the 6-digit verification code sent to your phone.') }}
+                    @if ($step === 'phone')
+                        {{ __('Enter your mobile phone number to receive a one-time login code.') }}
+                    @elseif ($step === 'otp')
+                        {{ __('Enter the 6-digit verification code sent to your phone.') }}
+                    @else
+                        {{ __('Enter your name so friends and family can recognize your wishlist when sharing.') }}
+                    @endif
                 </p>
             </div>
 
@@ -93,7 +105,7 @@
                         {{ __('Continue with Google') }}
                     </a>
                 </div>
-            @else
+            @elseif ($step === 'otp')
                 <form wire:submit="verifyOtp" class="space-y-5">
                     <div>
                         <div class="flex items-center justify-between mb-2">
@@ -144,6 +156,35 @@
                             <span wire:loading wire:target="resendOtp">{{ __('Sending new code...') }}</span>
                         </button>
                     </div>
+                </form>
+            @elseif ($step === 'name')
+                <form wire:submit="saveName" class="space-y-5">
+                    <div>
+                        <label for="name" class="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2">
+                            {{ __('Your Name') }}
+                        </label>
+                        <input
+                            type="text"
+                            id="name"
+                            wire:model="name"
+                            placeholder="{{ __('e.g. Nikolaj') }}"
+                            autocomplete="name"
+                            class="w-full px-4 py-3 rounded-xl border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-800 text-neutral-900 dark:text-neutral-100 placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-neutral-900 dark:focus:ring-white transition"
+                            autofocus
+                        >
+                        @error('name')
+                            <p class="text-sm text-red-600 dark:text-red-400 mt-1.5">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    <button
+                        type="submit"
+                        wire:loading.attr="disabled"
+                        class="w-full py-3 px-4 rounded-xl bg-blue-50 dark:bg-blue-950/60 border border-blue-200 dark:border-blue-800/80 text-blue-700 dark:text-blue-300 font-medium hover:bg-blue-100 dark:hover:bg-blue-900/60 hover:text-blue-800 dark:hover:text-blue-200 disabled:opacity-50 transition cursor-pointer"
+                    >
+                        <span wire:loading.remove wire:target="saveName">{{ __('Get Started') }}</span>
+                        <span wire:loading wire:target="saveName">{{ __('Saving...') }}</span>
+                    </button>
                 </form>
             @endif
         </div>
