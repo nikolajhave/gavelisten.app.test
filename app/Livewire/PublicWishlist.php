@@ -15,6 +15,58 @@ class PublicWishlist extends Component
 {
     public string $share_token;
 
+    public string $friendSearchQuery = '';
+
+    /**
+     * Clear the friend search query.
+     */
+    public function clearFriendSearch(): void
+    {
+        $this->friendSearchQuery = '';
+    }
+
+    /**
+     * Get search results for finding friends by name, email, or phone.
+     *
+     * @return Collection<int, User>
+     */
+    #[Computed]
+    public function friendSearchResults(): Collection
+    {
+        $rawQuery = trim($this->friendSearchQuery);
+
+        if ($rawQuery === '' || ! Auth::check()) {
+            return new Collection;
+        }
+
+        /** @var User $user */
+        $user = Auth::user();
+
+        $cleanPhone = preg_replace('/[^\d+]/', '', $rawQuery);
+        if (str_starts_with($cleanPhone, '00')) {
+            $cleanPhone = '+'.substr($cleanPhone, 2);
+        }
+
+        return User::query()
+            ->where('id', '!=', $user->id)
+            ->where(function ($query) use ($rawQuery, $cleanPhone) {
+                $query->whereLike('name', "%{$rawQuery}%", caseSensitive: false)
+                    ->orWhereLike('email', "%{$rawQuery}%", caseSensitive: false);
+
+                $digitsOnly = preg_replace('/\D/', '', $cleanPhone);
+                if (strlen($digitsOnly) >= 2) {
+                    $query->orWhereLike('phone', "%{$cleanPhone}%");
+                    if (strlen($cleanPhone) === 8 && ctype_digit($cleanPhone)) {
+                        $query->orWhereLike('phone', "%+45{$cleanPhone}%");
+                    }
+                }
+            })
+            ->with(['wishlists' => fn ($query) => $query->latest('id')->withCount('wishes')])
+            ->orderBy('name')
+            ->limit(10)
+            ->get();
+    }
+
     public function mount(string $share_token): void
     {
         $this->share_token = $share_token;
@@ -98,9 +150,9 @@ class PublicWishlist extends Component
     }
 
     /**
-     * Add the wishlist owner as a friend.
+     * Add the wishlist owner or a searched user as a friend.
      */
-    public function addFriend(): void
+    public function addFriend(?int $userId = null): void
     {
         if (! Auth::check()) {
             $this->redirect(route('login'));
@@ -110,6 +162,19 @@ class PublicWishlist extends Component
 
         /** @var User $user */
         $user = Auth::user();
+
+        if ($userId !== null) {
+            $friend = User::find($userId);
+            if ($friend && $friend->id !== $user->id) {
+                $user->addFriend($friend);
+                if ($friend->id === $this->wishlist->user_id) {
+                    unset($this->isFriend);
+                }
+                unset($this->friends);
+            }
+
+            return;
+        }
 
         if ($user->id !== $this->wishlist->user_id) {
             $user->addFriend($this->wishlist->user);

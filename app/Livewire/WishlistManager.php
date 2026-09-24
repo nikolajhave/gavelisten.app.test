@@ -40,6 +40,74 @@ class WishlistManager extends Component
 
     public ?string $deletingWishTitle = null;
 
+    public string $friendSearchQuery = '';
+
+    /**
+     * Clear the friend search query.
+     */
+    public function clearFriendSearch(): void
+    {
+        $this->friendSearchQuery = '';
+    }
+
+    /**
+     * Get search results for finding friends by name, email, or phone.
+     *
+     * @return Collection<int, User>
+     */
+    #[Computed]
+    public function friendSearchResults(): Collection
+    {
+        $rawQuery = trim($this->friendSearchQuery);
+
+        if ($rawQuery === '') {
+            return new Collection;
+        }
+
+        /** @var User $user */
+        $user = Auth::user();
+
+        $cleanPhone = preg_replace('/[^\d+]/', '', $rawQuery);
+        if (str_starts_with($cleanPhone, '00')) {
+            $cleanPhone = '+'.substr($cleanPhone, 2);
+        }
+
+        return User::query()
+            ->where('id', '!=', $user->id)
+            ->where(function ($query) use ($rawQuery, $cleanPhone) {
+                $query->whereLike('name', "%{$rawQuery}%", caseSensitive: false)
+                    ->orWhereLike('email', "%{$rawQuery}%", caseSensitive: false);
+
+                $digitsOnly = preg_replace('/\D/', '', $cleanPhone);
+                if (strlen($digitsOnly) >= 2) {
+                    $query->orWhereLike('phone', "%{$cleanPhone}%");
+                    if (strlen($cleanPhone) === 8 && ctype_digit($cleanPhone)) {
+                        $query->orWhereLike('phone', "%+45{$cleanPhone}%");
+                    }
+                }
+            })
+            ->with(['wishlists' => fn ($query) => $query->latest('id')->withCount('wishes')])
+            ->orderBy('name')
+            ->limit(10)
+            ->get();
+    }
+
+    /**
+     * Add a user to the authenticated user's friends list by ID.
+     */
+    public function addFriend(int $userId): void
+    {
+        /** @var User $user */
+        $user = Auth::user();
+
+        $friend = User::find($userId);
+
+        if ($friend && $friend->id !== $user->id) {
+            $user->addFriend($friend);
+            unset($this->friends);
+        }
+    }
+
     /**
      * Get the authenticated user's active wishlist.
      */

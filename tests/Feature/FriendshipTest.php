@@ -102,7 +102,7 @@ test('authenticated user can add friend on shared wishlist via livewire', functi
         ->assertDontSee(__('Friend added'))
         ->call('addFriend')
         ->assertSee(__('Friend added'))
-        ->assertDontSee(__('Add friend'));
+        ->assertDontSee('wire:click="addFriend"', false);
 
     expect($viewer->fresh()->isFriendWith($owner))->toBeTrue();
     $this->assertDatabaseHas('friends', [
@@ -231,4 +231,152 @@ test('burger menu does not display friend phone number when friend has no name',
         ->assertDontSee('+4587654321')
         ->assertDontSee('87654321')
         ->assertSee(__('Friend'));
+});
+
+test('wishlist manager friends modal displays add friend search section at the bottom', function () {
+    $user = User::factory()->create(['name' => 'Me']);
+
+    $this->actingAs($user);
+
+    $response = $this->get('/wishlist');
+    $response->assertStatus(200);
+    $response->assertSee(__('Add friend'));
+    $response->assertSee(__('Search name, email or phone...'));
+
+    Livewire::test(WishlistManager::class)
+        ->assertSee(__('Add friend'))
+        ->assertSee(__('Search name, email or phone...'));
+});
+
+test('user can search friends by name, email, and phone number in wishlist manager and add them', function () {
+    $user = User::factory()->create(['name' => 'Current User', 'email' => 'current@example.com']);
+    $userByName = User::factory()->create(['name' => 'Alexander Hamilton', 'email' => 'alex@example.com']);
+    $userByEmail = User::factory()->create(['name' => 'Beatrice', 'email' => 'beatrice_special@example.com']);
+    $userByPhone = User::factory()->create(['name' => 'Christian', 'phone' => '+4512345678']);
+
+    Wishlist::factory()->for($userByName)->create(['title' => 'Alex Wishlist']);
+    Wishlist::factory()->for($userByEmail)->create(['title' => 'Beatrice Wishlist']);
+    Wishlist::factory()->for($userByPhone)->create(['title' => 'Christian Wishlist']);
+
+    $this->actingAs($user);
+
+    // Search by Name
+    Livewire::test(WishlistManager::class)
+        ->set('friendSearchQuery', 'Alexander')
+        ->assertSee('Alexander Hamilton')
+        ->assertSee('Alex Wishlist')
+        ->assertDontSee('Beatrice')
+        ->assertDontSee('Christian');
+
+    // Search by Email
+    Livewire::test(WishlistManager::class)
+        ->set('friendSearchQuery', 'beatrice_special')
+        ->assertSee('Beatrice')
+        ->assertSee('Beatrice Wishlist')
+        ->assertDontSee('Alexander Hamilton');
+
+    // Search by Phone (8 digits Danish format)
+    Livewire::test(WishlistManager::class)
+        ->set('friendSearchQuery', '12345678')
+        ->assertSee('Christian')
+        ->assertSee('Christian Wishlist');
+
+    // Search by Phone (with spaces)
+    Livewire::test(WishlistManager::class)
+        ->set('friendSearchQuery', '12 34 56 78')
+        ->assertSee('Christian');
+
+    // Current user is excluded from search results
+    Livewire::test(WishlistManager::class)
+        ->set('friendSearchQuery', 'Current User')
+        ->assertSee(__('No users found'))
+        ->set('friendSearchQuery', 'current@example.com')
+        ->assertSee(__('No users found'));
+
+    // Add friend from search
+    Livewire::test(WishlistManager::class)
+        ->set('friendSearchQuery', 'Alexander')
+        ->assertSee('Alexander Hamilton')
+        ->call('addFriend', $userByName->id)
+        ->assertSee(__('Friend added'));
+
+    expect($user->fresh()->isFriendWith($userByName))->toBeTrue();
+});
+
+test('public wishlist allows searching and adding friends from modal', function () {
+    $viewer = User::factory()->create(['name' => 'Viewer']);
+    $owner = User::factory()->create(['name' => 'Owner']);
+    $thirdParty = User::factory()->create(['name' => 'Searched Person', 'email' => 'searched@example.com']);
+
+    $wishlist = Wishlist::factory()->for($owner)->create(['share_token' => 'publictoken']);
+
+    $this->actingAs($viewer);
+
+    Livewire::test(PublicWishlist::class, ['share_token' => 'publictoken'])
+        ->set('friendSearchQuery', 'Searched Person')
+        ->assertSee('Searched Person')
+        ->call('addFriend', $thirdParty->id)
+        ->assertSee(__('Friend added'));
+
+    expect($viewer->fresh()->isFriendWith($thirdParty))->toBeTrue();
+});
+
+test('user can clear friend search query in wishlist manager and public wishlist', function () {
+    $user = User::factory()->create(['name' => 'Me']);
+    $friend = User::factory()->create(['name' => 'David']);
+
+    $this->actingAs($user);
+
+    Livewire::test(WishlistManager::class)
+        ->set('friendSearchQuery', 'David')
+        ->assertSee('David')
+        ->call('clearFriendSearch')
+        ->assertSet('friendSearchQuery', '')
+        ->assertDontSee('search-result-');
+
+    $wishlist = Wishlist::factory()->for($friend)->create(['share_token' => 'davidtoken']);
+
+    Livewire::test(PublicWishlist::class, ['share_token' => 'davidtoken'])
+        ->set('friendSearchQuery', 'David')
+        ->assertSee('David')
+        ->call('clearFriendSearch')
+        ->assertSet('friendSearchQuery', '');
+});
+
+test('friend search handles users without wishlists and users without names', function () {
+    $user = User::factory()->create(['name' => 'Me']);
+    $userNoWishlist = User::factory()->create(['name' => 'No Wishlist User', 'email' => 'nowishlist@example.com']);
+    $userNoName = User::factory()->phoneOnly()->create([
+        'name' => null,
+        'phone' => '+4599887766',
+    ]);
+
+    $this->actingAs($user);
+
+    Livewire::test(WishlistManager::class)
+        ->set('friendSearchQuery', 'nowishlist@example.com')
+        ->assertSee('No Wishlist User')
+        ->call('addFriend', $userNoWishlist->id);
+
+    expect($user->fresh()->isFriendWith($userNoWishlist))->toBeTrue();
+
+    Livewire::test(WishlistManager::class)
+        ->set('friendSearchQuery', '99887766')
+        ->assertSee(__('Friend'))
+        ->call('addFriend', $userNoName->id);
+
+    expect($user->fresh()->isFriendWith($userNoName))->toBeTrue();
+});
+
+test('unauthenticated users cannot search or add friends in public wishlist', function () {
+    $owner = User::factory()->create(['name' => 'Owner']);
+    $target = User::factory()->create(['name' => 'Target']);
+
+    $wishlist = Wishlist::factory()->for($owner)->create(['share_token' => 'publicauthcheck']);
+
+    Livewire::test(PublicWishlist::class, ['share_token' => 'publicauthcheck'])
+        ->set('friendSearchQuery', 'Target')
+        ->assertDontSee('Target')
+        ->call('addFriend', $target->id)
+        ->assertRedirect(route('login'));
 });
