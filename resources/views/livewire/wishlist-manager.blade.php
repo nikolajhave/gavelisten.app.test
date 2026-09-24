@@ -301,7 +301,7 @@
                                         <svg class="w-3.5 h-3.5 text-neutral-400 dark:text-neutral-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
                                         </svg>
-                                        <span>{{ __('Add friend') }}</span>
+                                        <span>{{ __('Find and add friend') }}</span>
                                     </h4>
                                     @if ($friendSearchQuery !== '')
                                         <button
@@ -358,21 +358,35 @@
                                                     wire:key="search-result-{{ $resultUser->id }}"
                                                     class="flex items-center justify-between gap-2 p-2 rounded-xl bg-white dark:bg-neutral-800/80 border border-neutral-100 dark:border-neutral-700/50 hover:border-neutral-200 dark:hover:border-neutral-700 transition"
                                                 >
-                                                    <div class="flex items-center gap-2.5 min-w-0 flex-1">
-                                                        <div class="w-7 h-7 rounded-full bg-blue-50 dark:bg-blue-950/60 border border-blue-200 dark:border-blue-800/80 text-blue-700 dark:text-blue-300 font-semibold text-xs flex items-center justify-center shrink-0">
-                                                            {{ strtoupper($resultInitial) }}
-                                                        </div>
-                                                        <div class="min-w-0 flex-1">
-                                                            <p class="text-xs font-medium text-neutral-900 dark:text-neutral-100 truncate">
-                                                                {{ $resultName }}
-                                                            </p>
-                                                            @if ($resultWishlist)
+                                                    @if ($resultWishlist)
+                                                        <a
+                                                            href="{{ route('wishlist.public', $resultWishlist->share_token) }}"
+                                                            class="flex items-center gap-2.5 min-w-0 flex-1 group"
+                                                        >
+                                                            <div class="w-7 h-7 rounded-full bg-blue-50 dark:bg-blue-950/60 border border-blue-200 dark:border-blue-800/80 text-blue-700 dark:text-blue-300 font-semibold text-xs flex items-center justify-center shrink-0">
+                                                                {{ strtoupper($resultInitial) }}
+                                                            </div>
+                                                            <div class="min-w-0 flex-1">
+                                                                <p class="text-xs font-medium text-neutral-900 dark:text-neutral-100 truncate group-hover:underline">
+                                                                    {{ $resultName }}
+                                                                </p>
                                                                 <p class="text-[11px] text-neutral-500 dark:text-neutral-400 truncate">
                                                                     {{ $resultWishlist->title }}
                                                                 </p>
-                                                            @endif
+                                                            </div>
+                                                        </a>
+                                                    @else
+                                                        <div class="flex items-center gap-2.5 min-w-0 flex-1">
+                                                            <div class="w-7 h-7 rounded-full bg-blue-50 dark:bg-blue-950/60 border border-blue-200 dark:border-blue-800/80 text-blue-700 dark:text-blue-300 font-semibold text-xs flex items-center justify-center shrink-0">
+                                                                {{ strtoupper($resultInitial) }}
+                                                            </div>
+                                                            <div class="min-w-0 flex-1">
+                                                                <p class="text-xs font-medium text-neutral-900 dark:text-neutral-100 truncate">
+                                                                    {{ $resultName }}
+                                                                </p>
+                                                            </div>
                                                         </div>
-                                                    </div>
+                                                    @endif
 
                                                     <div>
                                                         @if ($isAlreadyFriend)

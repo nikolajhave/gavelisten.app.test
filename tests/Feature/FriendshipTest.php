@@ -233,18 +233,18 @@ test('burger menu does not display friend phone number when friend has no name',
         ->assertSee(__('Friend'));
 });
 
-test('wishlist manager friends modal displays add friend search section at the bottom', function () {
+test('wishlist manager friends modal displays find and add friend search section at the bottom', function () {
     $user = User::factory()->create(['name' => 'Me']);
 
     $this->actingAs($user);
 
     $response = $this->get('/wishlist');
     $response->assertStatus(200);
-    $response->assertSee(__('Add friend'));
+    $response->assertSee(__('Find and add friend'));
     $response->assertSee(__('Search name, email or phone...'));
 
     Livewire::test(WishlistManager::class)
-        ->assertSee(__('Add friend'))
+        ->assertSee(__('Find and add friend'))
         ->assertSee(__('Search name, email or phone...'));
 });
 
@@ -379,4 +379,65 @@ test('unauthenticated users cannot search or add friends in public wishlist', fu
         ->assertDontSee('Target')
         ->call('addFriend', $target->id)
         ->assertRedirect(route('login'));
+});
+
+test('friend search results in wishlist manager display clickable links to user public wishlist without adding friend', function () {
+    $user = User::factory()->create(['name' => 'Searcher User']);
+    $targetUser = User::factory()->create(['name' => 'Target User', 'email' => 'target@example.com']);
+    $targetWishlist = Wishlist::factory()->for($targetUser)->create([
+        'title' => 'Target Wishes',
+        'share_token' => 'targettoken123',
+    ]);
+
+    $this->actingAs($user);
+
+    Livewire::test(WishlistManager::class)
+        ->set('friendSearchQuery', 'Target User')
+        ->assertSee('Target User')
+        ->assertSee('Target Wishes')
+        ->assertSee(route('wishlist.public', 'targettoken123'));
+
+    // Visiting the link directly displays the public wishlist
+    $response = $this->get(route('wishlist.public', 'targettoken123'));
+    $response->assertStatus(200);
+    $response->assertSee('Target Wishes');
+
+    // The user has NOT been added as a friend merely by viewing/clicking
+    expect($user->fresh()->isFriendWith($targetUser))->toBeFalse();
+});
+
+test('friend search results in public wishlist display clickable links to user public wishlist without adding friend', function () {
+    $viewer = User::factory()->create(['name' => 'Viewer User']);
+    $owner = User::factory()->create(['name' => 'Owner User']);
+    $targetUser = User::factory()->create(['name' => 'Searched Person', 'email' => 'searched_person@example.com']);
+
+    Wishlist::factory()->for($owner)->create(['share_token' => 'ownerlisttoken']);
+    Wishlist::factory()->for($targetUser)->create([
+        'title' => 'Searched Person Wishlist',
+        'share_token' => 'searchedpersontoken',
+    ]);
+
+    $this->actingAs($viewer);
+
+    Livewire::test(PublicWishlist::class, ['share_token' => 'ownerlisttoken'])
+        ->set('friendSearchQuery', 'Searched Person')
+        ->assertSee('Searched Person')
+        ->assertSee('Searched Person Wishlist')
+        ->assertSee(route('wishlist.public', 'searchedpersontoken'));
+
+    // Visiting the link directly displays the public wishlist
+    $response = $this->get(route('wishlist.public', 'searchedpersontoken'));
+    $response->assertStatus(200);
+    $response->assertSee('Searched Person Wishlist');
+
+    // Viewer is NOT friends with searched person
+    expect($viewer->fresh()->isFriendWith($targetUser))->toBeFalse();
+});
+
+test('find and add friend translation is correct in danish and english', function () {
+    app()->setLocale('da');
+    expect(__('Find and add friend'))->toBe('Find og tilføj ven');
+
+    app()->setLocale('en');
+    expect(__('Find and add friend'))->toBe('Find and add friend');
 });

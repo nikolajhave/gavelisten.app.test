@@ -8,5 +8,4 @@
 ## Wishlist – low priority
 - Support categories
 - Use keyboard shortcuts
-- Search for other users
 - Colours 
