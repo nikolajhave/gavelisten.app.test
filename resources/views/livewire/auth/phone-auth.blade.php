@@ -25,7 +25,11 @@
                 </h1>
                 <p class="text-sm text-neutral-600 dark:text-neutral-400 mt-2">
                     @if ($step === 'phone')
-                        {{ __('Enter your mobile phone number to receive a one-time login code.') }}
+                        @if ($authMode === 'email')
+                            {{ __('Enter your email and password to log in.') }}
+                        @else
+                            {{ __('Enter your mobile phone number to receive a one-time login code.') }}
+                        @endif
                     @elseif ($step === 'otp')
                         {{ __('Enter the 6-digit verification code sent to your phone.') }}
                     @else
@@ -41,37 +45,106 @@
             @endif
 
             @if ($step === 'phone')
-                <form wire:submit="sendOtp" class="space-y-5">
-                    <div>
-                        <label for="phone"
-                               class="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2">
-                            {{ __('Phone Number') }}
-                        </label>
-                        <input
-                                type="tel"
-                                id="phone"
-                                name="tel"
-                                autocomplete="tel"
-                                inputmode="tel"
-                                wire:model="phone"
-                                placeholder="12 34 56 78"
-                                class="w-full px-4 py-3 rounded-xl border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-800 text-neutral-900 dark:text-neutral-100 placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-neutral-900 dark:focus:ring-white transition text-base"
-                                autofocus
-                        >
-                        @error('phone')
-                        <p class="text-sm text-red-600 dark:text-red-400 mt-1.5">{{ $message }}</p>
-                        @enderror
-                    </div>
-
+                <div class="grid grid-cols-2 gap-1 p-1 bg-neutral-100 dark:bg-neutral-800 rounded-xl mb-6">
                     <button
-                            type="submit"
-                            wire:loading.attr="disabled"
-                            class="w-full py-3 px-4 rounded-xl bg-blue-50 dark:bg-blue-950/60 border border-blue-200 dark:border-blue-800/80 text-blue-700 dark:text-blue-300 font-medium hover:bg-blue-100 dark:hover:bg-blue-900/60 hover:text-blue-800 dark:hover:text-blue-200 disabled:opacity-50 transition cursor-pointer"
+                            type="button"
+                            wire:click="setAuthMode('phone')"
+                            class="py-2.5 text-sm font-medium rounded-lg transition cursor-pointer {{ $authMode === 'phone' ? 'bg-white dark:bg-neutral-900 text-neutral-900 dark:text-neutral-100 shadow-xs' : 'text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-200' }}"
                     >
-                        <span wire:loading.remove wire:target="sendOtp">{{ __('Continue with Phone') }}</span>
-                        <span wire:loading wire:target="sendOtp">{{ __('Sending code...') }}</span>
+                        {{ __('Phone') }}
                     </button>
-                </form>
+                    <button
+                            type="button"
+                            wire:click="setAuthMode('email')"
+                            class="py-2.5 text-sm font-medium rounded-lg transition cursor-pointer {{ $authMode === 'email' ? 'bg-white dark:bg-neutral-900 text-neutral-900 dark:text-neutral-100 shadow-xs' : 'text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-200' }}"
+                    >
+                        {{ __('Email') }}
+                    </button>
+                </div>
+
+                @if ($authMode === 'phone')
+                    <form wire:submit="sendOtp" class="space-y-5">
+                        <div>
+                            <label for="phone"
+                                   class="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2">
+                                {{ __('Phone Number') }}
+                            </label>
+                            <input
+                                    type="tel"
+                                    id="phone"
+                                    name="tel"
+                                    autocomplete="tel"
+                                    inputmode="tel"
+                                    wire:model="phone"
+                                    placeholder="12 34 56 78"
+                                    class="w-full px-4 py-3 rounded-xl border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-800 text-neutral-900 dark:text-neutral-100 placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-neutral-900 dark:focus:ring-white transition text-base"
+                                    autofocus
+                            >
+                            @error('phone')
+                            <p class="text-sm text-red-600 dark:text-red-400 mt-1.5">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        <button
+                                type="submit"
+                                wire:loading.attr="disabled"
+                                class="w-full py-3 px-4 rounded-xl bg-blue-50 dark:bg-blue-950/60 border border-blue-200 dark:border-blue-800/80 text-blue-700 dark:text-blue-300 font-medium hover:bg-blue-100 dark:hover:bg-blue-900/60 hover:text-blue-800 dark:hover:text-blue-200 disabled:opacity-50 transition cursor-pointer"
+                        >
+                            <span wire:loading.remove wire:target="sendOtp">{{ __('Continue with Phone') }}</span>
+                            <span wire:loading wire:target="sendOtp">{{ __('Sending code...') }}</span>
+                        </button>
+                    </form>
+                @else
+                    <form wire:submit="loginWithEmail" class="space-y-5">
+                        <div>
+                            <label for="email"
+                                   class="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2">
+                                {{ __('Email') }}
+                            </label>
+                            <input
+                                    type="email"
+                                    id="email"
+                                    name="email"
+                                    autocomplete="email"
+                                    inputmode="email"
+                                    wire:model="email"
+                                    placeholder="navn@eksempel.dk"
+                                    class="w-full px-4 py-3 rounded-xl border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-800 text-neutral-900 dark:text-neutral-100 placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-neutral-900 dark:focus:ring-white transition text-base"
+                                    autofocus
+                            >
+                            @error('email')
+                            <p class="text-sm text-red-600 dark:text-red-400 mt-1.5">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        <div>
+                            <label for="password"
+                                   class="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2">
+                                {{ __('Password') }}
+                            </label>
+                            <input
+                                    type="password"
+                                    id="password"
+                                    name="password"
+                                    autocomplete="current-password"
+                                    wire:model="password"
+                                    class="w-full px-4 py-3 rounded-xl border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-800 text-neutral-900 dark:text-neutral-100 placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-neutral-900 dark:focus:ring-white transition text-base"
+                            >
+                            @error('password')
+                            <p class="text-sm text-red-600 dark:text-red-400 mt-1.5">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        <button
+                                type="submit"
+                                wire:loading.attr="disabled"
+                                class="w-full py-3 px-4 rounded-xl bg-blue-50 dark:bg-blue-950/60 border border-blue-200 dark:border-blue-800/80 text-blue-700 dark:text-blue-300 font-medium hover:bg-blue-100 dark:hover:bg-blue-900/60 hover:text-blue-800 dark:hover:text-blue-200 disabled:opacity-50 transition cursor-pointer"
+                        >
+                            <span wire:loading.remove wire:target="loginWithEmail">{{ __('Continue with Email') }}</span>
+                            <span wire:loading wire:target="loginWithEmail">{{ __('Logging in...') }}</span>
+                        </button>
+                    </form>
+                @endif
 
                 <div class="relative my-8">
                     <div class="absolute inset-0 flex items-center">
@@ -192,10 +265,9 @@
                 Velkommen til den nye udgave af Gavelisten
             </p>
             <p>
-                Du kan logge ind med mobilnummer eller en google-konto. Hvis du ikke ser dine ønsker fra den gamle gaveliste, er du velkommen til at skrive til mig på <a href="tel:20231120"
-                                                                                                                                                                          class="font-medium text-blue-600 dark:text-blue-400 underline hover:text-blue-700 dark:hover:text-blue-300">20231120</a>.
+                Hvis du ikke ser dine ønsker fra den gamle gaveliste, er du velkommen til at skrive til mig på 20231120.
             </p>
-            <p class="mt-2 text-xs text-neutral-600 dark:text-neutral-400">
+            <p class="mt-2 mb-6 text-xs text-neutral-600 dark:text-neutral-400">
                 Kh Nikolaj
             </p>
 

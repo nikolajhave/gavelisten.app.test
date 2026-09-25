@@ -7,6 +7,8 @@ use App\Actions\Auth\VerifyPhoneVerificationCode;
 use App\Models\User;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Support\Str;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 
@@ -15,6 +17,14 @@ class PhoneAuth extends Component
 {
     public string $phone = '';
 
+    public string $email = '';
+
+    public string $password = '';
+
+    public bool $remember = true;
+
+    public string $authMode = 'phone';
+
     public string $code = '';
 
     public string $name = '';
@@ -22,6 +32,69 @@ class PhoneAuth extends Component
     public string $step = 'phone';
 
     public ?string $statusMessage = null;
+
+    /**
+     * Switch authentication mode between 'phone' and 'email'.
+     */
+    public function setAuthMode(string $mode): void
+    {
+        $this->authMode = in_array($mode, ['phone', 'email'], true) ? $mode : 'phone';
+        $this->resetErrorBag();
+        $this->statusMessage = null;
+    }
+
+    /**
+     * Log in the user using email and password.
+     */
+    public function loginWithEmail(): mixed
+    {
+        $this->email = trim($this->email);
+
+        $this->validate([
+            'email' => ['required', 'string', 'email'],
+            'password' => ['required', 'string'],
+        ]);
+
+        $throttleKey = Str::transliterate(Str::lower($this->email).'|'.request()->ip());
+
+        if (RateLimiter::tooManyAttempts($throttleKey, 5)) {
+            $seconds = RateLimiter::availableIn($throttleKey);
+            $this->addError('email', trans('auth.throttle', [
+                'seconds' => $seconds,
+                'minutes' => (int) ceil($seconds / 60),
+            ]));
+
+            return null;
+        }
+
+        $credentials = [
+            'email' => trim($this->email),
+            'password' => $this->password,
+        ];
+
+        if (! Auth::attempt($credentials, remember: $this->remember)) {
+            RateLimiter::hit($throttleKey);
+            $this->addError('email', trans('auth.failed'));
+
+            return null;
+        }
+
+        RateLimiter::clear($throttleKey);
+        session()->regenerate();
+
+        /** @var User|null $user */
+        $user = Auth::user();
+
+        if ($user !== null && empty($user->name)) {
+            $this->step = 'name';
+            $this->statusMessage = null;
+            $this->resetErrorBag();
+
+            return null;
+        }
+
+        return redirect()->intended('/');
+    }
 
     /**
      * Send the verification OTP code to the phone number.
