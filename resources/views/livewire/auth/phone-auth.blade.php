@@ -195,7 +195,7 @@
                 Du kan logge ind med mobilnummer eller en google-konto. Hvis du ikke ser dine ønsker fra den gamle gaveliste, er du velkommen til at skrive til mig på <a href="tel:20231120"
                                                                                                                                                                           class="font-medium text-blue-600 dark:text-blue-400 underline hover:text-blue-700 dark:hover:text-blue-300">20231120</a>.
             </p>
-            <p class="mt-2 text-xs text-neutral-600 dark:text-neutral-400">
+            <p class="mt-2 mb-6 text-xs text-neutral-600 dark:text-neutral-400">
                 Kh Nikolaj
             </p>
 
