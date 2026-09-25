@@ -51,4 +51,8 @@ return [
         ],
     ],
 
+    'admin_notifications' => [
+        'email' => env('ADMIN_NOTIFICATION_EMAIL', 'nikolaj.have@gmail.com'),
+    ],
+
 ];

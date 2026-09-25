@@ -101,5 +101,16 @@
     "Oops - Gavelisten just broke 🎁💥🫪": "Ups - Gavelisten er lige gået i stykker 🎁💥🫪",
     "Nikolaj is working around the clock 🌙": "Nikolaj arbejder i døgndrift 🌙",
     "(or something)": "(eller noget)",
-    "to fix it! 😁": "på at fixe det! 😁"
+    "to fix it! 😁": "på at fixe det! 😁",
+    "New user signup / first login: :name": "Ny bruger / første login: :name",
+    "A user has signed up or logged in for the first time on :app.": "En bruger har tilmeldt sig eller logget ind for første gang på :app.",
+    "Name: :name": "Navn: :name",
+    "Email: :email": "E-mail: :email",
+    "Phone: :phone": "Telefon: :phone",
+    "Legacy ID: :id": "Legacy-ID: :id",
+    "Not provided": "Ikke angivet",
+    "Hello!": "Hej!",
+    "View Wishlist": "Se gaveliste",
+    "Go to :app": "Gå til :app",
+    "Unknown user": "Ukendt bruger"
 }
