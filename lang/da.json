@@ -26,7 +26,7 @@
     "Sign in with Phone": "Log ind med telefon",
     "Log in or Sign up": "Log ind eller opret profil",
     "Verify Your Phone": "Bekræft dit telefonnummer",
-    "Enter your mobile phone number to receive a one-time login code.": "Indtast dit mobilnummer for at modtage en engangskode til login.",
+    "Enter your mobile phone number to receive a one-time login code.": "Indtast dit mobilnummer for at modtage en engangskode - eller log ind via email.",
     "Enter the 6-digit verification code sent to your phone.": "Indtast den 6-cifrede bekræftelseskode sendt til din telefon.",
     "A 6-digit code has been sent to :phone.": "Der er sendt en 6-cifret kode til :phone.",
     "A new verification code has been sent to :phone.": "Der er sendt en ny bekræftelseskode til :phone.",
