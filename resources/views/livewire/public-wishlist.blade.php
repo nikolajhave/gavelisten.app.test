@@ -286,18 +286,18 @@
         </header>
 
         {{-- Main Container --}}
-        <main class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+        <main class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-2 sm:py-6">
             {{-- Wishlist Header --}}
-            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-8 border-b border-neutral-200 dark:border-neutral-800">
-                <div>
-                    @php
-                        $ownerName = $this->wishlist->user?->name;
-                    @endphp
-                    @if ($ownerName)
-                        <p class="text-sm font-medium text-neutral-500 dark:text-neutral-400 mb-1">
-                            {{ $ownerName }}
-                        </p>
-                    @endif
+            <div>
+                @php
+                    $ownerName = $this->wishlist->user?->name;
+                @endphp
+                @if ($ownerName)
+                    <p class="text-base font-medium text-neutral-500 dark:text-neutral-400 mb-1">
+                        {{ $ownerName }}
+                    </p>
+                @endif
+                <div class="flex items-center justify-between gap-4">
                     <div class="flex flex-wrap items-center gap-3">
                         <h1 class="text-3xl sm:text-4xl font-extrabold tracking-tight text-neutral-900 dark:text-neutral-100">
                             {{ $this->wishlist->title }}
@@ -306,66 +306,75 @@
                             {{ trans_choice(':count wish|:count wishes', $this->wishes->count()) }}
                         </span>
                     </div>
-                    <p class="text-sm sm:text-base text-neutral-500 dark:text-neutral-400 mt-2">
-                        {{ __('Shared wishlist — explore wishes and follow links to find or purchase the gifts.') }}
-                    </p>
-                </div>
 
-                <div x-data="{ copied: false, shareUrl: window.location.href }" class="flex items-center gap-2 shrink-0 flex-wrap">
-                    @auth
-                        @if (! $this->isOwner)
-                            @if ($this->isFriend)
-                                <button
-                                    type="button"
-                                    wire:click="removeFriend"
-                                    class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border border-emerald-300 dark:border-emerald-800/80 bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 hover:bg-emerald-100 dark:hover:bg-emerald-900/60 text-sm font-medium transition cursor-pointer shadow-xs"
-                                    title="{{ __('Remove friend') }}"
-                                >
-                                    <svg class="w-4 h-4 text-emerald-600 dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                                    </svg>
-                                    <span>{{ __('Friend added') }}</span>
-                                </button>
-                            @else
-                                <button
-                                    type="button"
-                                    wire:click="addFriend"
-                                    class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-blue-50 dark:bg-blue-950/60 border border-blue-200 dark:border-blue-800/80 text-blue-700 dark:text-blue-300 hover:bg-blue-100 dark:hover:bg-blue-900/60 hover:text-blue-800 dark:hover:text-blue-200 text-sm font-medium transition cursor-pointer shadow-xs"
-                                >
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
-                                    </svg>
-                                    <span>{{ __('Add friend') }}</span>
-                                </button>
+                    <div x-data="{ copied: false, shareUrl: window.location.href }" class="flex items-center gap-2 shrink-0">
+                        @auth
+                            @if (! $this->isOwner)
+                                @if ($this->isFriend)
+                                    <button
+                                        type="button"
+                                        wire:click="removeFriend"
+                                        class="inline-flex items-center justify-center gap-2 p-2.5 sm:px-4 sm:py-2.5 rounded-xl border border-emerald-300 dark:border-emerald-800/80 bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 hover:bg-emerald-100 dark:hover:bg-emerald-900/60 text-sm font-medium transition cursor-pointer shadow-xs"
+                                        title="{{ __('Remove friend') }}"
+                                        aria-label="{{ __('Remove friend') }}"
+                                    >
+                                        <svg class="w-4 h-4 text-emerald-600 dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                        </svg>
+                                        <span class="hidden sm:inline">{{ __('Friend added') }}</span>
+                                    </button>
+                                @else
+                                    <button
+                                        type="button"
+                                        wire:click="addFriend"
+                                        class="inline-flex items-center justify-center gap-2 p-2.5 sm:px-4 sm:py-2.5 rounded-xl bg-blue-50 dark:bg-blue-950/60 border border-blue-200 dark:border-blue-800/80 text-blue-700 dark:text-blue-300 hover:bg-blue-100 dark:hover:bg-blue-900/60 hover:text-blue-800 dark:hover:text-blue-200 text-sm font-medium transition cursor-pointer shadow-xs"
+                                        title="{{ __('Add friend') }}"
+                                        aria-label="{{ __('Add friend') }}"
+                                    >
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
+                                        </svg>
+                                        <span class="hidden sm:inline">{{ __('Add friend') }}</span>
+                                    </button>
+                                @endif
                             @endif
-                        @endif
-                    @else
-                        <a
-                            href="{{ route('login') }}"
-                            class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-900 hover:bg-neutral-50 dark:hover:bg-neutral-800 text-neutral-700 dark:text-neutral-200 text-sm font-medium transition cursor-pointer shadow-xs"
-                            title="{{ __('Sign in to add friend') }}"
-                        >
-                            <svg class="w-4 h-4 text-neutral-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
-                            </svg>
-                            <span>{{ __('Add friend') }}</span>
-                        </a>
-                    @endauth
+                        @else
+                            <a
+                                href="{{ route('login') }}"
+                                class="inline-flex items-center justify-center gap-2 p-2.5 sm:px-4 sm:py-2.5 rounded-xl border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-900 hover:bg-neutral-50 dark:hover:bg-neutral-800 text-neutral-700 dark:text-neutral-200 text-sm font-medium transition cursor-pointer shadow-xs"
+                                title="{{ __('Sign in to add friend') }}"
+                                aria-label="{{ __('Sign in to add friend') }}"
+                            >
+                                <svg class="w-4 h-4 text-neutral-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
+                                </svg>
+                                <span class="hidden sm:inline">{{ __('Add friend') }}</span>
+                            </a>
+                        @endauth
 
-                    <button
-                        type="button"
-                        @click="navigator.clipboard.writeText(shareUrl); copied = true; setTimeout(() => copied = false, 2500)"
-                        class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-900 hover:bg-neutral-50 dark:hover:bg-neutral-800 text-neutral-700 dark:text-neutral-200 text-sm font-medium transition cursor-pointer shadow-xs"
-                    >
-                        <svg x-show="!copied" class="w-4 h-4 text-neutral-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
-                        </svg>
-                        <svg x-show="copied" style="display: none;" class="w-4 h-4 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                        </svg>
-                        <span x-text="copied ? '{{ __('Link Copied!') }}' : '{{ __('Share Wishlist') }}'"></span>
-                    </button>
+                        <button
+                            type="button"
+                            @click="navigator.clipboard.writeText(shareUrl); copied = true; setTimeout(() => copied = false, 2500)"
+                            class="inline-flex items-center justify-center gap-2 p-2.5 sm:px-4 sm:py-2.5 rounded-xl border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-900 hover:bg-neutral-50 dark:hover:bg-neutral-800 text-neutral-700 dark:text-neutral-200 text-sm font-medium transition cursor-pointer shadow-xs"
+                            title="{{ __('Share Wishlist') }}"
+                            aria-label="{{ __('Share Wishlist') }}"
+                            :title="copied ? '{{ __('Link Copied!') }}' : '{{ __('Share Wishlist') }}'"
+                            :aria-label="copied ? '{{ __('Link Copied!') }}' : '{{ __('Share Wishlist') }}'"
+                        >
+                            <svg x-show="!copied" class="w-4 h-4 text-neutral-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
+                            </svg>
+                            <svg x-show="copied" style="display: none;" class="w-4 h-4 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                            </svg>
+                            <span class="hidden sm:inline" x-text="copied ? '{{ __('Link Copied!') }}' : '{{ __('Share Wishlist') }}'"></span>
+                        </button>
+                    </div>
                 </div>
+
+                <p class="text-sm sm:text-base text-neutral-500 dark:text-neutral-400 mt-2">
+                    {{ __('Shared wishlist — explore wishes and follow links to find or purchase the gifts.') }}
+                </p>
             </div>
 
             {{-- Card Grid / Empty State --}}
@@ -384,22 +393,22 @@
                     </div>
                 @else
                     {{-- Clean Card Grid Layout --}}
-                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
                         @foreach ($this->wishes as $wish)
                             <article
                                 wire:key="public-wish-{{ $wish->id }}"
-                                class="bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-3xl p-6 shadow-xs hover:shadow-md hover:border-neutral-300 dark:hover:border-neutral-700 transition flex flex-col group"
+                                class="bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-2xl sm:rounded-3xl p-4 sm:p-5 shadow-xs hover:shadow-md hover:border-neutral-300 dark:hover:border-neutral-700 transition flex flex-col group"
                             >
-                                <div class="space-y-3">
+                                <div class="space-y-2.5 sm:space-y-3">
                                     {{-- Title & Price --}}
                                     <div class="flex items-start justify-between gap-3">
-                                        <h2 class="text-lg font-bold text-neutral-900 dark:text-neutral-100 leading-snug group-hover:text-neutral-950 dark:group-hover:text-white transition">
+                                        <h2 class="text-base sm:text-lg font-bold text-neutral-900 dark:text-neutral-100 leading-snug group-hover:text-neutral-950 dark:group-hover:text-white transition">
                                             {{ $wish->title }}
                                         </h2>
 
-                                        <div class="flex items-center gap-4 shrink-0">
+                                        <div class="flex items-center gap-2 sm:gap-3 shrink-0">
                                             @if ($wish->formatted_price)
-                                                <span class="inline-flex items-center px-2.5 py-1 rounded-xl text-xs font-semibold bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800/80 text-emerald-700 dark:text-emerald-300">
+                                                <span class="inline-flex items-center px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-lg sm:rounded-xl text-xs font-semibold bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800/80 text-emerald-700 dark:text-emerald-300">
                                                     {{ $wish->formatted_price }}
                                                 </span>
                                             @endif
@@ -409,7 +418,7 @@
                                                     href="{{ $wish->url }}"
                                                     target="_blank"
                                                     rel="noopener"
-                                                    class="inline-flex items-center justify-center p-1.5 rounded-xl bg-blue-50 dark:bg-blue-950/60 border border-blue-200/80 dark:border-blue-800/80 text-blue-700 dark:text-blue-300 hover:bg-blue-100 dark:hover:bg-blue-900/60 hover:text-blue-800 dark:hover:text-blue-200 transition shadow-xs group/link"
+                                                    class="inline-flex items-center justify-center p-1.5 rounded-lg sm:rounded-xl bg-blue-50 dark:bg-blue-950/60 border border-blue-200/80 dark:border-blue-800/80 text-blue-700 dark:text-blue-300 hover:bg-blue-100 dark:hover:bg-blue-900/60 hover:text-blue-800 dark:hover:text-blue-200 transition shadow-xs group/link"
                                                     title="{{ __('See Product') }}"
                                                     aria-label="{{ __('See Product') }}"
                                                 >

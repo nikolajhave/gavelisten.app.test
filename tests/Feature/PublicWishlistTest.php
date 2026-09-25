@@ -178,3 +178,24 @@ test('public wishlist displays user name when owner has a name', function () {
     $response->assertDontSee('+4520246575');
     $response->assertDontSee('20246575');
 });
+
+test('public wishlist uses compact wish elements and mobile responsive buttons inline with header', function () {
+    $user = User::factory()->create();
+    $wishlist = Wishlist::factory()->for($user)->create([
+        'title' => 'Compact Wishes List',
+        'share_token' => 'compacttesttoken',
+    ]);
+
+    Wish::factory()->for($wishlist)->create([
+        'title' => 'Compact Wish Item',
+        'price' => 299.00,
+        'url' => 'https://example.com/item',
+    ]);
+
+    $response = $this->get('/w/compacttesttoken');
+
+    $response->assertStatus(200);
+    $response->assertSee('flex items-center justify-between', false);
+    $response->assertSee('hidden sm:inline', false);
+    $response->assertSee('p-4 sm:p-5', false);
+});
