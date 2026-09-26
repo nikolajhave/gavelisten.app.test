@@ -862,7 +862,7 @@
                             type="email"
                             id="profile-email"
                             wire:model="profileEmail"
-                            placeholder="name@example.com"
+                            placeholder="din@email-adresse.dk"
                             class="w-full px-4 py-2.5 rounded-xl border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-800 text-neutral-900 dark:text-neutral-100 placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-neutral-900 dark:focus:ring-white transition text-base sm:text-sm"
                         >
                         @error('profileEmail')
@@ -899,16 +899,16 @@
                             placeholder="{{ __('Leave blank to keep current password') }}"
                             class="w-full px-4 py-2.5 rounded-xl border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-800 text-neutral-900 dark:text-neutral-100 placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-neutral-900 dark:focus:ring-white transition text-base sm:text-sm"
                         >
-                        <p class="text-[11px] text-neutral-500 dark:text-neutral-400 mt-1">
-                            {{ __('Leave blank to keep current password') }}
-                        </p>
+{{--                        <p class="text-[11px] text-neutral-500 dark:text-neutral-400 mt-1">--}}
+{{--                            {{ __('Leave blank to keep current password') }}--}}
+{{--                        </p>--}}
                         @error('profilePassword')
                             <p class="text-xs text-red-600 dark:text-red-400 mt-1.5">{{ $message }}</p>
                         @enderror
                     </div>
 
                     {{-- Action Buttons --}}
-                    <div class="flex items-center justify-end gap-3 pt-4 border-t border-neutral-200 dark:border-neutral-800">
+                    <div class="flex items-center justify-end gap-3 pt-4">
                         <button
                             type="button"
                             wire:click="closeProfileModal"
