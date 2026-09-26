@@ -44,7 +44,7 @@ class GoogleAuthController extends Controller
                 ->where('provider_id', $googleId)
                 ->first();
 
-            if ($socialIdentity) {
+            if ($socialIdentity && $socialIdentity->user) {
                 $existingUser = $socialIdentity->user;
 
                 if ($name && empty($existingUser->name)) {
@@ -75,10 +75,14 @@ class GoogleAuthController extends Controller
 
                 $existingUser->save();
 
-                $existingUser->socialIdentities()->create([
-                    'provider_name' => 'google',
-                    'provider_id' => $googleId,
-                ]);
+                if ($socialIdentity) {
+                    $socialIdentity->update(['user_id' => $existingUser->id]);
+                } else {
+                    $existingUser->socialIdentities()->create([
+                        'provider_name' => 'google',
+                        'provider_id' => $googleId,
+                    ]);
+                }
 
                 return $existingUser;
             }
@@ -90,10 +94,14 @@ class GoogleAuthController extends Controller
                 'email_verified_at' => now(),
             ]);
 
-            $newUser->socialIdentities()->create([
-                'provider_name' => 'google',
-                'provider_id' => $googleId,
-            ]);
+            if ($socialIdentity) {
+                $socialIdentity->update(['user_id' => $newUser->id]);
+            } else {
+                $newUser->socialIdentities()->create([
+                    'provider_name' => 'google',
+                    'provider_id' => $googleId,
+                ]);
+            }
 
             return $newUser;
         });

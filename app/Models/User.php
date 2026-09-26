@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Casts\E164PhoneNumberCast;
+use App\Notifications\ResetPasswordNotification;
 use App\Observers\UserObserver;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
@@ -96,6 +97,16 @@ class User extends Authenticatable
     public function getAuthPassword(): string
     {
         return (string) ($this->password ?? '');
+    }
+
+    /**
+     * Send the password reset notification.
+     *
+     * @param  string  $token
+     */
+    public function sendPasswordResetNotification($token): void
+    {
+        $this->notify(new ResetPasswordNotification($token));
     }
 
     /**

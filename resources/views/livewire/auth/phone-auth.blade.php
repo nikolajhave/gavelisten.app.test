@@ -19,23 +19,27 @@
                         {{ __('Log in or Sign up') }}
                     @elseif ($step === 'otp')
                         {{ __('Verify Your Phone') }}
+                    @elseif ($step === 'email_password')
+                        {{ __('Log In') }}
+                    @elseif ($step === 'email_register')
+                        {{ __('Create Account') }}
                     @else
                         {{ __('What should we call you?') }}
                     @endif
                 </h1>
-                <p class="text-sm text-neutral-600 dark:text-neutral-400 mt-2">
-                    @if ($step === 'phone')
-                        @if ($authMode === 'email')
-                            {{ __('Enter your email and password to log in.') }}
+                @if ($step !== 'phone')
+                    <p class="text-sm text-neutral-600 dark:text-neutral-400 mt-2">
+                        @if ($step === 'otp')
+                            {{ __('Enter the 6-digit verification code sent to your phone.') }}
+                        @elseif ($step === 'email_password')
+                            {{ __('Enter your password to log in.') }}
+                        @elseif ($step === 'email_register')
+                            {{ __('Create a password and enter your name to create your account.') }}
                         @else
-                            {{ __('Enter your mobile phone number to receive a one-time login code.') }}
+                            {{ __('Enter your name so friends and family can recognize your wishlist when sharing.') }}
                         @endif
-                    @elseif ($step === 'otp')
-                        {{ __('Enter the 6-digit verification code sent to your phone.') }}
-                    @else
-                        {{ __('Enter your name so friends and family can recognize your wishlist when sharing.') }}
-                    @endif
-                </p>
+                    </p>
+                @endif
             </div>
 
             @if ($statusMessage)
@@ -45,7 +49,7 @@
             @endif
 
             @if ($step === 'phone')
-                <div class="grid grid-cols-2 gap-1 p-1 bg-neutral-100 dark:bg-neutral-800 rounded-xl mb-6">
+                <div class="grid grid-cols-2 gap-1 p-1 bg-neutral-100 dark:bg-neutral-800 rounded-xl mb-4">
                     <button
                             type="button"
                             wire:click="setAuthMode('phone')"
@@ -61,6 +65,14 @@
                         {{ __('Email') }}
                     </button>
                 </div>
+
+                <p class="text-sm text-neutral-600 dark:text-neutral-400 text-center mb-6">
+                    @if ($authMode === 'email')
+                        {{ __('Enter your email to continue.') }}
+                    @else
+                        {{ __('Enter your mobile phone number to receive a one-time login code.') }}
+                    @endif
+                </p>
 
                 @if ($authMode === 'phone')
                     <form wire:submit="sendOtp" class="space-y-5">
@@ -95,7 +107,7 @@
                         </button>
                     </form>
                 @else
-                    <form wire:submit="loginWithEmail" class="space-y-5">
+                    <form wire:submit="continueWithEmail" class="space-y-5">
                         <div>
                             <label for="email"
                                    class="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2">
@@ -105,7 +117,7 @@
                                     type="email"
                                     id="email"
                                     name="email"
-                                    autocomplete="email"
+                                    autocomplete="username"
                                     inputmode="email"
                                     wire:model="email"
                                     placeholder="navn@eksempel.dk"
@@ -117,31 +129,13 @@
                             @enderror
                         </div>
 
-                        <div>
-                            <label for="password"
-                                   class="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2">
-                                {{ __('Password') }}
-                            </label>
-                            <input
-                                    type="password"
-                                    id="password"
-                                    name="password"
-                                    autocomplete="current-password"
-                                    wire:model="password"
-                                    class="w-full px-4 py-3 rounded-xl border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-800 text-neutral-900 dark:text-neutral-100 placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-neutral-900 dark:focus:ring-white transition text-base"
-                            >
-                            @error('password')
-                            <p class="text-sm text-red-600 dark:text-red-400 mt-1.5">{{ $message }}</p>
-                            @enderror
-                        </div>
-
                         <button
                                 type="submit"
                                 wire:loading.attr="disabled"
                                 class="w-full py-3 px-4 rounded-xl bg-blue-50 dark:bg-blue-950/60 border border-blue-200 dark:border-blue-800/80 text-blue-700 dark:text-blue-300 font-medium hover:bg-blue-100 dark:hover:bg-blue-900/60 hover:text-blue-800 dark:hover:text-blue-200 disabled:opacity-50 transition cursor-pointer"
                         >
-                            <span wire:loading.remove wire:target="loginWithEmail">{{ __('Continue with Email') }}</span>
-                            <span wire:loading wire:target="loginWithEmail">{{ __('Logging in...') }}</span>
+                            <span wire:loading.remove wire:target="continueWithEmail">{{ __('Continue with Email') }}</span>
+                            <span wire:loading wire:target="continueWithEmail">{{ __('Checking email...') }}</span>
                         </button>
                     </form>
                 @endif
@@ -175,6 +169,121 @@
                         {{ __('Continue with Google') }}
                     </a>
                 </div>
+            @elseif ($step === 'email_password')
+                <form wire:submit="loginWithEmail" class="space-y-5">
+                    <input type="hidden" name="username" value="{{ $email }}" autocomplete="username">
+                    <div>
+                        <div class="flex items-center justify-between mb-2">
+                            <label for="password"
+                                   class="block text-sm font-medium text-neutral-700 dark:text-neutral-300">
+                                {{ __('Password') }}
+                            </label>
+                            <button
+                                    type="button"
+                                    wire:click="editEmail"
+                                    class="text-xs font-medium text-neutral-500 hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-white underline cursor-pointer"
+                            >
+                                {{ __('Change email') }}
+                            </button>
+                        </div>
+                        <input
+                                type="password"
+                                id="password"
+                                name="password"
+                                autocomplete="current-password"
+                                wire:model="password"
+                                class="w-full px-4 py-3 rounded-xl border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-800 text-neutral-900 dark:text-neutral-100 placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-neutral-900 dark:focus:ring-white transition text-base"
+                                autofocus
+                        >
+                        <div class="flex justify-end mt-2">
+                            <button
+                                    type="button"
+                                    wire:click="sendPasswordResetLink"
+                                    wire:loading.attr="disabled"
+                                    class="text-xs font-medium text-neutral-500 hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-white underline cursor-pointer disabled:opacity-50"
+                            >
+                                <span wire:loading.remove wire:target="sendPasswordResetLink">{{ __('Forgot password?') }}</span>
+                                <span wire:loading wire:target="sendPasswordResetLink">{{ __('Sending link...') }}</span>
+                            </button>
+                        </div>
+                        @error('password')
+                        <p class="text-sm text-red-600 dark:text-red-400 mt-1.5">{{ $message }}</p>
+                        @enderror
+                        @error('email')
+                        <p class="text-sm text-red-600 dark:text-red-400 mt-1.5">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    <button
+                            type="submit"
+                            wire:loading.attr="disabled"
+                            class="w-full py-3 px-4 rounded-xl bg-blue-50 dark:bg-blue-950/60 border border-blue-200 dark:border-blue-800/80 text-blue-700 dark:text-blue-300 font-medium hover:bg-blue-100 dark:hover:bg-blue-900/60 hover:text-blue-800 dark:hover:text-blue-200 disabled:opacity-50 transition cursor-pointer"
+                    >
+                        <span wire:loading.remove wire:target="loginWithEmail">{{ __('Log In') }}</span>
+                        <span wire:loading wire:target="loginWithEmail">{{ __('Logging in...') }}</span>
+                    </button>
+                </form>
+            @elseif ($step === 'email_register')
+                <form wire:submit="registerWithEmail" class="space-y-5">
+                    <input type="hidden" name="username" value="{{ $email }}" autocomplete="username">
+                    <div>
+                        <div class="flex items-center justify-between mb-2">
+                            <label for="name" class="block text-sm font-medium text-neutral-700 dark:text-neutral-300">
+                                {{ __('Your Name') }}
+                            </label>
+                            <button
+                                    type="button"
+                                    wire:click="editEmail"
+                                    class="text-xs font-medium text-neutral-500 hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-white underline cursor-pointer"
+                            >
+                                {{ __('Change email') }}
+                            </button>
+                        </div>
+                        <input
+                                type="text"
+                                id="name"
+                                name="name"
+                                autocomplete="name"
+                                wire:model="name"
+                                placeholder="{{ __('e.g. Nikolaj') }}"
+                                class="w-full px-4 py-3 rounded-xl border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-800 text-neutral-900 dark:text-neutral-100 placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-neutral-900 dark:focus:ring-white transition text-base"
+                                autofocus
+                        >
+                        @error('name')
+                        <p class="text-sm text-red-600 dark:text-red-400 mt-1.5">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    <div>
+                        <label for="password"
+                               class="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2">
+                            {{ __('Password') }}
+                        </label>
+                        <input
+                                type="password"
+                                id="password"
+                                name="password"
+                                autocomplete="new-password"
+                                wire:model="password"
+                                class="w-full px-4 py-3 rounded-xl border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-800 text-neutral-900 dark:text-neutral-100 placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-neutral-900 dark:focus:ring-white transition text-base"
+                        >
+                        @error('password')
+                        <p class="text-sm text-red-600 dark:text-red-400 mt-1.5">{{ $message }}</p>
+                        @enderror
+                        @error('email')
+                        <p class="text-sm text-red-600 dark:text-red-400 mt-1.5">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    <button
+                            type="submit"
+                            wire:loading.attr="disabled"
+                            class="w-full py-3 px-4 rounded-xl bg-blue-50 dark:bg-blue-950/60 border border-blue-200 dark:border-blue-800/80 text-blue-700 dark:text-blue-300 font-medium hover:bg-blue-100 dark:hover:bg-blue-900/60 hover:text-blue-800 dark:hover:text-blue-200 disabled:opacity-50 transition cursor-pointer"
+                    >
+                        <span wire:loading.remove wire:target="registerWithEmail">{{ __('Create Account & Continue') }}</span>
+                        <span wire:loading wire:target="registerWithEmail">{{ __('Creating account...') }}</span>
+                    </button>
+                </form>
             @elseif ($step === 'otp')
                 <form wire:submit="verifyOtp" class="space-y-5">
                     <div>
@@ -193,6 +302,7 @@
                         <input
                                 type="text"
                                 id="code"
+                                name="code"
                                 wire:model="code"
                                 placeholder="123456"
                                 maxlength="6"

@@ -3,6 +3,7 @@
 use App\Models\SocialIdentity;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\DB;
 use Laravel\Socialite\Contracts\Provider;
 use Laravel\Socialite\Contracts\User as SocialiteUserContract;
 use Laravel\Socialite\Facades\Socialite;
@@ -134,4 +135,106 @@ test('google callback redirects to login with error on exception', function () {
         ->assertSessionHas('error', __('Google authentication failed. Please try again.'));
 
     $this->assertGuest();
+});
+
+test('google callback recovers from orphaned social identity by creating new user', function () {
+    DB::commit();
+    DB::statement('PRAGMA foreign_keys = OFF;');
+    DB::table('social_identities')->insert([
+        'user_id' => 99999,
+        'provider_name' => 'google',
+        'provider_id' => 'orphaned-google-id-1',
+        'created_at' => now(),
+        'updated_at' => now(),
+    ]);
+    DB::statement('PRAGMA foreign_keys = ON;');
+    DB::beginTransaction();
+
+    expect(SocialIdentity::where('provider_id', 'orphaned-google-id-1')->first())->not->toBeNull();
+
+    $socialiteUser = Mockery::mock(SocialiteUserContract::class);
+    $socialiteUser->shouldReceive('getId')->andReturn('orphaned-google-id-1');
+    $socialiteUser->shouldReceive('getEmail')->andReturn('orphan-new@example.com');
+    $socialiteUser->shouldReceive('getName')->andReturn('Recovered User');
+    $socialiteUser->shouldReceive('getNickname')->andReturn('recovered');
+
+    $provider = Mockery::mock(Provider::class);
+    $provider->shouldReceive('user')->once()->andReturn($socialiteUser);
+
+    Socialite::shouldReceive('driver')
+        ->with('google')
+        ->once()
+        ->andReturn($provider);
+
+    $response = $this->get(route('auth.google.callback'));
+
+    $response->assertRedirect('/');
+    $this->assertAuthenticated();
+
+    $user = auth()->user();
+    $identity = SocialIdentity::where('provider_id', 'orphaned-google-id-1')->first();
+    expect($user->email)->toBe('orphan-new@example.com')
+        ->and($user->name)->toBe('Recovered User')
+        ->and($identity)->not->toBeNull()
+        ->and($identity->user_id)->toBe($user->id);
+
+    // Clean up committed data
+    DB::commit();
+    DB::statement('PRAGMA foreign_keys = OFF;');
+    DB::table('social_identities')->delete();
+    DB::table('users')->delete();
+    DB::statement('PRAGMA foreign_keys = ON;');
+    DB::beginTransaction();
+});
+
+test('google callback recovers from orphaned social identity by linking existing email user', function () {
+    $existingUser = User::factory()->create([
+        'name' => 'Existing User',
+        'email' => 'orphan-existing@example.com',
+    ]);
+
+    DB::commit();
+    DB::statement('PRAGMA foreign_keys = OFF;');
+    DB::table('social_identities')->insert([
+        'user_id' => 99999,
+        'provider_name' => 'google',
+        'provider_id' => 'orphaned-google-id-2',
+        'created_at' => now(),
+        'updated_at' => now(),
+    ]);
+    DB::statement('PRAGMA foreign_keys = ON;');
+    DB::beginTransaction();
+
+    expect(SocialIdentity::where('provider_id', 'orphaned-google-id-2')->first())->not->toBeNull();
+
+    $socialiteUser = Mockery::mock(SocialiteUserContract::class);
+    $socialiteUser->shouldReceive('getId')->andReturn('orphaned-google-id-2');
+    $socialiteUser->shouldReceive('getEmail')->andReturn('orphan-existing@example.com');
+    $socialiteUser->shouldReceive('getName')->andReturn('Existing User');
+    $socialiteUser->shouldReceive('getNickname')->andReturn('existing');
+
+    $provider = Mockery::mock(Provider::class);
+    $provider->shouldReceive('user')->once()->andReturn($socialiteUser);
+
+    Socialite::shouldReceive('driver')
+        ->with('google')
+        ->once()
+        ->andReturn($provider);
+
+    $response = $this->get(route('auth.google.callback'));
+
+    $response->assertRedirect('/');
+    $this->assertAuthenticatedAs($existingUser);
+
+    $identity = SocialIdentity::where('provider_id', 'orphaned-google-id-2')->first();
+    expect($identity)->not->toBeNull()
+        ->and($identity->user_id)->toBe($existingUser->id);
+
+    // Clean up committed data
+    DB::commit();
+    DB::statement('PRAGMA foreign_keys = OFF;');
+    DB::table('social_identities')->delete();
+    DB::table('users')->delete();
+    DB::statement('PRAGMA foreign_keys = ON;');
+    DB::beginTransaction();
 });

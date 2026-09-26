@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Auth\GoogleAuthController;
 use App\Livewire\Auth\PhoneAuth;
+use App\Livewire\Auth\ResetPassword;
 use App\Livewire\PublicWishlist;
 use App\Livewire\WishlistManager;
 use Illuminate\Support\Facades\Auth;
@@ -19,6 +20,7 @@ Route::get('/w/{share_token}', PublicWishlist::class)->name('wishlist.public');
 
 Route::middleware('guest')->group(function () {
     Route::get('/login', PhoneAuth::class)->name('login');
+    Route::get('/reset-password/{token}', ResetPassword::class)->name('password.reset');
     Route::get('/auth/google/redirect', [GoogleAuthController::class, 'redirect'])->name('auth.google.redirect');
     Route::get('/auth/google/callback', [GoogleAuthController::class, 'callback'])->name('auth.google.callback');
 });

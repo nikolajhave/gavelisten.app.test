@@ -7,6 +7,8 @@ use App\Actions\Auth\VerifyPhoneVerificationCode;
 use App\Models\User;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Str;
 use Livewire\Attributes\Title;
@@ -44,6 +46,49 @@ class PhoneAuth extends Component
     }
 
     /**
+     * Check if email exists and advance to login or registration step.
+     */
+    public function continueWithEmail(): void
+    {
+        $this->email = trim($this->email);
+
+        $this->validate([
+            'email' => ['required', 'string', 'email', 'max:255'],
+        ], [], [
+            'email' => __('Email'),
+        ]);
+
+        $throttleKey = Str::transliterate(Str::lower($this->email).'|'.request()->ip().'|check');
+
+        if (RateLimiter::tooManyAttempts($throttleKey, 10)) {
+            $seconds = RateLimiter::availableIn($throttleKey);
+            $this->addError('email', trans('auth.throttle', [
+                'seconds' => $seconds,
+                'minutes' => (int) ceil($seconds / 60),
+            ]));
+
+            return;
+        }
+
+        RateLimiter::hit($throttleKey, 60);
+
+        $user = User::query()->where('email', $this->email)->first();
+
+        $this->password = '';
+        $this->resetErrorBag();
+        $this->statusMessage = null;
+
+        if ($user && filled($user->password)) {
+            $this->step = 'email_password';
+        } else {
+            if ($user && filled($user->name)) {
+                $this->name = $user->name;
+            }
+            $this->step = 'email_register';
+        }
+    }
+
+    /**
      * Log in the user using email and password.
      */
     public function loginWithEmail(): mixed
@@ -53,13 +98,15 @@ class PhoneAuth extends Component
         $this->validate([
             'email' => ['required', 'string', 'email'],
             'password' => ['required', 'string'],
+        ], [], [
+            'password' => __('Password'),
         ]);
 
-        $throttleKey = Str::transliterate(Str::lower($this->email).'|'.request()->ip());
+        $throttleKey = Str::transliterate(Str::lower($this->email).'|'.request()->ip().'|login');
 
         if (RateLimiter::tooManyAttempts($throttleKey, 5)) {
             $seconds = RateLimiter::availableIn($throttleKey);
-            $this->addError('email', trans('auth.throttle', [
+            $this->addError('password', trans('auth.throttle', [
                 'seconds' => $seconds,
                 'minutes' => (int) ceil($seconds / 60),
             ]));
@@ -68,13 +115,13 @@ class PhoneAuth extends Component
         }
 
         $credentials = [
-            'email' => trim($this->email),
+            'email' => $this->email,
             'password' => $this->password,
         ];
 
         if (! Auth::attempt($credentials, remember: $this->remember)) {
             RateLimiter::hit($throttleKey);
-            $this->addError('email', trans('auth.failed'));
+            $this->addError('password', trans('auth.failed'));
 
             return null;
         }
@@ -94,6 +141,101 @@ class PhoneAuth extends Component
         }
 
         return redirect()->intended('/');
+    }
+
+    /**
+     * Register a new user with email, name, and password (or set password for passwordless user).
+     */
+    public function registerWithEmail(): mixed
+    {
+        $this->email = trim($this->email);
+        $this->name = trim($this->name);
+
+        $this->validate([
+            'email' => ['required', 'string', 'email', 'max:255'],
+            'name' => ['required', 'string', 'min:2', 'max:100'],
+            'password' => ['required', 'string', 'min:6'],
+        ], [], [
+            'name' => __('Your Name'),
+            'password' => __('Password'),
+        ]);
+
+        $existingUser = User::query()->where('email', $this->email)->first();
+
+        if ($existingUser && filled($existingUser->password)) {
+            $this->step = 'email_password';
+            $this->addError('password', __('An account already exists for this email. Please log in.'));
+
+            return null;
+        }
+
+        if ($existingUser) {
+            $existingUser->update([
+                'name' => $this->name,
+                'password' => Hash::make($this->password),
+                'email_verified_at' => $existingUser->email_verified_at ?? now(),
+            ]);
+            $user = $existingUser;
+        } else {
+            $user = User::create([
+                'name' => $this->name,
+                'email' => $this->email,
+                'password' => Hash::make($this->password),
+                'email_verified_at' => now(),
+            ]);
+        }
+
+        Auth::login($user, remember: $this->remember);
+        session()->regenerate();
+
+        return redirect()->intended('/');
+    }
+
+    /**
+     * Return to the email entry step.
+     */
+    public function editEmail(): void
+    {
+        $this->step = 'phone';
+        $this->authMode = 'email';
+        $this->password = '';
+        $this->statusMessage = null;
+        $this->resetErrorBag();
+    }
+
+    /**
+     * Send password reset link to user's email.
+     */
+    public function sendPasswordResetLink(): void
+    {
+        $this->email = trim($this->email);
+
+        $this->validate([
+            'email' => ['required', 'string', 'email'],
+        ], [], [
+            'email' => __('Email'),
+        ]);
+
+        $throttleKey = Str::transliterate(Str::lower($this->email).'|'.request()->ip().'|reset-password');
+
+        if (RateLimiter::tooManyAttempts($throttleKey, 3)) {
+            $seconds = RateLimiter::availableIn($throttleKey);
+            $this->addError('password', trans('passwords.throttled'));
+
+            return;
+        }
+
+        RateLimiter::hit($throttleKey, 60);
+
+        $status = Password::broker()->sendResetLink(['email' => $this->email]);
+
+        if ($status === Password::RESET_LINK_SENT) {
+            $this->resetErrorBag();
+            $this->password = '';
+            $this->statusMessage = trans($status);
+        } else {
+            $this->addError('password', trans($status));
+        }
     }
 
     /**
@@ -180,6 +322,7 @@ class PhoneAuth extends Component
     public function editPhone(): void
     {
         $this->step = 'phone';
+        $this->authMode = 'phone';
         $this->code = '';
         $this->name = '';
         $this->statusMessage = null;
