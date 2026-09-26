@@ -32,6 +32,7 @@
     "Enter your password to log in.": "Indtast din adgangskode for at logge ind.",
     "Enter the 6-digit verification code sent to your phone.": "Indtast den 6-cifrede bekræftelseskode sendt til din telefon.",
     "Create a password and enter your name to create your account.": "Vælg en adgangskode og indtast dit navn for at oprette din profil.",
+    "Create a password for your account.": "Vælg en adgangskode til din profil.",
     "A 6-digit code has been sent to :phone.": "Der er sendt en 6-cifret kode til :phone.",
     "A new verification code has been sent to :phone.": "Der er sendt en ny bekræftelseskode til :phone.",
     "Phone": "Telefon",

@@ -144,19 +144,16 @@ class PhoneAuth extends Component
     }
 
     /**
-     * Register a new user with email, name, and password (or set password for passwordless user).
+     * Register a new user with email and password (or set password for passwordless user).
      */
     public function registerWithEmail(): mixed
     {
         $this->email = trim($this->email);
-        $this->name = trim($this->name);
 
         $this->validate([
             'email' => ['required', 'string', 'email', 'max:255'],
-            'name' => ['required', 'string', 'min:2', 'max:100'],
             'password' => ['required', 'string', 'min:6'],
         ], [], [
-            'name' => __('Your Name'),
             'password' => __('Password'),
         ]);
 
@@ -171,14 +168,12 @@ class PhoneAuth extends Component
 
         if ($existingUser) {
             $existingUser->update([
-                'name' => $this->name,
                 'password' => Hash::make($this->password),
                 'email_verified_at' => $existingUser->email_verified_at ?? now(),
             ]);
             $user = $existingUser;
         } else {
             $user = User::create([
-                'name' => $this->name,
                 'email' => $this->email,
                 'password' => Hash::make($this->password),
                 'email_verified_at' => now(),
@@ -187,6 +182,15 @@ class PhoneAuth extends Component
 
         Auth::login($user, remember: $this->remember);
         session()->regenerate();
+
+        if (empty($user->name)) {
+            $this->step = 'name';
+            $this->password = '';
+            $this->statusMessage = null;
+            $this->resetErrorBag();
+
+            return null;
+        }
 
         return redirect()->intended('/');
     }

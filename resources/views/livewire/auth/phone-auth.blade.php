@@ -34,7 +34,7 @@
                         @elseif ($step === 'email_password')
                             {{ __('Enter your password to log in.') }}
                         @elseif ($step === 'email_register')
-                            {{ __('Create a password and enter your name to create your account.') }}
+                            {{ __('Create a password for your account.') }}
                         @else
                             {{ __('Enter your name so friends and family can recognize your wishlist when sharing.') }}
                         @endif
@@ -228,8 +228,9 @@
                     <input type="hidden" name="username" value="{{ $email }}" autocomplete="username">
                     <div>
                         <div class="flex items-center justify-between mb-2">
-                            <label for="name" class="block text-sm font-medium text-neutral-700 dark:text-neutral-300">
-                                {{ __('Your Name') }}
+                            <label for="password"
+                                   class="block text-sm font-medium text-neutral-700 dark:text-neutral-300">
+                                {{ __('Password') }}
                             </label>
                             <button
                                     type="button"
@@ -240,32 +241,13 @@
                             </button>
                         </div>
                         <input
-                                type="text"
-                                id="name"
-                                name="name"
-                                autocomplete="name"
-                                wire:model="name"
-                                placeholder="{{ __('e.g. Nikolaj') }}"
-                                class="w-full px-4 py-3 rounded-xl border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-800 text-neutral-900 dark:text-neutral-100 placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-neutral-900 dark:focus:ring-white transition text-base"
-                                autofocus
-                        >
-                        @error('name')
-                        <p class="text-sm text-red-600 dark:text-red-400 mt-1.5">{{ $message }}</p>
-                        @enderror
-                    </div>
-
-                    <div>
-                        <label for="password"
-                               class="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2">
-                            {{ __('Password') }}
-                        </label>
-                        <input
                                 type="password"
                                 id="password"
                                 name="password"
                                 autocomplete="new-password"
                                 wire:model="password"
                                 class="w-full px-4 py-3 rounded-xl border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-800 text-neutral-900 dark:text-neutral-100 placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-neutral-900 dark:focus:ring-white transition text-base"
+                                autofocus
                         >
                         @error('password')
                         <p class="text-sm text-red-600 dark:text-red-400 mt-1.5">{{ $message }}</p>
@@ -347,6 +329,7 @@
                         <input
                                 type="text"
                                 id="name"
+                                name="name"
                                 wire:model="name"
                                 placeholder="{{ __('e.g. Nikolaj') }}"
                                 autocomplete="name"

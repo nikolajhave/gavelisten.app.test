@@ -81,18 +81,17 @@ test('entering non-existent email transitions to registration step', function ()
         ->assertHasNoErrors()
         ->assertSet('step', 'email_register')
         ->assertSee(__('Create Account'))
-        ->assertSee(__('Your Name'))
+        ->assertDontSee(__('Your Name'))
         ->assertSee(__('Password'))
         ->assertSee(__('Create Account & Continue'))
         ->assertSee(__('Change email'))
         ->assertSeeHtml('<input type="hidden" name="username" value="newuser@example.com" autocomplete="username">')
-        ->assertSeeHtml('autocomplete="name"')
         ->assertSeeHtml('autocomplete="new-password"');
 
     $this->assertGuest();
 });
 
-test('entering passwordless existing user email transitions to register/set-password step with prefilled name', function () {
+test('entering passwordless existing user email transitions to register/set-password step', function () {
     User::factory()->passwordless()->create([
         'name' => 'Existing User',
         'email' => 'googleuser@example.com',
@@ -104,8 +103,9 @@ test('entering passwordless existing user email transitions to register/set-pass
         ->call('continueWithEmail')
         ->assertHasNoErrors()
         ->assertSet('step', 'email_register')
-        ->assertSet('name', 'Existing User')
-        ->assertSee(__('Create Account'));
+        ->assertSee(__('Create Account'))
+        ->assertDontSee(__('Your Name'))
+        ->assertSee(__('Password'));
 
     $this->assertGuest();
 });
@@ -166,15 +166,20 @@ test('user cannot login with wrong password', function () {
     $this->assertGuest();
 });
 
-test('new user can register with name and password on registration step', function () {
+test('new user can register with password and then sets name on next step', function () {
     Livewire::test(PhoneAuth::class)
         ->set('authMode', 'email')
         ->set('email', 'freshuser@example.com')
         ->call('continueWithEmail')
         ->assertSet('step', 'email_register')
-        ->set('name', 'Fresh User')
         ->set('password', 'secret-password-123')
         ->call('registerWithEmail')
+        ->assertHasNoErrors()
+        ->assertSet('step', 'name')
+        ->assertSee(__('What should we call you?'))
+        ->assertSeeHtml('name="name"')
+        ->set('name', 'Fresh User')
+        ->call('saveName')
         ->assertHasNoErrors()
         ->assertRedirect('/');
 
@@ -185,7 +190,7 @@ test('new user can register with name and password on registration step', functi
         ->and($user->wishlists()->count())->toBe(1);
 });
 
-test('passwordless user can set password and login on registration step', function () {
+test('passwordless user with name can set password and login directly on registration step', function () {
     $user = User::factory()->passwordless()->create([
         'name' => 'Google Person',
         'email' => 'google@example.com',
@@ -205,20 +210,58 @@ test('passwordless user can set password and login on registration step', functi
     expect($user->fresh()->password)->not->toBeNull();
 });
 
-test('registration validates name and password constraints', function () {
+test('passwordless user without name transitions to name step after setting password', function () {
+    $user = User::factory()->passwordless()->create([
+        'name' => null,
+        'email' => 'noname@example.com',
+    ]);
+
+    Livewire::test(PhoneAuth::class)
+        ->set('authMode', 'email')
+        ->set('email', 'noname@example.com')
+        ->call('continueWithEmail')
+        ->assertSet('step', 'email_register')
+        ->set('password', 'new-secure-password')
+        ->call('registerWithEmail')
+        ->assertHasNoErrors()
+        ->assertSet('step', 'name')
+        ->set('name', 'Named Person')
+        ->call('saveName')
+        ->assertHasNoErrors()
+        ->assertRedirect('/');
+
+    $this->assertAuthenticatedAs($user);
+    expect($user->fresh()->name)->toBe('Named Person');
+});
+
+test('registration validates password constraints', function () {
     Livewire::test(PhoneAuth::class)
         ->set('authMode', 'email')
         ->set('email', 'validate@example.com')
         ->call('continueWithEmail')
-        ->set('name', 'A') // min 2
         ->set('password', '123') // min 6
         ->call('registerWithEmail')
         ->assertHasErrors([
-            'name' => 'min',
             'password' => 'min',
         ]);
 
     $this->assertGuest();
+});
+
+test('name step validates name constraints', function () {
+    Livewire::test(PhoneAuth::class)
+        ->set('authMode', 'email')
+        ->set('email', 'nameval@example.com')
+        ->call('continueWithEmail')
+        ->set('password', 'secure-password')
+        ->call('registerWithEmail')
+        ->assertSet('step', 'name')
+        ->set('name', 'A') // min 2
+        ->call('saveName')
+        ->assertHasErrors(['name' => 'min'])
+        ->set('name', '')
+        ->call('saveName')
+        ->assertHasErrors(['name' => 'required']);
 });
 
 test('email is trimmed before authentication and registration', function () {
@@ -226,9 +269,11 @@ test('email is trimmed before authentication and registration', function () {
         ->set('authMode', 'email')
         ->set('email', '  trim@example.com  ')
         ->call('continueWithEmail')
-        ->set('name', '  Trimmed User  ')
         ->set('password', 'password123')
         ->call('registerWithEmail')
+        ->assertSet('step', 'name')
+        ->set('name', '  Trimmed User  ')
+        ->call('saveName')
         ->assertHasNoErrors()
         ->assertRedirect('/');
 
