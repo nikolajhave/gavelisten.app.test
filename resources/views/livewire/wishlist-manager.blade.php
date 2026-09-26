@@ -74,29 +74,29 @@
             </div>
 
             <div class="w-full sm:w-auto flex items-center justify-between sm:justify-end gap-2 sm:gap-3">
-                <div class="flex items-center gap-2 sm:gap-3">
-                    <button
-                        type="button"
-                        wire:click="openCreateModal"
-                        class="inline-flex items-center gap-2 px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-xl bg-blue-50 dark:bg-blue-950/60 border border-blue-200 dark:border-blue-800/80 text-blue-700 dark:text-blue-300 font-medium text-sm hover:bg-blue-100 dark:hover:bg-blue-900/60 hover:text-blue-800 dark:hover:text-blue-200 transition shadow-xs cursor-pointer data-loading:opacity-75"
-                    >
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-                        </svg>
-                        <span>{{ __('Add Wish') }}</span>
-                    </button>
+                <button
+                    type="button"
+                    wire:click="openCreateModal"
+                    class="inline-flex items-center gap-2 px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-xl bg-blue-50 dark:bg-blue-950/60 border border-blue-200 dark:border-blue-800/80 text-blue-700 dark:text-blue-300 font-medium text-sm hover:bg-blue-100 dark:hover:bg-blue-900/60 hover:text-blue-800 dark:hover:text-blue-200 transition shadow-xs cursor-pointer data-loading:opacity-75"
+                >
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                    </svg>
+                    <span>{{ __('Add Wish') }}</span>
+                </button>
 
+                <div class="flex items-center gap-2 sm:gap-3">
                     {{-- Share Wishlist Dropdown --}}
                     <div class="relative" x-data="{ open: false, copied: false, shareUrl: '{{ url('/w/' . $this->wishlist->share_token) }}' }">
                         <button
                             type="button"
                             @click="open = !open"
-                            class="inline-flex items-center justify-center p-2 sm:px-3 sm:py-2.5 rounded-xl border border-neutral-200 dark:border-neutral-800 text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-100 hover:bg-neutral-50 dark:hover:bg-neutral-900 text-sm font-medium transition cursor-pointer"
+                            class="inline-flex items-center justify-center w-9.5 h-9.5 sm:w-10.5 sm:h-10.5 rounded-xl border border-neutral-200 dark:border-neutral-800 text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-100 hover:bg-neutral-50 dark:hover:bg-neutral-900 transition cursor-pointer"
                             title="{{ __('Share Wishlist') }}"
                             aria-label="{{ __('Share Wishlist') }}"
                             :aria-expanded="open.toString()"
                         >
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
                             </svg>
                         </button>
@@ -171,17 +171,17 @@
                         </div>
                     </div>
 
-                    {{-- Friends Burger Menu --}}
+                    {{-- Burger Menu (Profile, Friends, Logout) --}}
                     <div class="relative" x-data="{ open: false }">
                         <button
                             type="button"
                             @click="open = !open"
-                            class="inline-flex items-center justify-center p-2 sm:px-3 sm:py-2.5 rounded-xl border border-neutral-200 dark:border-neutral-800 text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-100 hover:bg-neutral-50 dark:hover:bg-neutral-900 text-sm font-medium transition cursor-pointer"
-                            title="{{ __('Friends') }}"
-                            aria-label="{{ __('Friends') }}"
+                            class="inline-flex items-center justify-center w-9.5 h-9.5 sm:w-10.5 sm:h-10.5 rounded-xl border border-neutral-200 dark:border-neutral-800 text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-100 hover:bg-neutral-50 dark:hover:bg-neutral-900 transition cursor-pointer"
+                            title="{{ __('Menu') }}"
+                            aria-label="{{ __('Menu') }}"
                             :aria-expanded="open.toString()"
                         >
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
                             </svg>
                         </button>
@@ -213,226 +213,264 @@
                             class="fixed sm:absolute inset-x-4 sm:inset-x-auto sm:left-auto sm:right-0 top-24 sm:top-full sm:mt-2 mx-auto sm:mx-0 w-auto sm:w-80 max-w-sm sm:max-w-none bg-white dark:bg-neutral-900 rounded-2xl shadow-xl border border-neutral-200 dark:border-neutral-800 pt-4 pb-3 z-50 divide-y divide-neutral-100 dark:divide-neutral-800"
                             style="display: none;"
                         >
-                            <div class="px-4 pb-3 flex items-center justify-between">
-                                <h3 class="text-xs font-semibold uppercase tracking-wider text-neutral-500 dark:text-neutral-400">
-                                    {{ __('Friends') }}
-                                </h3>
-                                @if ($this->friends->isNotEmpty())
-                                    <span class="text-xs font-medium px-2 py-0.5 rounded-full bg-neutral-100 dark:bg-neutral-800 text-neutral-600 dark:text-neutral-300">
-                                        {{ $this->friends->count() }}
-                                    </span>
-                                @endif
+                            {{-- User Summary --}}
+                            @php
+                                $currentUser = auth()->user();
+                                $currentUserName = $currentUser?->name ?: __('Your Profile');
+                                $currentUserInitial = mb_substr($currentUserName, 0, 1);
+                                $currentUserContact = $currentUser?->email ?: $currentUser?->phone;
+                            @endphp
+                            <div class="px-4 pb-3 flex items-center justify-between gap-3">
+                                <div class="flex items-center gap-2.5 min-w-0 flex-1">
+                                    <div class="w-8 h-8 rounded-full bg-blue-50 dark:bg-blue-950/60 border border-blue-200 dark:border-blue-800/80 text-blue-700 dark:text-blue-300 font-semibold text-xs flex items-center justify-center shrink-0">
+                                        {{ strtoupper($currentUserInitial) }}
+                                    </div>
+                                    <div class="min-w-0 flex-1">
+                                        <p class="text-xs font-semibold text-neutral-900 dark:text-neutral-100 truncate">
+                                            {{ $currentUserName }}
+                                        </p>
+                                        @if ($currentUserContact)
+                                            <p class="text-[11px] text-neutral-500 dark:text-neutral-400 truncate">
+                                                {{ $currentUserContact }}
+                                            </p>
+                                        @endif
+                                    </div>
+                                </div>
+                                <button
+                                    type="button"
+                                    wire:click="openProfileModal"
+                                    @click="open = false"
+                                    class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-medium bg-neutral-100 dark:bg-neutral-800 text-neutral-700 dark:text-neutral-300 hover:bg-neutral-200 dark:hover:bg-neutral-700 transition cursor-pointer shrink-0"
+                                    title="{{ __('Edit Profile') }}"
+                                >
+                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                                    </svg>
+                                    <span>{{ __('Profile') }}</span>
+                                </button>
                             </div>
 
-                            <div class="py-1 max-h-60 overflow-y-auto">
-                                @if ($this->friends->isEmpty())
-                                    <div class="px-4 py-6 text-center text-sm text-neutral-500 dark:text-neutral-400">
-                                        <div class="w-10 h-10 mx-auto mb-2 rounded-xl bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center text-neutral-400 dark:text-neutral-500">
-                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-                                            </svg>
-                                        </div>
-                                        <p class="font-medium text-neutral-900 dark:text-neutral-100">{{ __('No friends yet') }}</p>
-                                        <p class="mt-1 text-xs text-neutral-500 dark:text-neutral-400 leading-relaxed">
-                                            {{ __('When viewing a shared wishlist, click "Add friend" to add them to your list.') }}
-                                        </p>
-                                    </div>
-                                @else
-                                    @foreach ($this->friends as $friend)
-                                        @php
-                                            $friendWishlist = $friend->wishlists->first();
-                                            $friendName = $friend->name ?: __('Friend');
-                                            $initial = mb_substr($friendName, 0, 1);
-                                        @endphp
-                                        <div
-                                            wire:key="friend-item-{{ $friend->id }}"
-                                            class="flex items-center justify-between gap-2 px-3 py-2 hover:bg-neutral-50 dark:hover:bg-neutral-800/60 rounded-xl mx-1 transition group"
-                                        >
-                                            @if ($friendWishlist)
-                                                <a
-                                                    href="{{ route('wishlist.public', $friendWishlist->share_token) }}"
-                                                    class="flex items-center gap-3 min-w-0 flex-1"
-                                                >
-                                                    <div class="w-8 h-8 rounded-full bg-blue-50 dark:bg-blue-950/60 border border-blue-200 dark:border-blue-800/80 text-blue-700 dark:text-blue-300 font-semibold text-xs flex items-center justify-center shrink-0">
-                                                        {{ strtoupper($initial) }}
-                                                    </div>
-                                                    <div class="min-w-0 flex-1">
-                                                        <p class="text-sm font-medium text-neutral-900 dark:text-neutral-100 truncate group-hover:underline">
-                                                            {{ $friendName }}
-                                                        </p>
-                                                        <p class="text-xs text-neutral-500 dark:text-neutral-400 truncate">
-                                                            {{ $friendWishlist->title }}
-                                                        </p>
-                                                    </div>
-                                                </a>
-                                            @else
-                                                <div class="flex items-center gap-3 min-w-0 flex-1">
-                                                    <div class="w-8 h-8 rounded-full bg-blue-50 dark:bg-blue-950/60 border border-blue-200 dark:border-blue-800/80 text-blue-700 dark:text-blue-300 font-semibold text-xs flex items-center justify-center shrink-0">
-                                                        {{ strtoupper($initial) }}
-                                                    </div>
-                                                    <div class="min-w-0 flex-1">
-                                                        <p class="text-sm font-medium text-neutral-900 dark:text-neutral-100 truncate">
-                                                            {{ $friendName }}
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                            @endif
+                            {{-- Friends Section --}}
+                            <div class="py-3">
+                                <div class="px-4 pb-3 flex items-center justify-between">
+                                    <h3 class="text-xs font-semibold uppercase tracking-wider text-neutral-500 dark:text-neutral-400">
+                                        {{ __('Friends') }}
+                                    </h3>
+                                    @if ($this->friends->isNotEmpty())
+                                        <span class="text-xs font-medium px-2 py-0.5 rounded-full bg-neutral-100 dark:bg-neutral-800 text-neutral-600 dark:text-neutral-300">
+                                            {{ $this->friends->count() }}
+                                        </span>
+                                    @endif
+                                </div>
 
+                                <div class="py-1 max-h-52 overflow-y-auto">
+                                    @if ($this->friends->isEmpty())
+                                        <div class="px-4 py-4 text-center text-sm text-neutral-500 dark:text-neutral-400">
+                                            <div class="w-9 h-9 mx-auto mb-2 rounded-xl bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center text-neutral-400 dark:text-neutral-500">
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                                                </svg>
+                                            </div>
+                                            <p class="font-medium text-xs text-neutral-900 dark:text-neutral-100">{{ __('No friends yet') }}</p>
+                                        </div>
+                                    @else
+                                        @foreach ($this->friends as $friend)
+                                            @php
+                                                $friendWishlist = $friend->wishlists->first();
+                                                $friendName = $friend->name ?: __('Friend');
+                                                $initial = mb_substr($friendName, 0, 1);
+                                            @endphp
+                                            <div
+                                                wire:key="friend-item-{{ $friend->id }}"
+                                                class="flex items-center justify-between gap-2 px-3 py-2 hover:bg-neutral-50 dark:hover:bg-neutral-800/60 rounded-xl mx-1 transition group"
+                                            >
+                                                @if ($friendWishlist)
+                                                    <a
+                                                        href="{{ route('wishlist.public', $friendWishlist->share_token) }}"
+                                                        class="flex items-center gap-3 min-w-0 flex-1"
+                                                    >
+                                                        <div class="w-8 h-8 rounded-full bg-blue-50 dark:bg-blue-950/60 border border-blue-200 dark:border-blue-800/80 text-blue-700 dark:text-blue-300 font-semibold text-xs flex items-center justify-center shrink-0">
+                                                            {{ strtoupper($initial) }}
+                                                        </div>
+                                                        <div class="min-w-0 flex-1">
+                                                            <p class="text-sm font-medium text-neutral-900 dark:text-neutral-100 truncate group-hover:underline">
+                                                                {{ $friendName }}
+                                                            </p>
+                                                            <p class="text-xs text-neutral-500 dark:text-neutral-400 truncate">
+                                                                {{ $friendWishlist->title }}
+                                                            </p>
+                                                        </div>
+                                                    </a>
+                                                @else
+                                                    <div class="flex items-center gap-3 min-w-0 flex-1">
+                                                        <div class="w-8 h-8 rounded-full bg-blue-50 dark:bg-blue-950/60 border border-blue-200 dark:border-blue-800/80 text-blue-700 dark:text-blue-300 font-semibold text-xs flex items-center justify-center shrink-0">
+                                                            {{ strtoupper($initial) }}
+                                                        </div>
+                                                        <div class="min-w-0 flex-1">
+                                                            <p class="text-sm font-medium text-neutral-900 dark:text-neutral-100 truncate">
+                                                                {{ $friendName }}
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                @endif
+
+                                                <button
+                                                    type="button"
+                                                    wire:click="removeFriend({{ $friend->id }})"
+                                                    class="opacity-0 group-hover:opacity-100 focus:opacity-100 p-1 rounded-lg text-neutral-400 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/40 transition cursor-pointer"
+                                                    title="{{ __('Remove friend') }}"
+                                                    aria-label="{{ __('Remove friend') }}"
+                                                >
+                                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                                    </svg>
+                                                </button>
+                                            </div>
+                                        @endforeach
+                                    @endif
+                                </div>
+
+                                {{-- Add Friend Section at the bottom --}}
+                                <div class="pt-3 px-3">
+                                    <div class="mb-2 flex items-center justify-between">
+                                        <h4 class="text-xs font-semibold uppercase tracking-wider text-neutral-500 dark:text-neutral-400 flex items-center gap-1.5">
+                                            <svg class="w-3.5 h-3.5 text-neutral-400 dark:text-neutral-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
+                                            </svg>
+                                            <span>{{ __('Find and add friend') }}</span>
+                                        </h4>
+                                        @if ($friendSearchQuery !== '')
                                             <button
                                                 type="button"
-                                                wire:click="removeFriend({{ $friend->id }})"
-                                                class="opacity-0 group-hover:opacity-100 focus:opacity-100 p-1 rounded-lg text-neutral-400 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/40 transition cursor-pointer"
-                                                title="{{ __('Remove friend') }}"
-                                                aria-label="{{ __('Remove friend') }}"
+                                                wire:click="clearFriendSearch"
+                                                class="text-[11px] font-medium text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-200 transition cursor-pointer"
                                             >
-                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                {{ __('Clear') }}
+                                            </button>
+                                        @endif
+                                    </div>
+
+                                    <div class="relative">
+                                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-neutral-400 dark:text-neutral-500">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                            </svg>
+                                        </div>
+                                        <input
+                                            type="text"
+                                            wire:model.live.debounce.250ms="friendSearchQuery"
+                                            placeholder="{{ __('Search name, email or phone...') }}"
+                                            class="w-full pl-9 pr-8 py-2 rounded-xl text-base sm:text-sm bg-neutral-50 dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 text-neutral-900 dark:text-neutral-100 placeholder-neutral-400 dark:placeholder-neutral-500 focus:outline-none focus:ring-2 focus:ring-neutral-900 dark:focus:ring-white transition"
+                                        >
+                                        @if ($friendSearchQuery !== '')
+                                            <button
+                                                type="button"
+                                                wire:click="clearFriendSearch"
+                                                class="absolute inset-y-0 right-0 pr-2.5 flex items-center text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-200 transition cursor-pointer"
+                                                title="{{ __('Clear') }}"
+                                            >
+                                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                                                 </svg>
                                             </button>
-                                        </div>
-                                    @endforeach
-                                @endif
-                            </div>
-
-                            {{-- Add Friend Section at the bottom --}}
-                            <div class="pt-3 px-3">
-                                <div class="mb-2 flex items-center justify-between">
-                                    <h4 class="text-xs font-semibold uppercase tracking-wider text-neutral-500 dark:text-neutral-400 flex items-center gap-1.5">
-                                        <svg class="w-3.5 h-3.5 text-neutral-400 dark:text-neutral-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
-                                        </svg>
-                                        <span>{{ __('Find and add friend') }}</span>
-                                    </h4>
-                                    @if ($friendSearchQuery !== '')
-                                        <button
-                                            type="button"
-                                            wire:click="clearFriendSearch"
-                                            class="text-[11px] font-medium text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-200 transition cursor-pointer"
-                                        >
-                                            {{ __('Clear') }}
-                                        </button>
-                                    @endif
-                                </div>
-
-                                <div class="relative">
-                                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-neutral-400 dark:text-neutral-500">
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                                        </svg>
-                                    </div>
-                                    <input
-                                        type="text"
-                                        wire:model.live.debounce.250ms="friendSearchQuery"
-                                        placeholder="{{ __('Search name, email or phone...') }}"
-                                        class="w-full pl-9 pr-8 py-2 rounded-xl text-base sm:text-sm bg-neutral-50 dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 text-neutral-900 dark:text-neutral-100 placeholder-neutral-400 dark:placeholder-neutral-500 focus:outline-none focus:ring-2 focus:ring-neutral-900 dark:focus:ring-white transition"
-                                    >
-                                    @if ($friendSearchQuery !== '')
-                                        <button
-                                            type="button"
-                                            wire:click="clearFriendSearch"
-                                            class="absolute inset-y-0 right-0 pr-2.5 flex items-center text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-200 transition cursor-pointer"
-                                            title="{{ __('Clear') }}"
-                                        >
-                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                                            </svg>
-                                        </button>
-                                    @endif
-                                </div>
-
-                                @if ($friendSearchQuery !== '')
-                                    <div class="mt-2.5 max-h-48 overflow-y-auto space-y-1">
-                                        @if ($this->friendSearchResults->isEmpty())
-                                            <div class="py-3 px-2 text-center text-xs text-neutral-500 dark:text-neutral-400">
-                                                {{ __('No users found') }}
-                                            </div>
-                                        @else
-                                            @foreach ($this->friendSearchResults as $resultUser)
-                                                @php
-                                                    $isAlreadyFriend = $this->friends->contains('id', $resultUser->id);
-                                                    $resultName = $resultUser->name ?: __('Friend');
-                                                    $resultInitial = mb_substr($resultName, 0, 1);
-                                                    $resultWishlist = $resultUser->wishlists->first();
-                                                @endphp
-                                                <div
-                                                    wire:key="search-result-{{ $resultUser->id }}"
-                                                    class="flex items-center justify-between gap-2 p-2 rounded-xl bg-white dark:bg-neutral-800/80 border border-neutral-100 dark:border-neutral-700/50 hover:border-neutral-200 dark:hover:border-neutral-700 transition"
-                                                >
-                                                    @if ($resultWishlist)
-                                                        <a
-                                                            href="{{ route('wishlist.public', $resultWishlist->share_token) }}"
-                                                            class="flex items-center gap-2.5 min-w-0 flex-1 group"
-                                                        >
-                                                            <div class="w-7 h-7 rounded-full bg-blue-50 dark:bg-blue-950/60 border border-blue-200 dark:border-blue-800/80 text-blue-700 dark:text-blue-300 font-semibold text-xs flex items-center justify-center shrink-0">
-                                                                {{ strtoupper($resultInitial) }}
-                                                            </div>
-                                                            <div class="min-w-0 flex-1">
-                                                                <p class="text-xs font-medium text-neutral-900 dark:text-neutral-100 truncate group-hover:underline">
-                                                                    {{ $resultName }}
-                                                                </p>
-                                                                <p class="text-[11px] text-neutral-500 dark:text-neutral-400 truncate">
-                                                                    {{ $resultWishlist->title }}
-                                                                </p>
-                                                            </div>
-                                                        </a>
-                                                    @else
-                                                        <div class="flex items-center gap-2.5 min-w-0 flex-1">
-                                                            <div class="w-7 h-7 rounded-full bg-blue-50 dark:bg-blue-950/60 border border-blue-200 dark:border-blue-800/80 text-blue-700 dark:text-blue-300 font-semibold text-xs flex items-center justify-center shrink-0">
-                                                                {{ strtoupper($resultInitial) }}
-                                                            </div>
-                                                            <div class="min-w-0 flex-1">
-                                                                <p class="text-xs font-medium text-neutral-900 dark:text-neutral-100 truncate">
-                                                                    {{ $resultName }}
-                                                                </p>
-                                                            </div>
-                                                        </div>
-                                                    @endif
-
-                                                    <div>
-                                                        @if ($isAlreadyFriend)
-                                                            <span class="inline-flex items-center gap-1 px-2 py-1 rounded-lg text-[11px] font-medium bg-neutral-100 dark:bg-neutral-700 text-neutral-500 dark:text-neutral-400">
-                                                                <svg class="w-3 h-3 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
-                                                                </svg>
-                                                                <span>{{ __('Friend added') }}</span>
-                                                            </span>
-                                                        @else
-                                                            <button
-                                                                type="button"
-                                                                wire:click="addFriend({{ $resultUser->id }})"
-                                                                class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-semibold bg-blue-50 dark:bg-blue-950/60 border border-blue-200 dark:border-blue-800/80 text-blue-700 dark:text-blue-300 hover:bg-blue-100 dark:hover:bg-blue-900/60 hover:text-blue-800 dark:hover:text-blue-200 transition cursor-pointer shrink-0"
-                                                            >
-                                                                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-                                                                </svg>
-                                                                <span>{{ __('Add friend') }}</span>
-                                                            </button>
-                                                        @endif
-                                                    </div>
-                                                </div>
-                                            @endforeach
                                         @endif
                                     </div>
-                                @endif
+
+                                    @if ($friendSearchQuery !== '')
+                                        <div class="mt-2.5 max-h-48 overflow-y-auto space-y-1">
+                                            @if ($this->friendSearchResults->isEmpty())
+                                                <div class="py-3 px-2 text-center text-xs text-neutral-500 dark:text-neutral-400">
+                                                    {{ __('No users found') }}
+                                                </div>
+                                            @else
+                                                @foreach ($this->friendSearchResults as $resultUser)
+                                                    @php
+                                                        $isAlreadyFriend = $this->friends->contains('id', $resultUser->id);
+                                                        $resultName = $resultUser->name ?: __('Friend');
+                                                        $resultInitial = mb_substr($resultName, 0, 1);
+                                                        $resultWishlist = $resultUser->wishlists->first();
+                                                    @endphp
+                                                    <div
+                                                        wire:key="search-result-{{ $resultUser->id }}"
+                                                        class="flex items-center justify-between gap-2 p-2 rounded-xl bg-white dark:bg-neutral-800/80 border border-neutral-100 dark:border-neutral-700/50 hover:border-neutral-200 dark:hover:border-neutral-700 transition"
+                                                    >
+                                                        @if ($resultWishlist)
+                                                            <a
+                                                                href="{{ route('wishlist.public', $resultWishlist->share_token) }}"
+                                                                class="flex items-center gap-2.5 min-w-0 flex-1 group"
+                                                            >
+                                                                <div class="w-7 h-7 rounded-full bg-blue-50 dark:bg-blue-950/60 border border-blue-200 dark:border-blue-800/80 text-blue-700 dark:text-blue-300 font-semibold text-xs flex items-center justify-center shrink-0">
+                                                                    {{ strtoupper($resultInitial) }}
+                                                                </div>
+                                                                <div class="min-w-0 flex-1">
+                                                                    <p class="text-xs font-medium text-neutral-900 dark:text-neutral-100 truncate group-hover:underline">
+                                                                        {{ $resultName }}
+                                                                    </p>
+                                                                    <p class="text-[11px] text-neutral-500 dark:text-neutral-400 truncate">
+                                                                        {{ $resultWishlist->title }}
+                                                                    </p>
+                                                                </div>
+                                                            </a>
+                                                        @else
+                                                            <div class="flex items-center gap-2.5 min-w-0 flex-1">
+                                                                <div class="w-7 h-7 rounded-full bg-blue-50 dark:bg-blue-950/60 border border-blue-200 dark:border-blue-800/80 text-blue-700 dark:text-blue-300 font-semibold text-xs flex items-center justify-center shrink-0">
+                                                                    {{ strtoupper($resultInitial) }}
+                                                                </div>
+                                                                <div class="min-w-0 flex-1">
+                                                                    <p class="text-xs font-medium text-neutral-900 dark:text-neutral-100 truncate">
+                                                                        {{ $resultName }}
+                                                                    </p>
+                                                                </div>
+                                                            </div>
+                                                        @endif
+
+                                                        <div>
+                                                            @if ($isAlreadyFriend)
+                                                                <span class="inline-flex items-center gap-1 px-2 py-1 rounded-lg text-[11px] font-medium bg-neutral-100 dark:bg-neutral-700 text-neutral-500 dark:text-neutral-400">
+                                                                    <svg class="w-3 h-3 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
+                                                                    </svg>
+                                                                    <span>{{ __('Friend added') }}</span>
+                                                                </span>
+                                                            @else
+                                                                <button
+                                                                    type="button"
+                                                                    wire:click="addFriend({{ $resultUser->id }})"
+                                                                    class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-semibold bg-blue-50 dark:bg-blue-950/60 border border-blue-200 dark:border-blue-800/80 text-blue-700 dark:text-blue-300 hover:bg-blue-100 dark:hover:bg-blue-900/60 hover:text-blue-800 dark:hover:text-blue-200 transition cursor-pointer shrink-0"
+                                                                >
+                                                                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                                                                    </svg>
+                                                                    <span>{{ __('Add friend') }}</span>
+                                                                </button>
+                                                            @endif
+                                                        </div>
+                                                    </div>
+                                                @endforeach
+                                            @endif
+                                        </div>
+                                    @endif
+                                </div>
+                            </div>
+
+                            {{-- Footer Section with Sign out --}}
+                            <div class="pt-2 px-1 space-y-1">
+                                <form method="POST" action="{{ route('logout') }}" class="block">
+                                    @csrf
+                                    <button
+                                        type="submit"
+                                        class="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs sm:text-sm font-medium text-neutral-700 dark:text-neutral-300 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/40 transition cursor-pointer"
+                                    >
+                                        <svg class="w-4 h-4 text-neutral-500 dark:text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                                        </svg>
+                                        <span>{{ __('Sign out') }}</span>
+                                    </button>
+                                </form>
                             </div>
                         </div>
                     </div>
                 </div>
-
-                {{-- Logout Button --}}
-                <form method="POST" action="{{ route('logout') }}" class="inline">
-                    @csrf
-                    <button
-                        type="submit"
-                        class="inline-flex items-center justify-center p-2 sm:px-3 sm:py-2.5 rounded-xl border border-neutral-200 dark:border-neutral-800 text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-100 hover:bg-neutral-50 dark:hover:bg-neutral-900 text-sm font-medium transition cursor-pointer"
-                        title="{{ __('Sign out') }}"
-                        aria-label="{{ __('Sign out') }}"
-                    >
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                        </svg>
-                    </button>
-                </form>
             </div>
         </div>
 
@@ -747,6 +785,151 @@
                         </span>
                     </button>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    {{-- Profile Modal (Leveraging wire:show for zero layout shift) --}}
+    <div
+        wire:show="showProfileModal"
+        style="display: none;"
+        class="fixed inset-0 z-50 overflow-y-auto"
+        role="dialog"
+        aria-modal="true"
+        @keydown.escape.window="$wire.showProfileModal && $wire.closeProfileModal()"
+    >
+        <div class="flex min-h-full items-center justify-center p-4 text-center sm:p-0">
+            {{-- Backdrop --}}
+            <div
+                wire:click="closeProfileModal"
+                class="fixed inset-0 bg-neutral-900/60 backdrop-blur-xs transition-opacity cursor-pointer"
+            ></div>
+
+            {{-- Modal Dialog --}}
+            <div class="relative transform overflow-hidden rounded-3xl bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 text-left shadow-2xl transition-all w-full sm:my-8 sm:max-w-md p-6 sm:p-8">
+                <div class="flex items-center justify-between pb-4 border-b border-neutral-200 dark:border-neutral-800">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-2xl bg-blue-50 dark:bg-blue-950/60 border border-blue-200 dark:border-blue-800/80 text-blue-700 dark:text-blue-300 flex items-center justify-center shrink-0">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                            </svg>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-bold text-neutral-900 dark:text-neutral-100">
+                                {{ __('Profile') }}
+                            </h3>
+                            <p class="text-xs text-neutral-500 dark:text-neutral-400">
+                                {{ __('Manage your account details and password.') }}
+                            </p>
+                        </div>
+                    </div>
+                    <button
+                        type="button"
+                        wire:click="closeProfileModal"
+                        class="p-1 rounded-lg text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-200 transition cursor-pointer"
+                    >
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+
+                <form wire:submit="saveProfile" class="mt-6 space-y-4">
+                    {{-- Name --}}
+                    <div>
+                        <label for="profile-name" class="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1.5">
+                            {{ __('Your Name') }} <span class="text-red-500">*</span>
+                        </label>
+                        <input
+                            type="text"
+                            id="profile-name"
+                            wire:model="profileName"
+                            placeholder="{{ __('e.g. Nikolaj') }}"
+                            class="w-full px-4 py-2.5 rounded-xl border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-800 text-neutral-900 dark:text-neutral-100 placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-neutral-900 dark:focus:ring-white transition text-base sm:text-sm"
+                            autofocus
+                        >
+                        @error('profileName')
+                            <p class="text-xs text-red-600 dark:text-red-400 mt-1.5">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    {{-- Email --}}
+                    <div>
+                        <label for="profile-email" class="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1.5">
+                            {{ __('Email') }}
+                        </label>
+                        <input
+                            type="email"
+                            id="profile-email"
+                            wire:model="profileEmail"
+                            placeholder="name@example.com"
+                            class="w-full px-4 py-2.5 rounded-xl border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-800 text-neutral-900 dark:text-neutral-100 placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-neutral-900 dark:focus:ring-white transition text-base sm:text-sm"
+                        >
+                        @error('profileEmail')
+                            <p class="text-xs text-red-600 dark:text-red-400 mt-1.5">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    {{-- Phone --}}
+                    <div>
+                        <label for="profile-phone" class="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1.5">
+                            {{ __('Phone Number') }}
+                        </label>
+                        <input
+                            type="tel"
+                            id="profile-phone"
+                            wire:model="profilePhone"
+                            placeholder="+45 12 34 56 78"
+                            class="w-full px-4 py-2.5 rounded-xl border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-800 text-neutral-900 dark:text-neutral-100 placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-neutral-900 dark:focus:ring-white transition text-base sm:text-sm"
+                        >
+                        @error('profilePhone')
+                            <p class="text-xs text-red-600 dark:text-red-400 mt-1.5">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    {{-- Password --}}
+                    <div>
+                        <label for="profile-password" class="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1.5">
+                            {{ __('New Password') }}
+                        </label>
+                        <input
+                            type="password"
+                            id="profile-password"
+                            wire:model="profilePassword"
+                            placeholder="{{ __('Leave blank to keep current password') }}"
+                            class="w-full px-4 py-2.5 rounded-xl border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-800 text-neutral-900 dark:text-neutral-100 placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-neutral-900 dark:focus:ring-white transition text-base sm:text-sm"
+                        >
+                        <p class="text-[11px] text-neutral-500 dark:text-neutral-400 mt-1">
+                            {{ __('Leave blank to keep current password') }}
+                        </p>
+                        @error('profilePassword')
+                            <p class="text-xs text-red-600 dark:text-red-400 mt-1.5">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    {{-- Action Buttons --}}
+                    <div class="flex items-center justify-end gap-3 pt-4 border-t border-neutral-200 dark:border-neutral-800">
+                        <button
+                            type="button"
+                            wire:click="closeProfileModal"
+                            class="px-4 py-2.5 rounded-xl border border-neutral-300 dark:border-neutral-700 text-neutral-700 dark:text-neutral-300 hover:bg-neutral-50 dark:hover:bg-neutral-800 text-sm font-medium transition cursor-pointer"
+                        >
+                            {{ __('Cancel') }}
+                        </button>
+                        <button
+                            type="submit"
+                            wire:loading.attr="disabled"
+                            class="px-5 py-2.5 rounded-xl bg-blue-50 dark:bg-blue-950/60 border border-blue-200 dark:border-blue-800/80 text-blue-700 dark:text-blue-300 font-medium text-sm hover:bg-blue-100 dark:hover:bg-blue-900/60 hover:text-blue-800 dark:hover:text-blue-200 disabled:opacity-50 transition shadow-xs cursor-pointer data-loading:opacity-75"
+                        >
+                            <span wire:loading.remove wire:target="saveProfile">
+                                {{ __('Save Changes') }}
+                            </span>
+                            <span wire:loading wire:target="saveProfile">
+                                {{ __('Saving...') }}
+                            </span>
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>

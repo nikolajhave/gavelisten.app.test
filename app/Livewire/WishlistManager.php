@@ -2,12 +2,15 @@
 
 namespace App\Livewire;
 
+use App\Casts\E164PhoneNumberCast;
 use App\Models\User;
 use App\Models\Wish;
 use App\Models\Wishlist;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rule;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
@@ -39,6 +42,16 @@ class WishlistManager extends Component
     public ?int $deletingWishId = null;
 
     public ?string $deletingWishTitle = null;
+
+    public bool $showProfileModal = false;
+
+    public string $profileName = '';
+
+    public ?string $profileEmail = null;
+
+    public ?string $profilePhone = null;
+
+    public ?string $profilePassword = null;
 
     public string $friendSearchQuery = '';
 
@@ -352,6 +365,94 @@ class WishlistManager extends Component
         }
 
         $this->closeDeleteModal();
+    }
+
+    /**
+     * Open modal to edit user profile.
+     */
+    public function openProfileModal(): void
+    {
+        /** @var User $user */
+        $user = Auth::user();
+
+        $this->profileName = (string) ($user->name ?? '');
+        $this->profileEmail = $user->email;
+        $this->profilePhone = $user->phone;
+        $this->profilePassword = '';
+        $this->resetErrorBag();
+        $this->showProfileModal = true;
+    }
+
+    /**
+     * Close the profile modal and reset state.
+     */
+    public function closeProfileModal(): void
+    {
+        $this->showProfileModal = false;
+        $this->profilePassword = '';
+        $this->resetErrorBag();
+    }
+
+    /**
+     * Save the updated user profile.
+     */
+    public function saveProfile(): void
+    {
+        /** @var User $user */
+        $user = Auth::user();
+
+        $this->profileName = trim($this->profileName);
+        $this->profileEmail = filled($this->profileEmail) ? trim($this->profileEmail) : null;
+        $this->profilePhone = filled($this->profilePhone) ? trim($this->profilePhone) : null;
+        $this->profilePassword = filled($this->profilePassword) ? trim($this->profilePassword) : null;
+
+        $this->validate([
+            'profileName' => ['required', 'string', 'max:255'],
+            'profileEmail' => [
+                'nullable',
+                'string',
+                'email',
+                'max:255',
+                Rule::unique('users', 'email')->ignore($user->id),
+            ],
+            'profilePhone' => ['nullable', 'string', 'min:6', 'max:25'],
+            'profilePassword' => ['nullable', 'string', 'min:6', 'max:255'],
+        ], [], [
+            'profileName' => __('Your Name'),
+            'profileEmail' => __('Email'),
+            'profilePhone' => __('Phone Number'),
+            'profilePassword' => __('Password'),
+        ]);
+
+        if ($this->profilePhone !== null) {
+            $normalizedPhone = (new E164PhoneNumberCast)->set($user, 'phone', $this->profilePhone, []);
+            if ($normalizedPhone) {
+                $existingPhoneUser = User::query()
+                    ->where('phone', $normalizedPhone)
+                    ->where('id', '!=', $user->id)
+                    ->first();
+
+                if ($existingPhoneUser) {
+                    $this->addError('profilePhone', __('validation.unique', ['attribute' => __('Phone Number')]));
+
+                    return;
+                }
+            }
+        }
+
+        $user->name = $this->profileName;
+        $user->email = $this->profileEmail;
+        $user->phone = $this->profilePhone;
+
+        if (filled($this->profilePassword)) {
+            $user->password = Hash::make($this->profilePassword);
+        }
+
+        $user->save();
+        Auth::setUser($user->fresh());
+
+        unset($this->wishlist);
+        $this->closeProfileModal();
     }
 
     /**
