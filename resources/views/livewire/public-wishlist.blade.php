@@ -3,14 +3,7 @@
         {{-- Navigation Bar --}}
         <header class="border-b border-neutral-200 dark:border-neutral-800 bg-white/70 dark:bg-neutral-900/70 backdrop-blur-md sticky top-0 z-30">
             <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-                <a href="{{ route('home') }}" class="flex items-center gap-2.5 group">
-                    <div class="w-9 h-9 rounded-xl bg-blue-50 dark:bg-blue-950/60 border border-blue-200 dark:border-blue-800/80 flex items-center justify-center text-blue-700 dark:text-blue-300 transition group-hover:scale-105">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v13m0-13V4a2 2 0 112 2h-2zm0 0V4a2 2 0 10-2 2h2m0 0H4a2 2 0 00-2 2v3a2 2 0 002 2h16a2 2 0 002-2V10a2 2 0 00-2-2h-4" />
-                        </svg>
-                    </div>
-                    <span class="font-bold text-lg tracking-tight text-neutral-900 dark:text-white">Gavelisten</span>
-                </a>
+                <x-app-logo size="sm" />
 
                 <div class="flex items-center gap-3">
                     @auth
