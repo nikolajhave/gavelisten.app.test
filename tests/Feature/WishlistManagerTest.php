@@ -441,8 +441,9 @@ test('modals support escape key to close', function () {
 
     $component = Livewire::test(WishlistManager::class);
 
-    $component->assertSeeHtml('@keydown.escape.window="$wire.showFormModal && $wire.closeFormModal()"')
-        ->assertSeeHtml('@keydown.escape.window="$wire.showDeleteModal && $wire.closeDeleteModal()"');
+    $component->assertSeeHtml('@keydown.escape.window="if (show) { show = false; $wire.closeFormModal(); }"')
+        ->assertSeeHtml('@keydown.escape.window="if (show) { show = false; $wire.closeDeleteModal(); }"')
+        ->assertSeeHtml('@keydown.escape.window="if (show) { show = false; $wire.closeProfileModal(); }"');
 
     // Test form modal close
     $component->call('openCreateModal')
