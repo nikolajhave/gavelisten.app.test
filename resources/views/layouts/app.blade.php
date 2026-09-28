@@ -18,6 +18,10 @@
     <body class="bg-[#FDFDFC] dark:bg-[#0a0a0a] text-[#1b1b18] dark:text-[#EDEDEC] min-h-screen antialiased">
         {{ $slot }}
 
+        @auth
+            <livewire:changelog-modal />
+        @endauth
+
         @livewireScripts
     </body>
 </html>

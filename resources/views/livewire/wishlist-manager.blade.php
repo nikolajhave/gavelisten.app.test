@@ -456,6 +456,16 @@
 
                             {{-- Footer Section with Sign out --}}
                             <div class="pt-2 px-1 space-y-1">
+                                <button
+                                    type="button"
+                                    @click="$dispatch('open-changelog'); openMenu = false"
+                                    class="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs sm:text-sm font-medium text-neutral-700 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-100 dark:hover:bg-neutral-800 transition cursor-pointer"
+                                >
+                                    <svg class="w-4 h-4 text-neutral-500 dark:text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                    <span>{{ __("What's new?") }}</span>
+                                </button>
                                 <form method="POST" action="{{ route('logout') }}" class="block">
                                     @csrf
                                     <button

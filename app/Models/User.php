@@ -10,13 +10,14 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
 #[ObservedBy(UserObserver::class)]
-#[Fillable(['name', 'email', 'phone', 'legacy_id', 'email_verified_at', 'phone_verified_at', 'last_login_at', 'password'])]
+#[Fillable(['name', 'email', 'phone', 'legacy_id', 'email_verified_at', 'phone_verified_at', 'last_login_at', 'last_seen_changelog_id', 'password'])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
 {
@@ -92,6 +93,46 @@ class User extends Authenticatable
     }
 
     /**
+     * Get the last changelog entry seen by the user.
+     *
+     * @return BelongsTo<Changelog, $this>
+     */
+    public function lastSeenChangelog(): BelongsTo
+    {
+        return $this->belongsTo(Changelog::class, 'last_seen_changelog_id');
+    }
+
+    /**
+     * Get the latest unread changelog for the user, if one exists.
+     */
+    public function unreadChangelog(): ?Changelog
+    {
+        $latest = Changelog::latestPublished()->first();
+
+        if (! $latest) {
+            return null;
+        }
+
+        if ($this->last_seen_changelog_id === $latest->id) {
+            return null;
+        }
+
+        return $latest;
+    }
+
+    /**
+     * Mark the given changelog (or the latest published changelog) as read for this user.
+     */
+    public function markChangelogAsRead(?Changelog $changelog = null): void
+    {
+        $changelog ??= Changelog::latestPublished()->first();
+
+        if ($changelog) {
+            $this->update(['last_seen_changelog_id' => $changelog->id]);
+        }
+    }
+
+    /**
      * Get the password for the user.
      */
     public function getAuthPassword(): string
@@ -120,6 +161,7 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'phone_verified_at' => 'datetime',
             'last_login_at' => 'datetime',
+            'last_seen_changelog_id' => 'integer',
             'phone' => E164PhoneNumberCast::class,
             'password' => 'hashed',
             'legacy_id' => 'integer',
