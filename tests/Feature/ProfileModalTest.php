@@ -215,7 +215,10 @@ test('modals use alpine entangle and transitions for instant responsiveness', fu
     $this->actingAs($user);
 
     Livewire::test(WishlistManager::class)
-        ->assertSeeHtml('x-data="{ show: $wire.entangle(\'showFormModal\') }"')
+        ->assertSeeHtml('$wire.entangle(\'showFormModal\')')
+        ->assertSeeHtml('@open-create-modal.window')
+        ->assertSeeHtml('@open-edit-modal.window')
+        ->assertSeeHtml('@click.stop="$dispatch(\'open-edit-modal\', { id: '.$wish->id.', title: ')
         ->assertSeeHtml('$wire.entangle(\'showDeleteModal\')')
         ->assertSeeHtml('@open-delete-modal.window')
         ->assertSeeHtml('@click.stop="$dispatch(\'open-delete-modal\', { id: '.$wish->id.', title: ')

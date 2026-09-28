@@ -76,7 +76,7 @@
             <div class="w-full sm:w-auto flex items-center justify-between sm:justify-end gap-2 sm:gap-3">
                 <button
                     type="button"
-                    @click="$wire.showFormModal = true"
+                    @click="$dispatch('open-create-modal')"
                     wire:click="openCreateModal"
                     class="inline-flex items-center gap-2 px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-xl bg-blue-50 dark:bg-blue-950/60 border border-blue-200 dark:border-blue-800/80 text-blue-700 dark:text-blue-300 font-medium text-sm hover:bg-blue-100 dark:hover:bg-blue-900/60 hover:text-blue-800 dark:hover:text-blue-200 transition shadow-xs cursor-pointer data-loading:opacity-75"
                 >
@@ -503,7 +503,7 @@
                     </p>
                     <button
                         type="button"
-                        @click="$wire.showFormModal = true"
+                        @click="$dispatch('open-create-modal')"
                         wire:click="openCreateModal"
                         class="mt-6 inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-blue-50 dark:bg-blue-950/60 border border-blue-200 dark:border-blue-800/80 text-blue-700 dark:text-blue-300 font-medium text-sm hover:bg-blue-100 dark:hover:bg-blue-900/60 hover:text-blue-800 dark:hover:text-blue-200 transition cursor-pointer"
                     >
@@ -522,9 +522,13 @@
                     class="space-y-3"
                 >
                     @foreach ($this->wishes as $wish)
+                        @php
+                            $wishPriceFormatted = $wish->price !== null ? str_replace('.', ',', (string) $wish->price) : '';
+                        @endphp
                         <div
                             wire:sort:item="{{ $wish->id }}"
                             wire:key="wish-{{ $wish->id }}"
+                            @click="$dispatch('open-edit-modal', { id: {{ $wish->id }}, title: @js($wish->title), price: @js($wishPriceFormatted), url: @js($wish->url ?? ''), description: @js($wish->description ?? '') })"
                             wire:click="openEditModal({{ $wish->id }})"
                             class="group relative flex items-start sm:items-center justify-between gap-4 bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 hover:border-neutral-300 dark:hover:border-neutral-700 rounded-2xl p-4 sm:p-5 shadow-xs transition cursor-pointer"
                         >
@@ -546,6 +550,7 @@
                                     <div class="flex flex-wrap items-center gap-x-3 gap-y-1">
                                         <button
                                             type="button"
+                                            @click.stop="$dispatch('open-edit-modal', { id: {{ $wish->id }}, title: @js($wish->title), price: @js($wishPriceFormatted), url: @js($wish->url ?? ''), description: @js($wish->description ?? '') })"
                                             wire:click.stop="openEditModal({{ $wish->id }})"
                                             class="font-semibold text-neutral-900 dark:text-neutral-100 text-base text-left hover:text-neutral-600 dark:hover:text-neutral-300 hover:underline underline-offset-2 transition cursor-pointer focus:outline-none"
                                             title="{{ __('Edit wish') }}"
@@ -587,6 +592,7 @@
                             <div class="flex items-center gap-1 shrink-0">
                                 <button
                                     type="button"
+                                    @click.stop="$dispatch('open-edit-modal', { id: {{ $wish->id }}, title: @js($wish->title), price: @js($wishPriceFormatted), url: @js($wish->url ?? ''), description: @js($wish->description ?? '') })"
                                     wire:click.stop="openEditModal({{ $wish->id }})"
                                     class="p-2 rounded-xl text-neutral-500 hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-white hover:bg-neutral-100 dark:hover:bg-neutral-800 transition cursor-pointer"
                                     title="{{ __('Edit wish') }}"
@@ -616,7 +622,28 @@
 
     {{-- Create / Edit Modal (Leveraging Alpine.js for instant responsiveness) --}}
     <div
-        x-data="{ show: $wire.entangle('showFormModal') }"
+        x-data="{
+            show: $wire.entangle('showFormModal'),
+            isEditing: @js((bool) $editingWishId),
+        }"
+        @open-create-modal.window="
+            isEditing = false;
+            $wire.editingWishId = null;
+            $wire.title = '';
+            $wire.price = '';
+            $wire.url = '';
+            $wire.description = '';
+            show = true;
+        "
+        @open-edit-modal.window="
+            isEditing = true;
+            $wire.editingWishId = $event.detail.id;
+            $wire.title = $event.detail.title;
+            $wire.price = $event.detail.price;
+            $wire.url = $event.detail.url;
+            $wire.description = $event.detail.description;
+            show = true;
+        "
         x-show="show"
         x-cloak
         style="display: none;"
@@ -651,7 +678,10 @@
                 class="relative transform overflow-hidden rounded-3xl bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 text-left shadow-2xl transition-all w-full sm:my-8 sm:max-w-lg p-6 sm:p-8"
             >
                 <div class="flex items-center justify-between pb-4 border-b border-neutral-200 dark:border-neutral-800">
-                    <h3 class="text-xl font-bold text-neutral-900 dark:text-neutral-100">
+                    <h3
+                        class="text-xl font-bold text-neutral-900 dark:text-neutral-100"
+                        x-text="isEditing ? @js(__('Edit Wish')) : @js(__('Add a New Wish'))"
+                    >
                         {{ $editingWishId ? __('Edit Wish') : __('Add a New Wish') }}
                     </h3>
                     <button
@@ -750,7 +780,11 @@
                             wire:loading.attr="disabled"
                             class="px-5 py-2.5 rounded-xl bg-blue-50 dark:bg-blue-950/60 border border-blue-200 dark:border-blue-800/80 text-blue-700 dark:text-blue-300 text-sm font-medium hover:bg-blue-100 dark:hover:bg-blue-900/60 hover:text-blue-800 dark:hover:text-blue-200 disabled:opacity-50 transition cursor-pointer data-loading:opacity-75"
                         >
-                            <span wire:loading.remove wire:target="saveWish">
+                            <span
+                                wire:loading.remove
+                                wire:target="saveWish"
+                                x-text="isEditing ? @js(__('Update Wish')) : @js(__('Save Wish'))"
+                            >
                                 {{ $editingWishId ? __('Update Wish') : __('Save Wish') }}
                             </span>
                             <span wire:loading wire:target="saveWish">

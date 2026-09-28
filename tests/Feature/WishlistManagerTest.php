@@ -429,6 +429,7 @@ test('wish div container triggers openEditModal and has pointer cursor', functio
     $component = Livewire::test(WishlistManager::class);
 
     $component->assertSeeHtml('wire:click="openEditModal('.$wish->id.')"')
+        ->assertSeeHtml('@click="$dispatch(\'open-edit-modal\', { id: '.$wish->id.', title: ')
         ->assertSeeHtml('cursor-pointer')
         ->call('openEditModal', $wish->id)
         ->assertSet('showFormModal', true)
