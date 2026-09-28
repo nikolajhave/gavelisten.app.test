@@ -3,6 +3,7 @@
 use App\Livewire\PublicWishlist;
 use App\Livewire\WishlistManager;
 use App\Models\User;
+use App\Models\Wish;
 use App\Models\Wishlist;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
@@ -207,11 +208,17 @@ test('profile modal fields are pre-populated on mount for authenticated user', f
 
 test('modals use alpine entangle and transitions for instant responsiveness', function () {
     $user = User::factory()->create();
+    $wishlist = $user->wishlists()->first();
+    $wish = Wish::factory()->for($wishlist)->create([
+        'title' => 'Watch',
+    ]);
     $this->actingAs($user);
 
     Livewire::test(WishlistManager::class)
         ->assertSeeHtml('x-data="{ show: $wire.entangle(\'showFormModal\') }"')
-        ->assertSeeHtml('x-data="{ show: $wire.entangle(\'showDeleteModal\') }"')
+        ->assertSeeHtml('$wire.entangle(\'showDeleteModal\')')
+        ->assertSeeHtml('@open-delete-modal.window')
+        ->assertSeeHtml('@click.stop="$dispatch(\'open-delete-modal\', { id: '.$wish->id.', title: ')
         ->assertSeeHtml('x-data="{ show: $wire.entangle(\'showProfileModal\') }"');
 });
 

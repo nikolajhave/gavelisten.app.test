@@ -84,7 +84,9 @@ test('empty wishlist displays friendly empty state', function () {
 });
 
 test('wishes without price or url are rendered gracefully without broken elements', function () {
-    $user = User::factory()->create();
+    $user = User::factory()->create([
+        'name' => 'Alice Johnson',
+    ]);
     $wishlist = Wishlist::factory()->for($user)->create([
         'share_token' => 'simpletoken1',
     ]);

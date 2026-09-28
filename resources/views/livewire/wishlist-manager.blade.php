@@ -587,6 +587,7 @@
                                 </button>
                                 <button
                                     type="button"
+                                    @click.stop="$dispatch('open-delete-modal', { id: {{ $wish->id }}, title: @js($wish->title) })"
                                     wire:click.stop="confirmDeleteWish({{ $wish->id }})"
                                     class="p-2 rounded-xl text-neutral-500 hover:text-red-600 dark:text-neutral-400 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/50 transition cursor-pointer"
                                     title="{{ __('Delete wish') }}"
@@ -753,8 +754,18 @@
     </div>
 
     {{-- Delete Confirmation Modal (Leveraging Alpine.js for instant responsiveness) --}}
+    @php
+        $deleteConfirmationText = __('Are you sure you want to delete :title? This action cannot be undone.', ['title' => '___TITLE___']);
+        [$deletePrefix, $deleteSuffix] = str_contains($deleteConfirmationText, '___TITLE___')
+            ? explode('___TITLE___', $deleteConfirmationText, 2)
+            : [$deleteConfirmationText, ''];
+    @endphp
     <div
-        x-data="{ show: $wire.entangle('showDeleteModal') }"
+        x-data="{
+            show: $wire.entangle('showDeleteModal'),
+            wishTitle: @js($deletingWishTitle ?? ''),
+        }"
+        @open-delete-modal.window="show = true; wishTitle = $event.detail.title"
         x-show="show"
         x-cloak
         style="display: none;"
@@ -797,7 +808,7 @@
                             {{ __('Delete Wish') }}
                         </h3>
                         <p class="text-sm text-neutral-500 dark:text-neutral-400 mt-1">
-                            {{ __('Are you sure you want to delete :title? This action cannot be undone.', ['title' => '"' . $deletingWishTitle . '"']) }}
+                            {{ $deletePrefix }}<span x-text="wishTitle ? '&quot;' + wishTitle + '&quot;' : @js($deletingWishTitle ? '"' . $deletingWishTitle . '"' : '')">@if($deletingWishTitle)"{{ $deletingWishTitle }}"@endif</span>{{ $deleteSuffix }}
                         </p>
                     </div>
                 </div>
