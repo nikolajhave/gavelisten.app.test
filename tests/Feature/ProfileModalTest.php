@@ -190,6 +190,31 @@ test('wishlist manager menu renders user profile card, friends, and sign out', f
         ->assertSeeHtml('wire:click="openProfileModal"');
 });
 
+test('profile modal fields are pre-populated on mount for authenticated user', function () {
+    $user = User::factory()->create([
+        'name' => 'Instant Profile User',
+        'email' => 'instant@example.com',
+        'phone' => '+4512345678',
+    ]);
+    $this->actingAs($user);
+
+    Livewire::test(WishlistManager::class)
+        ->assertSet('profileName', 'Instant Profile User')
+        ->assertSet('profileEmail', 'instant@example.com')
+        ->assertSet('profilePhone', '+4512345678')
+        ->assertSeeHtml('x-data="{ show: $wire.entangle(\'showProfileModal\') }"');
+});
+
+test('modals use alpine entangle and transitions for instant responsiveness', function () {
+    $user = User::factory()->create();
+    $this->actingAs($user);
+
+    Livewire::test(WishlistManager::class)
+        ->assertSeeHtml('x-data="{ show: $wire.entangle(\'showFormModal\') }"')
+        ->assertSeeHtml('x-data="{ show: $wire.entangle(\'showDeleteModal\') }"')
+        ->assertSeeHtml('x-data="{ show: $wire.entangle(\'showProfileModal\') }"');
+});
+
 test('public wishlist view renders account menu when authenticated', function () {
     $owner = User::factory()->create(['name' => 'Owner Person']);
     $viewer = User::factory()->create([

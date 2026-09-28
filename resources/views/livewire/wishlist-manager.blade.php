@@ -76,6 +76,7 @@
             <div class="w-full sm:w-auto flex items-center justify-between sm:justify-end gap-2 sm:gap-3">
                 <button
                     type="button"
+                    @click="$wire.showFormModal = true"
                     wire:click="openCreateModal"
                     class="inline-flex items-center gap-2 px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-xl bg-blue-50 dark:bg-blue-950/60 border border-blue-200 dark:border-blue-800/80 text-blue-700 dark:text-blue-300 font-medium text-sm hover:bg-blue-100 dark:hover:bg-blue-900/60 hover:text-blue-800 dark:hover:text-blue-200 transition shadow-xs cursor-pointer data-loading:opacity-75"
                 >
@@ -238,8 +239,8 @@
                                 </div>
                                 <button
                                     type="button"
+                                    @click="open = false; $wire.showProfileModal = true"
                                     wire:click="openProfileModal"
-                                    @click="open = false"
                                     class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-medium bg-neutral-100 dark:bg-neutral-800 text-neutral-700 dark:text-neutral-300 hover:bg-neutral-200 dark:hover:bg-neutral-700 transition cursor-pointer shrink-0"
                                     title="{{ __('Edit Profile') }}"
                                 >
@@ -492,6 +493,7 @@
                     </p>
                     <button
                         type="button"
+                        @click="$wire.showFormModal = true"
                         wire:click="openCreateModal"
                         class="mt-6 inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-blue-50 dark:bg-blue-950/60 border border-blue-200 dark:border-blue-800/80 text-blue-700 dark:text-blue-300 font-medium text-sm hover:bg-blue-100 dark:hover:bg-blue-900/60 hover:text-blue-800 dark:hover:text-blue-200 transition cursor-pointer"
                     >
@@ -600,9 +602,11 @@
         </div>
     </div>
 
-    {{-- Create / Edit Modal (Leveraging wire:show for zero layout shift) --}}
+    {{-- Create / Edit Modal (Leveraging Alpine.js for instant responsiveness) --}}
     <div
-        wire:show="showFormModal"
+        x-data="{ show: $wire.entangle('showFormModal') }"
+        x-show="show"
+        x-cloak
         style="display: none;"
         class="fixed inset-0 z-50 overflow-y-auto"
         role="dialog"
@@ -612,19 +616,35 @@
         <div class="flex min-h-full items-center justify-center p-4 text-center sm:p-0">
             {{-- Backdrop --}}
             <div
-                wire:click="closeFormModal"
+                @click="show = false; $wire.closeFormModal()"
+                x-show="show"
+                x-transition:enter="transition ease-out duration-100"
+                x-transition:enter-start="opacity-0"
+                x-transition:enter-end="opacity-100"
+                x-transition:leave="transition ease-in duration-75"
+                x-transition:leave-start="opacity-100"
+                x-transition:leave-end="opacity-0"
                 class="fixed inset-0 bg-neutral-900/60 backdrop-blur-xs transition-opacity cursor-pointer"
             ></div>
 
             {{-- Modal Dialog --}}
-            <div class="relative transform overflow-hidden rounded-3xl bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 text-left shadow-2xl transition-all w-full sm:my-8 sm:max-w-lg p-6 sm:p-8">
+            <div
+                x-show="show"
+                x-transition:enter="transition ease-out duration-100"
+                x-transition:enter-start="transform opacity-0 scale-95"
+                x-transition:enter-end="transform opacity-100 scale-100"
+                x-transition:leave="transition ease-in duration-75"
+                x-transition:leave-start="transform opacity-100 scale-100"
+                x-transition:leave-end="transform opacity-0 scale-95"
+                class="relative transform overflow-hidden rounded-3xl bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 text-left shadow-2xl transition-all w-full sm:my-8 sm:max-w-lg p-6 sm:p-8"
+            >
                 <div class="flex items-center justify-between pb-4 border-b border-neutral-200 dark:border-neutral-800">
                     <h3 class="text-xl font-bold text-neutral-900 dark:text-neutral-100">
                         {{ $editingWishId ? __('Edit Wish') : __('Add a New Wish') }}
                     </h3>
                     <button
                         type="button"
-                        wire:click="closeFormModal"
+                        @click="show = false; $wire.closeFormModal()"
                         class="p-1 rounded-lg text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-200 transition cursor-pointer"
                     >
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -708,7 +728,7 @@
                     <div class="flex items-center justify-end gap-3 pt-4 border-t border-neutral-200 dark:border-neutral-800">
                         <button
                             type="button"
-                            wire:click="closeFormModal"
+                            @click="show = false; $wire.closeFormModal()"
                             class="px-4 py-2.5 rounded-xl border border-neutral-300 dark:border-neutral-700 text-neutral-700 dark:text-neutral-300 hover:bg-neutral-50 dark:hover:bg-neutral-800 text-sm font-medium transition cursor-pointer"
                         >
                             {{ __('Cancel') }}
@@ -731,9 +751,11 @@
         </div>
     </div>
 
-    {{-- Delete Confirmation Modal (Leveraging wire:show) --}}
+    {{-- Delete Confirmation Modal (Leveraging Alpine.js for instant responsiveness) --}}
     <div
-        wire:show="showDeleteModal"
+        x-data="{ show: $wire.entangle('showDeleteModal') }"
+        x-show="show"
+        x-cloak
         style="display: none;"
         class="fixed inset-0 z-50 overflow-y-auto"
         role="dialog"
@@ -742,11 +764,27 @@
     >
         <div class="flex min-h-full items-center justify-center p-4 text-center sm:p-0">
             <div
-                wire:click="closeDeleteModal"
+                @click="show = false; $wire.closeDeleteModal()"
+                x-show="show"
+                x-transition:enter="transition ease-out duration-100"
+                x-transition:enter-start="opacity-0"
+                x-transition:enter-end="opacity-100"
+                x-transition:leave="transition ease-in duration-75"
+                x-transition:leave-start="opacity-100"
+                x-transition:leave-end="opacity-0"
                 class="fixed inset-0 bg-neutral-900/60 backdrop-blur-xs transition-opacity cursor-pointer"
             ></div>
 
-            <div class="relative transform overflow-hidden rounded-3xl bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 text-left shadow-2xl transition-all w-full sm:my-8 sm:max-w-md p-6 sm:p-7">
+            <div
+                x-show="show"
+                x-transition:enter="transition ease-out duration-100"
+                x-transition:enter-start="transform opacity-0 scale-95"
+                x-transition:enter-end="transform opacity-100 scale-100"
+                x-transition:leave="transition ease-in duration-75"
+                x-transition:leave-start="transform opacity-100 scale-100"
+                x-transition:leave-end="transform opacity-0 scale-95"
+                class="relative transform overflow-hidden rounded-3xl bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 text-left shadow-2xl transition-all w-full sm:my-8 sm:max-w-md p-6 sm:p-7"
+            >
                 <div class="flex items-center gap-4">
                     <div class="w-12 h-12 rounded-2xl bg-red-100 dark:bg-red-950/60 flex items-center justify-center shrink-0 text-red-600 dark:text-red-400">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -766,7 +804,7 @@
                 <div class="mt-6 flex items-center justify-end gap-3">
                     <button
                         type="button"
-                        wire:click="closeDeleteModal"
+                        @click="show = false; $wire.closeDeleteModal()"
                         class="px-4 py-2.5 rounded-xl border border-neutral-300 dark:border-neutral-700 text-neutral-700 dark:text-neutral-300 hover:bg-neutral-50 dark:hover:bg-neutral-800 text-sm font-medium transition cursor-pointer"
                     >
                         {{ __('Cancel') }}
@@ -789,9 +827,11 @@
         </div>
     </div>
 
-    {{-- Profile Modal (Leveraging wire:show for zero layout shift) --}}
+    {{-- Profile Modal (Leveraging Alpine.js for instant responsiveness) --}}
     <div
-        wire:show="showProfileModal"
+        x-data="{ show: $wire.entangle('showProfileModal') }"
+        x-show="show"
+        x-cloak
         style="display: none;"
         class="fixed inset-0 z-50 overflow-y-auto"
         role="dialog"
@@ -801,12 +841,28 @@
         <div class="flex min-h-full items-center justify-center p-4 text-center sm:p-0">
             {{-- Backdrop --}}
             <div
-                wire:click="closeProfileModal"
+                @click="show = false; $wire.closeProfileModal()"
+                x-show="show"
+                x-transition:enter="transition ease-out duration-100"
+                x-transition:enter-start="opacity-0"
+                x-transition:enter-end="opacity-100"
+                x-transition:leave="transition ease-in duration-75"
+                x-transition:leave-start="opacity-100"
+                x-transition:leave-end="opacity-0"
                 class="fixed inset-0 bg-neutral-900/60 backdrop-blur-xs transition-opacity cursor-pointer"
             ></div>
 
             {{-- Modal Dialog --}}
-            <div class="relative transform overflow-hidden rounded-3xl bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 text-left shadow-2xl transition-all w-full sm:my-8 sm:max-w-md p-6 sm:p-8">
+            <div
+                x-show="show"
+                x-transition:enter="transition ease-out duration-100"
+                x-transition:enter-start="transform opacity-0 scale-95"
+                x-transition:enter-end="transform opacity-100 scale-100"
+                x-transition:leave="transition ease-in duration-75"
+                x-transition:leave-start="transform opacity-100 scale-100"
+                x-transition:leave-end="transform opacity-0 scale-95"
+                class="relative transform overflow-hidden rounded-3xl bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 text-left shadow-2xl transition-all w-full sm:my-8 sm:max-w-md p-6 sm:p-8"
+            >
                 <div class="flex items-center justify-between pb-4 border-b border-neutral-200 dark:border-neutral-800">
                     <div class="flex items-center gap-3">
                         <div class="w-10 h-10 rounded-2xl bg-blue-50 dark:bg-blue-950/60 border border-blue-200 dark:border-blue-800/80 text-blue-700 dark:text-blue-300 flex items-center justify-center shrink-0">
@@ -825,7 +881,7 @@
                     </div>
                     <button
                         type="button"
-                        wire:click="closeProfileModal"
+                        @click="show = false; $wire.closeProfileModal()"
                         class="p-1 rounded-lg text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-200 transition cursor-pointer"
                     >
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -899,9 +955,6 @@
                             placeholder="{{ __('Leave blank to keep current password') }}"
                             class="w-full px-4 py-2.5 rounded-xl border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-800 text-neutral-900 dark:text-neutral-100 placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-neutral-900 dark:focus:ring-white transition text-base sm:text-sm"
                         >
-{{--                        <p class="text-[11px] text-neutral-500 dark:text-neutral-400 mt-1">--}}
-{{--                            {{ __('Leave blank to keep current password') }}--}}
-{{--                        </p>--}}
                         @error('profilePassword')
                             <p class="text-xs text-red-600 dark:text-red-400 mt-1.5">{{ $message }}</p>
                         @enderror
@@ -911,7 +964,7 @@
                     <div class="flex items-center justify-end gap-3 pt-4">
                         <button
                             type="button"
-                            wire:click="closeProfileModal"
+                            @click="show = false; $wire.closeProfileModal()"
                             class="px-4 py-2.5 rounded-xl border border-neutral-300 dark:border-neutral-700 text-neutral-700 dark:text-neutral-300 hover:bg-neutral-50 dark:hover:bg-neutral-800 text-sm font-medium transition cursor-pointer"
                         >
                             {{ __('Cancel') }}

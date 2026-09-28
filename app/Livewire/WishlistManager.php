@@ -56,6 +56,20 @@ class WishlistManager extends Component
     public string $friendSearchQuery = '';
 
     /**
+     * Initialize the component state with current user profile data.
+     */
+    public function mount(): void
+    {
+        /** @var User|null $user */
+        $user = Auth::user();
+        if ($user) {
+            $this->profileName = (string) ($user->name ?? '');
+            $this->profileEmail = $user->email;
+            $this->profilePhone = $user->phone;
+        }
+    }
+
+    /**
      * Clear the friend search query.
      */
     public function clearFriendSearch(): void
