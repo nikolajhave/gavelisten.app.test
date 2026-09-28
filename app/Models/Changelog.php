@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 
-#[Fillable(['version', 'title', 'content', 'published_at'])]
+#[Fillable(['slug', 'version', 'title', 'content', 'published_at'])]
 class Changelog extends Model
 {
     /** @use HasFactory<ChangelogFactory> */

@@ -2,8 +2,25 @@
 
 use App\Models\Changelog;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\File;
 
 uses(RefreshDatabase::class);
+
+beforeEach(function () {
+    $this->initialFiles = File::exists(database_path('changelogs'))
+        ? array_map(fn ($f) => $f->getRealPath(), File::files(database_path('changelogs')))
+        : [];
+});
+
+afterEach(function () {
+    if (File::exists(database_path('changelogs'))) {
+        $currentFiles = array_map(fn ($f) => $f->getRealPath(), File::files(database_path('changelogs')));
+        $newFiles = array_diff($currentFiles, $this->initialFiles ?? []);
+        foreach ($newFiles as $newFile) {
+            File::delete($newFile);
+        }
+    }
+});
 
 test('changelog:new creates a published changelog with options', function () {
     $this->artisan('changelog:new', [
@@ -11,7 +28,7 @@ test('changelog:new creates a published changelog with options', function () {
         '--content' => "- Forbedret design\n- Hurtigere søgning\n- Mange fejlrettelser",
         '--ver' => 'v1.2.0',
     ])
-        ->expectsOutputToContain('Changelog entry created successfully!')
+        ->expectsOutputToContain('Changelog created successfully!')
         ->expectsOutputToContain('Nyt design og hurtigere søgning')
         ->expectsOutputToContain('v1.2.0')
         ->assertSuccessful();
@@ -33,7 +50,7 @@ test('changelog:new works interactively with prompts', function () {
         ->expectsQuestion('Version number (optional, press Enter to skip)', 'v3.0.0')
         ->expectsQuestion("What's new in this update? (Markdown is supported)", "- Interaktiv punkt 1\n- Interaktiv punkt 2")
         ->expectsConfirmation('Publish this update immediately so users will see it?', 'yes')
-        ->expectsOutputToContain('Changelog entry created successfully!')
+        ->expectsOutputToContain('Changelog created successfully!')
         ->expectsOutputToContain('Interaktiv titel')
         ->expectsOutputToContain('v3.0.0')
         ->assertSuccessful();
@@ -50,7 +67,7 @@ test('changelog:new creates a draft changelog when --draft is specified', functi
         '--content' => 'Arbejder på noget fedt',
         '--draft' => true,
     ])
-        ->expectsOutputToContain('Changelog entry created successfully!')
+        ->expectsOutputToContain('Changelog created successfully!')
         ->expectsOutputToContain('Draft (Unpublished)')
         ->assertSuccessful();
 
@@ -68,7 +85,7 @@ test('changelog:new schedules publication with --publish-at', function () {
         '--content' => 'Udgives snart',
         '--publish-at' => $futureDate,
     ])
-        ->expectsOutputToContain('Changelog entry created successfully!')
+        ->expectsOutputToContain('Changelog created successfully!')
         ->expectsOutputToContain('Scheduled for')
         ->assertSuccessful();
 
@@ -83,14 +100,14 @@ test('changelog:new command aliases work', function () {
         '--title' => 'Alias test',
         '--content' => 'Test indhold',
     ])
-        ->expectsOutputToContain('Changelog entry created successfully!')
+        ->expectsOutputToContain('Changelog created successfully!')
         ->assertSuccessful();
 
     $this->artisan('changelog:create', [
         '--title' => 'Alias test 2',
         '--content' => 'Test indhold 2',
     ])
-        ->expectsOutputToContain('Changelog entry created successfully!')
+        ->expectsOutputToContain('Changelog created successfully!')
         ->assertSuccessful();
 });
 

@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('changelogs', function (Blueprint $table) {
             $table->id();
+            $table->string('slug')->nullable()->unique();
             $table->string('version')->nullable();
             $table->string('title');
             $table->text('content');

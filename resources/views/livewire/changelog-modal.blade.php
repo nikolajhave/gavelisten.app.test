@@ -84,7 +84,7 @@
                         </div>
 
                         {{-- Body / Content --}}
-                        <div class="py-2 max-h-[60vh] overflow-y-auto text-sm text-neutral-600 dark:text-neutral-300 space-y-2 [&>ul]:list-disc [&>ul]:pl-5 [&>ul]:space-y-1.5 [&>ol]:list-decimal [&>ol]:pl-5 [&>ol]:space-y-1.5 [&>p]:leading-relaxed [&>a]:text-blue-600 dark:[&>a]:text-blue-400 [&>a]:underline">
+                        <div class="py-2 max-h-[60vh] overflow-y-auto text-sm text-neutral-600 dark:text-neutral-300 changelog-content">
                             {!! $changelog->formatted_content !!}
                         </div>
 

@@ -38,6 +38,7 @@ class ListChangelogsCommand extends Command
 
         $rows = $changelogs->map(fn (Changelog $c) => [
             $c->id,
+            $c->slug ?? '-',
             $c->version ?? '-',
             $c->title,
             $c->published_at
@@ -49,7 +50,7 @@ class ListChangelogsCommand extends Command
         ])->toArray();
 
         $this->table(
-            ['ID', 'Version', 'Title', 'Status', 'Created At'],
+            ['ID', 'Slug / File Key', 'Version', 'Title', 'Status', 'Created At'],
             $rows
         );
 
