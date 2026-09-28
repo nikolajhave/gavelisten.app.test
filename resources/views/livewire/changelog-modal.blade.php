@@ -72,7 +72,7 @@
                         </div>
 
                         {{-- Title & Date --}}
-                        <div class="mb-4 pr-6">
+                        <div class="pr-6">
                             <h3 id="modal-changelog-title" class="text-xl font-bold text-neutral-900 dark:text-neutral-100 tracking-tight leading-snug">
                                 {{ $changelog->title }}
                             </h3>
