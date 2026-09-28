@@ -7,3 +7,16 @@
     --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
 }
+
+/* SortableJS drag & drop helper styling */
+.sortable-fallback {
+    transition: none !important;
+    opacity: 0.9 !important;
+    pointer-events: none !important;
+    box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1) !important;
+    border-radius: 1rem !important;
+}
+
+.sortable-drag {
+    transition: none !important;
+}

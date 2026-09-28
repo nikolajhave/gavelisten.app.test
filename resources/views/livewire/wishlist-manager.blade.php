@@ -508,6 +508,7 @@
                 <div
                     wire:key="wishlist-items-list"
                     wire:sort="reorderWishes"
+                    x-sort:config="{ fallbackOnBody: true }"
                     class="space-y-3"
                 >
                     @foreach ($this->wishes as $wish)
@@ -523,10 +524,10 @@
                                     type="button"
                                     wire:sort:handle
                                     @click.stop
-                                    class="mt-1 sm:mt-0 p-1.5 rounded-lg text-neutral-400 hover:text-neutral-700 dark:text-neutral-500 dark:hover:text-neutral-200 hover:bg-neutral-100 dark:hover:bg-neutral-800 cursor-grab active:cursor-grabbing transition shrink-0"
+                                    class="mt-1 sm:mt-0 p-1.5 rounded-lg text-neutral-400 hover:text-neutral-700 dark:text-neutral-500 dark:hover:text-neutral-200 hover:bg-neutral-100 dark:hover:bg-neutral-800 cursor-grab active:cursor-grabbing transition shrink-0 touch-none select-none"
                                     title="{{ __('Drag to reorder') }}"
                                 >
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <svg class="w-5 h-5 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8h16M4 16h16" />
                                     </svg>
                                 </button>
