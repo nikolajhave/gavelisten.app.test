@@ -725,6 +725,7 @@
                             <input
                                 type="text"
                                 id="wish-price"
+                                inputmode="decimal"
                                 wire:model="price"
                                 placeholder="{{ __('e.g. 2499.00') }}"
                                 class="w-full px-4 py-2.5 rounded-xl border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-800 text-neutral-900 dark:text-neutral-100 placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-neutral-900 dark:focus:ring-white transition text-base sm:text-sm"
