@@ -1,4 +1,11 @@
-<div class="pt-3 px-3">
+@props([
+    'friends',
+    'query',
+    'results',
+    'keyPrefix' => '',
+])
+
+<div {{ $attributes->merge(['class' => 'pt-3 px-3']) }}>
     <div class="mb-2 flex items-center justify-between">
         <h4 class="text-xs font-semibold uppercase tracking-wider text-neutral-500 dark:text-neutral-400 flex items-center gap-1.5">
             <svg class="w-3.5 h-3.5 text-neutral-400 dark:text-neutral-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -6,7 +13,7 @@
             </svg>
             <span>{{ __('Find and add friend') }}</span>
         </h4>
-        @if ($friendSearchQuery !== '')
+        @if ($query !== '')
             <button
                 type="button"
                 wire:click="clearFriendSearch"
@@ -29,7 +36,7 @@
             placeholder="{{ __('Search name, email or phone...') }}"
             class="w-full pl-9 pr-8 py-2 rounded-xl text-base sm:text-sm bg-neutral-50 dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 text-neutral-900 dark:text-neutral-100 placeholder-neutral-400 dark:placeholder-neutral-500 focus:outline-none focus:ring-2 focus:ring-neutral-900 dark:focus:ring-white transition"
         >
-        @if ($friendSearchQuery !== '')
+        @if ($query !== '')
             <button
                 type="button"
                 wire:click="clearFriendSearch"
@@ -43,22 +50,22 @@
         @endif
     </div>
 
-    @if ($friendSearchQuery !== '')
+    @if ($query !== '')
         <div class="mt-2.5 max-h-48 overflow-y-auto space-y-1">
-            @if ($this->friendSearchResults->isEmpty())
+            @if ($results->isEmpty())
                 <div class="py-3 px-2 text-center text-xs text-neutral-500 dark:text-neutral-400">
                     {{ __('No users found') }}
                 </div>
             @else
-                @foreach ($this->friendSearchResults as $resultUser)
+                @foreach ($results as $resultUser)
                     @php
-                        $isAlreadyFriend = $this->friends->contains('id', $resultUser->id);
+                        $isAlreadyFriend = $friends->contains('id', $resultUser->id);
                         $resultName = $resultUser->name ?: __('Friend');
                         $resultInitial = mb_substr($resultName, 0, 1);
                         $resultWishlist = $resultUser->wishlists->first();
                     @endphp
                     <div
-                        wire:key="search-result-{{ $resultUser->id }}"
+                        wire:key="{{ $keyPrefix }}search-result-{{ $resultUser->id }}"
                         class="flex items-center justify-between gap-2 p-2 rounded-xl bg-white dark:bg-neutral-800/80 border border-neutral-100 dark:border-neutral-700/50 hover:border-neutral-200 dark:hover:border-neutral-700 transition"
                     >
                         @if ($resultWishlist)
