@@ -524,6 +524,7 @@
                     @foreach ($this->wishes as $wish)
                         @php
                             $wishPriceFormatted = $wish->price !== null ? str_replace('.', ',', (string) $wish->price) : '';
+                            $hasDetails = (bool) ($wish->description || $wish->url);
                         @endphp
                         <div
                             wire:sort:item="{{ $wish->id }}"
@@ -537,7 +538,7 @@
                                 type="button"
                                 wire:sort:handle
                                 @click.stop
-                                class="col-start-1 row-start-1 sm:row-span-2 self-center p-1.5 rounded-lg text-neutral-400 hover:text-neutral-700 dark:text-neutral-500 dark:hover:text-neutral-200 hover:bg-neutral-100 dark:hover:bg-neutral-800 cursor-grab active:cursor-grabbing transition shrink-0 touch-none select-none"
+                                class="col-start-1 row-start-1 {{ $hasDetails ? 'sm:row-span-2' : '' }} self-center p-1.5 rounded-lg text-neutral-400 hover:text-neutral-700 dark:text-neutral-500 dark:hover:text-neutral-200 hover:bg-neutral-100 dark:hover:bg-neutral-800 cursor-grab active:cursor-grabbing transition shrink-0 touch-none select-none"
                                 title="{{ __('Drag to reorder') }}"
                             >
                                 <svg class="w-5 h-5 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -546,7 +547,7 @@
                             </button>
 
                             {{-- Col 2 (xs: Col 2 & 3): Header & Price --}}
-                            <div class="col-start-2 col-end-4 sm:col-end-3 row-start-1 flex flex-wrap items-center gap-x-3 gap-y-1 min-w-0">
+                            <div class="col-start-2 col-end-4 sm:col-end-3 row-start-1 flex flex-wrap items-center gap-x-3 gap-y-1 min-w-0 self-center">
                                 <button
                                     type="button"
                                     @click.stop="$dispatch('open-edit-modal', { id: {{ $wish->id }}, title: @js($wish->title), price: @js($wishPriceFormatted), url: @js($wish->url ?? ''), description: @js($wish->description ?? '') })"
@@ -565,7 +566,7 @@
                             </div>
 
                             {{-- Col 2: Text (Description) & Link (URL) --}}
-                            @if ($wish->description || $wish->url)
+                            @if ($hasDetails)
                                 <div class="col-start-2 col-end-3 row-start-2 min-w-0 space-y-1.5 sm:space-y-2">
                                     @if ($wish->description)
                                         <p class="text-sm text-neutral-600 dark:text-neutral-400 whitespace-pre-line line-clamp-2">{{ $wish->description }}</p>
@@ -591,7 +592,7 @@
                             @endif
 
                             {{-- Col 3: Actions --}}
-                            <div class="col-start-3 row-start-2 sm:row-start-1 sm:row-span-2 flex items-center justify-self-end gap-1 shrink-0 self-center">
+                            <div class="col-start-3 row-start-2 sm:row-start-1 {{ $hasDetails ? 'sm:row-span-2' : '' }} flex items-center justify-self-end gap-1 shrink-0 self-center">
                                 <button
                                     type="button"
                                     @click.stop="$dispatch('open-edit-modal', { id: {{ $wish->id }}, title: @js($wish->title), price: @js($wishPriceFormatted), url: @js($wish->url ?? ''), description: @js($wish->description ?? '') })"
