@@ -102,8 +102,8 @@
                 </div>
 
                 {{-- Price & Link Grid --}}
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div>
+                <div class="grid grid-cols-1 sm:grid-cols-4 gap-4">
+                    <div class="sm:col-span-1">
                         <label for="wish-price" class="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1.5">
                             {{ __('Price (kr)') }}
                         </label>
@@ -120,7 +120,7 @@
                         @enderror
                     </div>
 
-                    <div>
+                    <div class="sm:col-span-3">
                         <label for="wish-url" class="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1.5">
                             {{ __('Link / URL') }}
                         </label>
