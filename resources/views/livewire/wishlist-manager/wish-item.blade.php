@@ -1,5 +1,5 @@
 @php
-    $wishPriceFormatted = $wish->price !== null ? str_replace('.', ',', (string) $wish->price) : '';
+    $wishPriceFormatted = $wish->editable_price ?? '';
     $hasDetails = (bool) ($wish->description || $wish->url);
 @endphp
 <div

@@ -71,3 +71,19 @@ test('wish url_domain attribute extracts clean host from various url formats', f
     ]);
     expect($wish4->url_domain)->toBeNull();
 });
+
+test('wish editable_price attribute formats integers without decimals and decimals with comma', function () {
+    $wishlist = Wishlist::factory()->create();
+
+    $wishInteger = Wish::factory()->for($wishlist)->create(['price' => 669.00]);
+    expect($wishInteger->editable_price)->toBe('669');
+
+    $wishDecimal = Wish::factory()->for($wishlist)->create(['price' => 669.50]);
+    expect($wishDecimal->editable_price)->toBe('669,50');
+
+    $wishCents = Wish::factory()->for($wishlist)->create(['price' => 149.95]);
+    expect($wishCents->editable_price)->toBe('149,95');
+
+    $wishNull = Wish::factory()->for($wishlist)->create(['price' => null]);
+    expect($wishNull->editable_price)->toBeNull();
+});

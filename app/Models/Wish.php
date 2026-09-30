@@ -55,6 +55,27 @@ class Wish extends Model
     }
 
     /**
+     * Get the price formatted for editing in input fields (e.g. '669' or '669,50').
+     *
+     * @return Attribute<string|null, never>
+     */
+    protected function editablePrice(): Attribute
+    {
+        return Attribute::get(function (mixed $value, array $attributes): ?string {
+            $rawPrice = $attributes['price'] ?? $this->price;
+            if ($rawPrice === null || $rawPrice === '') {
+                return null;
+            }
+
+            $price = (float) $rawPrice;
+
+            return (fmod(round($price * 100), 100) == 0.0)
+                ? (string) (int) round($price)
+                : str_replace('.', ',', (string) ($this->price ?? $rawPrice));
+        });
+    }
+
+    /**
      * Get the domain / host string from the URL for clean display.
      *
      * @return Attribute<string|null, never>
