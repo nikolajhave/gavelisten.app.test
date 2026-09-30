@@ -2,6 +2,13 @@
     x-data="{
         show: $wire.entangle('showFormModal'),
         isEditing: @js((bool) $editingWishId),
+        init() {
+            this.$watch('show', value => {
+                if (value) {
+                    this.$nextTick(() => this.$refs.titleInput?.focus());
+                }
+            });
+        },
     }"
     @open-create-modal.window="
         isEditing = false;
@@ -11,6 +18,7 @@
         $wire.url = '';
         $wire.description = '';
         show = true;
+        $nextTick(() => $refs.titleInput?.focus());
     "
     @open-edit-modal.window="
         isEditing = true;
@@ -20,6 +28,7 @@
         $wire.url = $event.detail.url;
         $wire.description = $event.detail.description;
         show = true;
+        $nextTick(() => $refs.titleInput?.focus());
     "
     x-show="show"
     x-cloak
@@ -81,6 +90,7 @@
                     <input
                         type="text"
                         id="wish-title"
+                        x-ref="titleInput"
                         wire:model="title"
                         placeholder="{{ __('e.g. Sony WH-1000XM5 Headphones') }}"
                         class="w-full px-4 py-2.5 rounded-xl border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-800 text-neutral-900 dark:text-neutral-100 placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-neutral-900 dark:focus:ring-white transition text-base sm:text-sm"
