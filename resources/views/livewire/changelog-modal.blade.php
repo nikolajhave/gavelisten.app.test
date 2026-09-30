@@ -1,9 +1,11 @@
 <div>
     @if ($changelog)
         <div
-            x-data="{ show: @entangle('showModal') }"
+            x-data="{ show: $wire.entangle('showModal') }"
+            @open-changelog.window="show = true"
             x-show="show"
             x-cloak
+            style="display: none;"
             class="relative z-50"
             role="dialog"
             aria-modal="true"

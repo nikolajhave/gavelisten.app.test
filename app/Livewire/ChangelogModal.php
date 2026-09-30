@@ -19,8 +19,9 @@ class ChangelogModal extends Component
         $user = Auth::user();
 
         if ($user) {
-            $this->changelog = $user->unreadChangelog();
-            $this->showModal = $this->changelog !== null;
+            $unread = $user->unreadChangelog();
+            $this->showModal = $unread !== null;
+            $this->changelog = $unread ?? Changelog::latestPublished()->first();
         }
     }
 

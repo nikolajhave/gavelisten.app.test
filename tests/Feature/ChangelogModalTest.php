@@ -64,7 +64,25 @@ test('user who has already seen latest changelog does not see modal on mount', f
 
     Livewire::test(ChangelogModal::class)
         ->assertSet('showModal', false)
-        ->assertDontSee('Gammel opdatering');
+        ->assertSeeHtml('x-data="{ show: $wire.entangle(\'showModal\') }"')
+        ->assertSeeHtml('@open-changelog.window="show = true"');
+});
+
+test('changelog modal uses alpine entangle, instant event listeners, and instant escape handler', function () {
+    $user = User::factory()->create();
+
+    $changelog = Changelog::factory()->create([
+        'title' => 'Alpine Changelog Test',
+        'published_at' => now()->subHour(),
+    ]);
+
+    $this->actingAs($user);
+
+    Livewire::test(ChangelogModal::class)
+        ->assertSeeHtml('x-data="{ show: $wire.entangle(\'showModal\') }"')
+        ->assertSeeHtml('@open-changelog.window="show = true"')
+        ->assertSeeHtml('@keydown.escape.window="if (show) { show = false; $wire.dismiss(); }"')
+        ->assertSeeHtml('@click="show = false; $wire.dismiss()"');
 });
 
 test('user sees newly published changelog after having dismissed previous one', function () {
