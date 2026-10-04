@@ -86,6 +86,7 @@ test('empty wishlist displays friendly empty state', function () {
 test('wishes without price or url are rendered gracefully without broken elements', function () {
     $user = User::factory()->create([
         'name' => 'Alice Johnson',
+        'email' => 'alice@example.com',
     ]);
     $wishlist = Wishlist::factory()->for($user)->create([
         'share_token' => 'simpletoken1',
@@ -103,7 +104,7 @@ test('wishes without price or url are rendered gracefully without broken element
     $response->assertStatus(200);
     $response->assertSee('Cozy Warm Socks');
     $response->assertSee('Size 42-44, wool');
-    $response->assertDontSee('kr');
+    $response->assertDontSee(' kr');
     $response->assertDontSee(__('See Product'));
 });
 

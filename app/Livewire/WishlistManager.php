@@ -55,6 +55,8 @@ class WishlistManager extends Component
 
     public string $friendSearchQuery = '';
 
+    public ?int $selectedWishlistId = null;
+
     /**
      * Initialize the component state with current user profile data.
      */
@@ -136,6 +138,22 @@ class WishlistManager extends Component
     }
 
     /**
+     * Get all wishlists accessible to the authenticated user (owned + delegated).
+     *
+     * @return Collection<int, Wishlist>
+     */
+    #[Computed]
+    public function availableWishlists(): Collection
+    {
+        /** @var User $user */
+        $user = Auth::user();
+
+        return $user->allEditableWishlists()
+            ->orderBy('id')
+            ->get();
+    }
+
+    /**
      * Get the authenticated user's active wishlist.
      */
     #[Computed]
@@ -143,6 +161,13 @@ class WishlistManager extends Component
     {
         /** @var User $user */
         $user = Auth::user();
+
+        if ($this->selectedWishlistId !== null) {
+            $selected = $this->availableWishlists->firstWhere('id', $this->selectedWishlistId);
+            if ($selected) {
+                return $selected;
+            }
+        }
 
         $wishlist = $user->wishlists()->first();
 
@@ -152,7 +177,23 @@ class WishlistManager extends Component
             ]);
         }
 
+        $this->selectedWishlistId = $wishlist->id;
+
         return $wishlist;
+    }
+
+    /**
+     * Select active wishlist to view and manage.
+     */
+    public function selectWishlist(int $wishlistId): void
+    {
+        $targetWishlist = $this->availableWishlists->firstWhere('id', $wishlistId);
+
+        if ($targetWishlist) {
+            $this->selectedWishlistId = $targetWishlist->id;
+            $this->cancelEditingWishlistTitle();
+            unset($this->wishlist, $this->wishes);
+        }
     }
 
     /**
@@ -223,6 +264,11 @@ class WishlistManager extends Component
      */
     public function saveWishlistTitle(): void
     {
+        /** @var User $user */
+        $user = Auth::user();
+
+        abort_unless($this->wishlist->canBeEditedBy($user), 403);
+
         $this->validate([
             'wishlistTitle' => ['required', 'string', 'max:255'],
         ], [], [
@@ -243,6 +289,11 @@ class WishlistManager extends Component
      */
     public function openCreateModal(): void
     {
+        /** @var User $user */
+        $user = Auth::user();
+
+        abort_unless($this->wishlist->canBeEditedBy($user), 403);
+
         $this->resetForm();
         $this->editingWishId = null;
         $this->showFormModal = true;
@@ -253,6 +304,11 @@ class WishlistManager extends Component
      */
     public function openEditModal(int $wishId): void
     {
+        /** @var User $user */
+        $user = Auth::user();
+
+        abort_unless($this->wishlist->canBeEditedBy($user), 403);
+
         $this->resetForm();
 
         $wish = $this->wishlist->wishes()->findOrFail($wishId);
@@ -280,6 +336,11 @@ class WishlistManager extends Component
      */
     public function saveWish(): void
     {
+        /** @var User $user */
+        $user = Auth::user();
+
+        abort_unless($this->wishlist->canBeEditedBy($user), 403);
+
         if ($this->price !== null && trim((string) $this->price) !== '') {
             $this->price = str_replace(',', '.', trim((string) $this->price));
         }
@@ -318,6 +379,11 @@ class WishlistManager extends Component
      */
     public function reorderWishes(mixed $order, ?int $position = null): void
     {
+        /** @var User $user */
+        $user = Auth::user();
+
+        abort_unless($this->wishlist->canBeEditedBy($user), 403);
+
         $wishlist = $this->wishlist;
 
         if (is_array($order)) {
@@ -352,6 +418,11 @@ class WishlistManager extends Component
      */
     public function confirmDeleteWish(int $wishId): void
     {
+        /** @var User $user */
+        $user = Auth::user();
+
+        abort_unless($this->wishlist->canBeEditedBy($user), 403);
+
         $wish = $this->wishlist->wishes()->findOrFail($wishId);
         $this->deletingWishId = $wish->id;
         $this->deletingWishTitle = $wish->title;
@@ -373,6 +444,11 @@ class WishlistManager extends Component
      */
     public function deleteWish(): void
     {
+        /** @var User $user */
+        $user = Auth::user();
+
+        abort_unless($this->wishlist->canBeEditedBy($user), 403);
+
         if ($this->deletingWishId) {
             $this->wishlist->wishes()->where('id', $this->deletingWishId)->delete();
             unset($this->wishes);

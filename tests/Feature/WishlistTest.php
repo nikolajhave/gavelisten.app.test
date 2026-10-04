@@ -68,3 +68,38 @@ test('wishlist has many wishes and cascades on delete', function () {
     $this->assertDatabaseMissing('wishes', ['id' => $wish1->id]);
     $this->assertDatabaseMissing('wishes', ['id' => $wish2->id]);
 });
+
+test('wishlist supports delegated users and canBeEditedBy checks', function () {
+    $owner = User::factory()->create(['name' => 'Child']);
+    $parent = User::factory()->create(['name' => 'Parent']);
+    $other = User::factory()->create(['name' => 'Stranger']);
+
+    $wishlist = $owner->wishlists()->first();
+
+    expect($wishlist->canBeEditedBy($owner))->toBeTrue()
+        ->and($wishlist->canBeEditedBy($parent))->toBeFalse()
+        ->and($wishlist->canBeEditedBy($other))->toBeFalse();
+
+    $wishlist->delegatedUsers()->attach($parent->id);
+
+    expect($wishlist->fresh()->canBeEditedBy($parent))->toBeTrue()
+        ->and($wishlist->fresh()->canBeEditedBy($other))->toBeFalse();
+});
+
+test('user allEditableWishlists returns owned and delegated wishlists', function () {
+    $parent = User::factory()->create(['name' => 'Parent']);
+    $child1 = User::factory()->create(['name' => 'Child 1']);
+    $child2 = User::factory()->create(['name' => 'Child 2']);
+
+    $parentWishlist = $parent->wishlists()->first();
+    $child1Wishlist = $child1->wishlists()->first();
+    $child2Wishlist = $child2->wishlists()->first();
+
+    expect($parent->allEditableWishlists()->pluck('id')->all())->toBe([$parentWishlist->id]);
+
+    $child1Wishlist->delegatedUsers()->attach($parent->id);
+
+    $editableIds = $parent->allEditableWishlists()->pluck('id')->all();
+    expect($editableIds)->toContain($parentWishlist->id, $child1Wishlist->id)
+        ->and($editableIds)->not->toContain($child2Wishlist->id);
+});

@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Str;
 
@@ -46,5 +47,28 @@ class Wishlist extends Model
     public function wishes(): HasMany
     {
         return $this->hasMany(Wish::class);
+    }
+
+    /**
+     * Get the users who have delegated edit access to the wishlist.
+     *
+     * @return BelongsToMany<User, $this>
+     */
+    public function delegatedUsers(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class, 'wishlist_user')
+            ->withTimestamps();
+    }
+
+    /**
+     * Determine if the given user can edit this wishlist.
+     */
+    public function canBeEditedBy(User $user): bool
+    {
+        if ((int) $this->user_id === (int) $user->id) {
+            return true;
+        }
+
+        return $this->delegatedUsers()->where('users.id', $user->id)->exists();
     }
 }

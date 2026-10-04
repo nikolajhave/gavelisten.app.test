@@ -9,6 +9,7 @@ use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -42,6 +43,34 @@ class User extends Authenticatable
     public function wishlists(): HasMany
     {
         return $this->hasMany(Wishlist::class);
+    }
+
+    /**
+     * Get the wishlists of other users that are delegated to this user.
+     *
+     * @return BelongsToMany<Wishlist, $this>
+     */
+    public function delegatedWishlists(): BelongsToMany
+    {
+        return $this->belongsToMany(Wishlist::class, 'wishlist_user')
+            ->withTimestamps();
+    }
+
+    /**
+     * Get a query builder for all wishlists this user can edit (owned or delegated).
+     *
+     * @return Builder<Wishlist>
+     */
+    public function allEditableWishlists(): Builder
+    {
+        return Wishlist::query()
+            ->with('user')
+            ->where(function (Builder $query) {
+                $query->where('user_id', $this->id)
+                    ->orWhereHas('delegatedUsers', function (Builder $delegatedQuery) {
+                        $delegatedQuery->where('users.id', $this->id);
+                    });
+            });
     }
 
     /**
