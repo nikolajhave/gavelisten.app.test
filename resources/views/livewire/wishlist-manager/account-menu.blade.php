@@ -20,8 +20,11 @@
                 <h3 class="text-xs font-semibold uppercase tracking-wider text-neutral-500 dark:text-neutral-400">
                     {{ __('Wishlists') }}
                 </h3>
+                <span class="text-xs font-medium px-2 py-0.5 rounded-full bg-neutral-100 dark:bg-neutral-800 text-neutral-600 dark:text-neutral-300">
+                    {{ $this->availableWishlists->count() }}
+                </span>
             </div>
-            <div class="px-2 space-y-1">
+            <div class="px-2 space-y-1 max-h-48 overflow-y-auto overscroll-contain">
                 @foreach ($this->availableWishlists as $list)
                     @php
                         $isActive = ($list->id === $this->wishlist->id);
@@ -61,7 +64,7 @@
     <x-slot:footer>
         <button
             type="button"
-            @click="$dispatch('open-changelog'); openMenu = false"
+            @click="$dispatch('open-changelog'); open = false"
             class="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs sm:text-sm font-medium text-neutral-700 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-100 dark:hover:bg-neutral-800 transition cursor-pointer"
         >
             <svg class="w-4 h-4 text-neutral-500 dark:text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">

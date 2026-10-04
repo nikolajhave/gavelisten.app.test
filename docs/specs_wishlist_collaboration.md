@@ -35,6 +35,7 @@ return new class extends Migration
             $table->timestamps();
 
             $table->unique(['wishlist_id', 'user_id']);
+            $table->index('user_id');
         });
     }
 

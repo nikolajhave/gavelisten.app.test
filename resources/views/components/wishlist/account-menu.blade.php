@@ -32,15 +32,18 @@
         x-show="open"
         @click.outside="open = false"
         @keydown.escape.window="open = false"
-        x-transition:enter="transition ease-out duration-100"
-        x-transition:enter-start="transform opacity-0 scale-95"
-        x-transition:enter-end="transform opacity-100 scale-100"
-        x-transition:leave="transition ease-in duration-75"
-        x-transition:leave-start="transform opacity-100 scale-100"
-        x-transition:leave-end="transform opacity-0 scale-95"
-        class="fixed sm:absolute inset-x-4 sm:inset-x-auto sm:left-auto sm:right-0 top-24 sm:top-full sm:mt-2 mx-auto sm:mx-0 w-auto sm:w-80 max-w-sm sm:max-w-none bg-white dark:bg-neutral-900 rounded-2xl shadow-xl border border-neutral-200 dark:border-neutral-800 pt-4 pb-3 z-50 divide-y divide-neutral-100 dark:divide-neutral-800"
+        x-transition:enter="transition ease-out duration-200 sm:duration-100"
+        x-transition:enter-start="translate-y-full opacity-0 sm:translate-y-0 sm:scale-95 sm:opacity-0"
+        x-transition:enter-end="translate-y-0 opacity-100 sm:scale-100 sm:opacity-100"
+        x-transition:leave="transition ease-in duration-150 sm:duration-75"
+        x-transition:leave-start="translate-y-0 opacity-100 sm:scale-100 sm:opacity-100"
+        x-transition:leave-end="translate-y-full opacity-0 sm:translate-y-0 sm:scale-95 sm:opacity-0"
+        class="fixed sm:absolute inset-x-0 sm:inset-x-auto bottom-0 sm:bottom-auto sm:left-auto sm:right-0 sm:top-full sm:mt-2 mx-auto sm:mx-0 w-full sm:w-80 max-h-[85vh] sm:max-h-[calc(100vh-6rem)] overflow-y-auto overscroll-contain bg-white dark:bg-neutral-900 rounded-t-3xl sm:rounded-2xl shadow-2xl sm:shadow-xl border-t sm:border border-neutral-200 dark:border-neutral-800 pt-3 sm:pt-4 pb-8 sm:pb-3 z-50 divide-y divide-neutral-100 dark:divide-neutral-800"
         style="display: none;"
     >
+        {{-- Mobile Handle --}}
+        <div class="w-10 h-1 rounded-full bg-neutral-300 dark:bg-neutral-700 mx-auto mb-3 sm:hidden shrink-0"></div>
+
         {{-- User Summary --}}
         @php
             $currentUserName = $user?->name ?: __('Your Profile');

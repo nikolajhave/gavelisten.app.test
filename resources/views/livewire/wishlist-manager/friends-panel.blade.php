@@ -10,7 +10,7 @@
         @endif
     </div>
 
-    <div class="py-1 max-h-52 overflow-y-auto">
+    <div class="py-1 max-h-52 overflow-y-auto overscroll-contain">
         @if ($this->friends->isEmpty())
             <div class="px-4 py-4 text-center text-sm text-neutral-500 dark:text-neutral-400">
                 <div class="w-9 h-9 mx-auto mb-2 rounded-xl bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center text-neutral-400 dark:text-neutral-500">
