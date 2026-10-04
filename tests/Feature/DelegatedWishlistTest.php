@@ -31,8 +31,9 @@ test('parent user with delegated wishlist sees switcher in account menu', functi
 
     Livewire::test(WishlistManager::class)
         ->assertSee(__('Wishlists'))
-        ->assertSee('Emma 5th Birthday')
-        ->assertSee('(Emma Child)');
+        ->assertSee('John Parent')
+        ->assertSee('Emma Child')
+        ->assertSee('(Emma 5th Birthday)');
 });
 
 test('parent can select child wishlist and view its wishes', function () {

@@ -297,9 +297,11 @@ In `resources/views/livewire/wishlist-manager/account-menu.blade.php`, render th
                     >
                         <div class="flex items-center gap-2 min-w-0">
                             <span class="truncate">
-                                {{ $list->title }}
-                                @if(! $isOwn)
-                                    <span class="text-[11px] opacity-75">({{ $list->user->name }})</span>
+                                @if ($list->user?->name)
+                                    <span class="font-bold">{{ $list->user->name }}</span>
+                                    <span class="text-xs font-normal opacity-75">({{ $list->title }})</span>
+                                @else
+                                    <span class="font-bold">{{ $list->title }}</span>
                                 @endif
                             </span>
                         </div>
