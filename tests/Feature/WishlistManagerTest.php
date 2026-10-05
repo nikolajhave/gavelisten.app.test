@@ -25,9 +25,30 @@ test('authenticated user can view their wishlist manager', function () {
 
     $response->assertStatus(200);
     $response->assertSee('<title>Min Fødselsdagsliste / Nikolaj / Gavelisten</title>', false);
+    $response->assertSee('Gavelisten');
     $response->assertSee('Nikolaj');
     $response->assertSee('Min Fødselsdagsliste');
     $response->assertSee(__('Add Wish'));
+});
+
+test('wishlist manager renders top navigation header with logo and account menu', function () {
+    $user = User::factory()->create([
+        'name' => 'Sara Manager',
+        'email' => 'sara@example.com',
+    ]);
+
+    $this->actingAs($user);
+
+    $response = $this->get('/wishlist');
+    $response->assertStatus(200);
+    $response->assertSee('Gavelisten');
+
+    Livewire::test(WishlistManager::class)
+        ->assertSee('Sara Manager')
+        ->assertSee('sara@example.com')
+        ->assertSee(__('Profile'))
+        ->assertSee(__("What's new?"))
+        ->assertSee(__('Sign out'));
 });
 
 test('wishes are rendered in ascending sort_order', function () {

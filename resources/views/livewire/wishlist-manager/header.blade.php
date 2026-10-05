@@ -70,7 +70,7 @@
         </p>
     </div>
 
-    <div class="w-full sm:w-auto flex items-center justify-between sm:justify-end gap-2 sm:gap-3">
+    <div class="flex items-center gap-2 sm:gap-3 shrink-0">
         <button
             type="button"
             @click="$dispatch('open-create-modal')"
@@ -83,10 +83,6 @@
             <span>{{ __('Add Wish') }}</span>
         </button>
 
-        <div class="flex items-center gap-2 sm:gap-3">
-            @include('livewire.wishlist-manager.share-dropdown')
-
-            @include('livewire.wishlist-manager.account-menu')
-        </div>
+        @include('livewire.wishlist-manager.share-dropdown')
     </div>
 </div>
