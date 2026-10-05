@@ -239,7 +239,44 @@ test('public wishlist view renders account menu when authenticated', function ()
     Livewire::test(PublicWishlist::class, ['share_token' => 'pubviewertest'])
         ->assertSee('Viewer Person')
         ->assertSee('viewer@example.com')
-        ->assertSee(__('My Wishlist'))
+        ->assertSee(__('Profile'))
+        ->assertSee(__('Wishlists'))
         ->assertSee(__('Friends'))
+        ->assertSee(__("What's new?"))
         ->assertSee(__('Sign out'));
+});
+
+test('public wishlist view renders available wishlists switcher for delegated lists', function () {
+    $owner = User::factory()->create(['name' => 'Owner Person']);
+    $viewer = User::factory()->create([
+        'name' => 'Viewer Person',
+        'email' => 'viewer@example.com',
+    ]);
+    $ownWishlist = Wishlist::factory()->for($viewer)->create([
+        'title' => 'Viewer Own Wishlist',
+    ]);
+    $delegatedWishlist = Wishlist::factory()->create([
+        'title' => 'Child Wishlist',
+    ]);
+    $delegatedWishlist->delegatedUsers()->attach($viewer);
+
+    $sharedWishlist = Wishlist::factory()->for($owner)->create([
+        'share_token' => 'pubswitcher99',
+    ]);
+    $this->actingAs($viewer);
+
+    Livewire::test(PublicWishlist::class, ['share_token' => 'pubswitcher99'])
+        ->assertSee('Viewer Own Wishlist')
+        ->assertSee('Child Wishlist');
+});
+
+test('wishlist manager switches to wishlist from query parameter on mount', function () {
+    $user = User::factory()->create();
+    $firstList = Wishlist::factory()->for($user)->create(['title' => 'First List']);
+    $secondList = Wishlist::factory()->for($user)->create(['title' => 'Second List']);
+    $this->actingAs($user);
+
+    $this->get('/wishlist?wishlist='.$secondList->id)
+        ->assertStatus(200)
+        ->assertSee('Second List');
 });

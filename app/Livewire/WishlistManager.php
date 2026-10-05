@@ -68,6 +68,13 @@ class WishlistManager extends Component
             $this->profileName = (string) ($user->name ?? '');
             $this->profileEmail = $user->email;
             $this->profilePhone = $user->phone;
+
+            if (request()->has('wishlist')) {
+                $wishlistId = (int) request()->query('wishlist');
+                if ($this->availableWishlists->contains('id', $wishlistId)) {
+                    $this->selectedWishlistId = $wishlistId;
+                }
+            }
         }
     }
 

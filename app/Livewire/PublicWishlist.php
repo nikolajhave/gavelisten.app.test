@@ -120,6 +120,26 @@ class PublicWishlist extends Component
     }
 
     /**
+     * Get all wishlists accessible to the authenticated user (owned + delegated).
+     *
+     * @return Collection<int, Wishlist>
+     */
+    #[Computed]
+    public function availableWishlists(): Collection
+    {
+        if (! Auth::check()) {
+            return new Collection;
+        }
+
+        /** @var User $user */
+        $user = Auth::user();
+
+        return $user->allEditableWishlists()
+            ->orderBy('id')
+            ->get();
+    }
+
+    /**
      * Determine if the authenticated user is the owner of the wishlist.
      */
     #[Computed]

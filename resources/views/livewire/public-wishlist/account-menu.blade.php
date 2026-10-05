@@ -2,29 +2,73 @@
     <x-slot:profileAction>
         <a
             href="{{ route('wishlist') }}"
-            class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-medium bg-neutral-100 dark:bg-neutral-800 text-neutral-700 dark:text-neutral-300 hover:bg-neutral-200 dark:hover:bg-neutral-700 transition shrink-0"
-            title="{{ __('My Wishlist') }}"
+            class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-medium bg-neutral-100 dark:bg-neutral-800 text-neutral-700 dark:text-neutral-300 hover:bg-neutral-200 dark:hover:bg-neutral-700 transition cursor-pointer shrink-0"
+            title="{{ __('Edit Profile') }}"
         >
             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
             </svg>
-            <span>{{ __('Wishlist') }}</span>
+            <span>{{ __('Profile') }}</span>
         </a>
     </x-slot:profileAction>
+
+    @if ($this->availableWishlists->count() > 0)
+        <div class="py-3">
+            <div class="px-4 pb-2 flex items-center justify-between">
+                <h3 class="text-xs font-semibold uppercase tracking-wider text-neutral-500 dark:text-neutral-400">
+                    {{ __('Wishlists') }}
+                </h3>
+                <span class="text-xs font-medium px-2 py-0.5 rounded-full bg-neutral-100 dark:bg-neutral-800 text-neutral-600 dark:text-neutral-300">
+                    {{ $this->availableWishlists->count() }}
+                </span>
+            </div>
+            <div class="px-2 space-y-1 max-h-48 overflow-y-auto overscroll-contain">
+                @foreach ($this->availableWishlists as $list)
+                    @php
+                        $isActive = ($list->id === $this->wishlist->id);
+                    @endphp
+                    <a
+                        href="{{ route('wishlist', ['wishlist' => $list->id]) }}"
+                        class="w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs sm:text-sm font-medium transition cursor-pointer {{ $isActive ? 'bg-blue-50 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300 font-semibold' : 'text-neutral-700 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-100 dark:hover:bg-neutral-800' }}"
+                        wire:key="public-wishlist-switch-{{ $list->id }}"
+                    >
+                        <div class="flex items-center gap-2 min-w-0">
+                            <svg class="w-4 h-4 shrink-0 {{ $isActive ? 'text-blue-600 dark:text-blue-400' : 'text-neutral-400 dark:text-neutral-500' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                            </svg>
+                            <span class="truncate">
+                                @if ($list->user?->name)
+                                    <span class="font-bold">{{ $list->user->name }}</span>
+                                    <span class="text-xs font-normal opacity-75">({{ $list->title }})</span>
+                                @else
+                                    <span class="font-bold">{{ $list->title }}</span>
+                                @endif
+                            </span>
+                        </div>
+                        @if ($isActive)
+                            <svg class="w-4 h-4 text-blue-600 dark:text-blue-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
+                            </svg>
+                        @endif
+                    </a>
+                @endforeach
+            </div>
+        </div>
+    @endif
 
     @include('livewire.public-wishlist.friends-panel')
 
     <x-slot:footer>
-        <a
-            href="{{ route('wishlist') }}"
-            class="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs sm:text-sm font-medium text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition cursor-pointer"
+        <button
+            type="button"
+            @click="$dispatch('open-changelog'); open = false"
+            class="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs sm:text-sm font-medium text-neutral-700 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-100 dark:hover:bg-neutral-800 transition cursor-pointer"
         >
             <svg class="w-4 h-4 text-neutral-500 dark:text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
-            <span>{{ __('My Wishlist & Profile') }}</span>
-        </a>
-
+            <span>{{ __("What's new?") }}</span>
+        </button>
         <form method="POST" action="{{ route('logout') }}" class="block">
             @csrf
             <button
