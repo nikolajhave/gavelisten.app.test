@@ -280,3 +280,15 @@ test('wishlist manager switches to wishlist from query parameter on mount', func
         ->assertStatus(200)
         ->assertSee('Second List');
 });
+
+test('account menu component contains drag handle, touch listeners, and close button', function () {
+    $user = User::factory()->create(['name' => 'Menu Touch User']);
+    $this->actingAs($user);
+
+    Livewire::test(WishlistManager::class)
+        ->assertSeeHtml('data-drag-handle')
+        ->assertSeeHtml('@touchstart="startTouch($event)"')
+        ->assertSeeHtml('@touchmove="moveTouch($event)"')
+        ->assertSeeHtml('@touchend="endTouch($event)"')
+        ->assertSeeHtml('aria-label="'.__('Close').'"');
+});
