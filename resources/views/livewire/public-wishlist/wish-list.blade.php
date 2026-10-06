@@ -13,7 +13,7 @@
         </div>
     @else
         {{-- Clean Card Grid Layout --}}
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
             @foreach ($this->wishes as $wish)
                 @include('livewire.public-wishlist.wish-card', ['wish' => $wish])
             @endforeach
