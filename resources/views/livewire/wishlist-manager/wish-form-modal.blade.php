@@ -101,6 +101,23 @@
                     @enderror
                 </div>
 
+                {{-- Description --}}
+                <div>
+                    <label for="wish-description" class="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1.5">
+                        {{ __('Description / Notes') }}
+                    </label>
+                    <textarea
+                        id="wish-description"
+                        wire:model="description"
+                        rows="3"
+                        placeholder="{{ __('Add details like color, size, where to buy, or specific preferences...') }}"
+                        class="w-full px-4 py-2.5 rounded-xl border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-800 text-neutral-900 dark:text-neutral-100 placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-neutral-900 dark:focus:ring-white transition text-base sm:text-sm resize-none"
+                    ></textarea>
+                    @error('description')
+                        <p class="text-xs text-red-600 dark:text-red-400 mt-1.5">{{ $message }}</p>
+                    @enderror
+                </div>
+
                 {{-- Price & Link Grid --}}
                 <div class="grid grid-cols-1 sm:grid-cols-4 gap-4">
                     <div class="sm:col-span-1">
@@ -135,23 +152,6 @@
                             <p class="text-xs text-red-600 dark:text-red-400 mt-1.5">{{ $message }}</p>
                         @enderror
                     </div>
-                </div>
-
-                {{-- Description --}}
-                <div>
-                    <label for="wish-description" class="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1.5">
-                        {{ __('Description / Notes') }}
-                    </label>
-                    <textarea
-                        id="wish-description"
-                        wire:model="description"
-                        rows="3"
-                        placeholder="{{ __('Add details like color, size, where to buy, or specific preferences...') }}"
-                        class="w-full px-4 py-2.5 rounded-xl border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-800 text-neutral-900 dark:text-neutral-100 placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-neutral-900 dark:focus:ring-white transition text-base sm:text-sm resize-none"
-                    ></textarea>
-                    @error('description')
-                        <p class="text-xs text-red-600 dark:text-red-400 mt-1.5">{{ $message }}</p>
-                    @enderror
                 </div>
 
                 {{-- Action Buttons --}}
