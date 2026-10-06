@@ -1,4 +1,4 @@
-<div x-data="{ copied: false, shareUrl: window.location.href }" class="flex items-center gap-2 shrink-0">
+<div x-data="{ copied: false, shareUrl: window.location.href }" class="flex items-center gap-2 sm:gap-3 shrink-0">
     @auth
         @if (! $this->isOwner)
             @if ($this->isFriend)
