@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Auth\GoogleAuthController;
+use App\Livewire\Admin\WishlistRelations;
 use App\Livewire\Auth\PhoneAuth;
 use App\Livewire\Auth\ResetPassword;
 use App\Livewire\PublicWishlist;
@@ -35,4 +36,9 @@ Route::middleware('auth')->group(function () {
 
         return redirect('/');
     })->name('logout');
+});
+
+Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('/', WishlistRelations::class)->name('index');
+    Route::get('/wishlists', WishlistRelations::class)->name('wishlists');
 });

@@ -18,7 +18,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
 #[ObservedBy(UserObserver::class)]
-#[Fillable(['name', 'email', 'phone', 'legacy_id', 'email_verified_at', 'phone_verified_at', 'last_login_at', 'last_seen_changelog_id', 'password'])]
+#[Fillable(['name', 'email', 'phone', 'legacy_id', 'email_verified_at', 'phone_verified_at', 'last_login_at', 'last_seen_changelog_id', 'password', 'is_admin'])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
 {
@@ -180,6 +180,14 @@ class User extends Authenticatable
     }
 
     /**
+     * Determine if the user has administrative privileges.
+     */
+    public function isAdmin(): bool
+    {
+        return (bool) $this->is_admin;
+    }
+
+    /**
      * Get the attributes that should be cast.
      *
      * @return array<string, string|class-string>
@@ -194,6 +202,7 @@ class User extends Authenticatable
             'phone' => E164PhoneNumberCast::class,
             'password' => 'hashed',
             'legacy_id' => 'integer',
+            'is_admin' => 'boolean',
         ];
     }
 }
