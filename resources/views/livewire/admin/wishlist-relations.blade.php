@@ -302,6 +302,19 @@
                                             @endif
                                         </button>
                                     </th>
+
+                                    <th scope="col" class="py-3 px-4">
+                                        <button
+                                            type="button"
+                                            wire:click="sort('last_login_at')"
+                                            class="inline-flex items-center gap-1 font-semibold hover:text-neutral-900 dark:hover:text-white"
+                                        >
+                                            <span>{{ __('Last Login At') }}</span>
+                                            @if ($sortBy === 'last_login_at')
+                                                <span>{{ $sortDir === 'asc' ? '↑' : '↓' }}</span>
+                                            @endif
+                                        </button>
+                                    </th>
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-neutral-200 dark:divide-neutral-800">
@@ -421,6 +434,16 @@
                                             @if ($relation['created_at'])
                                                 <div>{{ $relation['created_at']->format('d M Y') }}</div>
                                                 <div class="text-[11px] text-neutral-400">{{ $relation['created_at']->format('H:i:s') }}</div>
+                                            @else
+                                                <span class="text-neutral-400">—</span>
+                                            @endif
+                                        </td>
+
+                                        {{-- Last Login At column --}}
+                                        <td class="py-3 px-4 text-xs text-neutral-500 dark:text-neutral-400 whitespace-nowrap">
+                                            @if ($relation['last_login_at'])
+                                                <div>{{ $relation['last_login_at']->format('d M Y') }}</div>
+                                                <div class="text-[11px] text-neutral-400">{{ $relation['last_login_at']->format('H:i:s') }}</div>
                                             @else
                                                 <span class="text-neutral-400">—</span>
                                             @endif

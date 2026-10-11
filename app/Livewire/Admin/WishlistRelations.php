@@ -24,7 +24,7 @@ class WishlistRelations extends Component
     public string $typeFilter = 'all';
 
     /**
-     * Sort column ('created_at', 'user', 'wishlist', 'id').
+     * Sort column ('created_at', 'user', 'wishlist', 'id', 'last_login_at').
      */
     public string $sortBy = 'created_at';
 
@@ -155,6 +155,7 @@ class WishlistRelations extends Component
                     'owner_name' => $row->wishlist?->user?->name ?? __('Unknown owner'),
                     'owner_email' => $row->wishlist?->user?->email,
                     'created_at' => $row->created_at,
+                    'last_login_at' => $row->user?->last_login_at,
                 ]);
             }
         }
@@ -198,6 +199,7 @@ class WishlistRelations extends Component
                     'owner_email' => $wishlist->user?->email,
                     'delegated_count' => $wishlist->delegatedUsers->count(),
                     'created_at' => $wishlist->created_at,
+                    'last_login_at' => $wishlist->user?->last_login_at,
                 ]);
             }
         }
@@ -219,6 +221,13 @@ class WishlistRelations extends Component
                 $idB = $b['pivot_id'] ?? $b['wishlist_id'];
 
                 return $direction * ($idA <=> $idB);
+            }
+
+            if ($this->sortBy === 'last_login_at') {
+                $timeA = $a['last_login_at']?->timestamp ?? 0;
+                $timeB = $b['last_login_at']?->timestamp ?? 0;
+
+                return $direction * ($timeA <=> $timeB);
             }
 
             // Default: created_at

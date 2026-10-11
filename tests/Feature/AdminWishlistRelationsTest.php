@@ -145,6 +145,61 @@ test('admin can sort relations by columns', function () {
     expect($firstUserAsc)->toBe('Aaron User');
 });
 
+test('admin page displays user last_login_at', function () {
+    $admin = User::factory()->admin()->create();
+
+    $userWithLogin = User::factory()->create([
+        'name' => 'LoggedInUser',
+        'last_login_at' => now()->setDate(2026, 10, 5)->setTime(14, 30, 0),
+    ]);
+
+    $userWithoutLogin = User::factory()->create([
+        'name' => 'NeverLoggedInUser',
+        'last_login_at' => null,
+    ]);
+
+    $this->actingAs($admin);
+
+    Livewire::test(WishlistRelations::class)
+        ->assertSee('Last Login At')
+        ->assertSee('05 Oct 2026')
+        ->assertSee('14:30:00')
+        ->assertSee('—');
+});
+
+test('admin can sort relations by last_login_at', function () {
+    $admin = User::factory()->admin()->create([
+        'last_login_at' => now(),
+    ]);
+
+    $recentUser = User::factory()->create([
+        'name' => 'RecentUser',
+        'last_login_at' => now()->subDay(),
+    ]);
+
+    $oldUser = User::factory()->create([
+        'name' => 'OldUser',
+        'last_login_at' => now()->subYear(),
+    ]);
+
+    $this->actingAs($admin);
+
+    $component = Livewire::test(WishlistRelations::class);
+
+    $component->call('sort', 'last_login_at')
+        ->assertSet('sortBy', 'last_login_at')
+        ->assertSet('sortDir', 'desc');
+
+    $firstUserDesc = $component->get('relations')->first()['user_name'];
+    expect($firstUserDesc)->toBe($admin->name);
+
+    $component->call('sort', 'last_login_at')
+        ->assertSet('sortDir', 'asc');
+
+    $firstUserAsc = $component->get('relations')->first()['user_name'];
+    expect($firstUserAsc)->toBe('OldUser');
+});
+
 test('admin link appears in wishlist manager account menu for admin only', function () {
     $admin = User::factory()->admin()->create();
     $regularUser = User::factory()->create(['is_admin' => false]);
