@@ -24,7 +24,7 @@ class WishlistRelations extends Component
     public string $typeFilter = 'all';
 
     /**
-     * Sort column ('created_at', 'user', 'wishlist', 'id', 'last_login_at').
+     * Sort column ('created_at', 'user', 'wishlist', 'id', 'last_login_at', 'last_online_at').
      */
     public string $sortBy = 'created_at';
 
@@ -223,7 +223,7 @@ class WishlistRelations extends Component
                 return $direction * ($idA <=> $idB);
             }
 
-            if ($this->sortBy === 'last_login_at') {
+            if ($this->sortBy === 'last_login_at' || $this->sortBy === 'last_online_at') {
                 $timeA = $a['last_login_at']?->timestamp ?? 0;
                 $timeB = $b['last_login_at']?->timestamp ?? 0;
 

@@ -309,8 +309,8 @@
                                             wire:click="sort('last_login_at')"
                                             class="inline-flex items-center gap-1 font-semibold hover:text-neutral-900 dark:hover:text-white"
                                         >
-                                            <span>{{ __('Last Login At') }}</span>
-                                            @if ($sortBy === 'last_login_at')
+                                            <span>{{ __('Last Online At') }}</span>
+                                            @if ($sortBy === 'last_login_at' || $sortBy === 'last_online_at')
                                                 <span>{{ $sortDir === 'asc' ? '↑' : '↓' }}</span>
                                             @endif
                                         </button>
@@ -439,7 +439,7 @@
                                             @endif
                                         </td>
 
-                                        {{-- Last Login At column --}}
+                                        {{-- Last Online At column --}}
                                         <td class="py-3 px-4 text-xs text-neutral-500 dark:text-neutral-400 whitespace-nowrap">
                                             @if ($relation['last_login_at'])
                                                 <div>{{ $relation['last_login_at']->format('d M Y') }}</div>

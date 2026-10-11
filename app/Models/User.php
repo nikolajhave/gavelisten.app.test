@@ -188,6 +188,18 @@ class User extends Authenticatable
     }
 
     /**
+     * Touch the user's last online timestamp if not recently updated.
+     */
+    public function touchLastOnline(int $thresholdInMinutes = 1): void
+    {
+        if ($this->last_login_at === null || $this->last_login_at->isBefore(now()->subMinutes($thresholdInMinutes))) {
+            static::withoutTimestamps(function () {
+                $this->forceFill(['last_login_at' => now()])->saveQuietly();
+            });
+        }
+    }
+
+    /**
      * Get the attributes that should be cast.
      *
      * @return array<string, string|class-string>

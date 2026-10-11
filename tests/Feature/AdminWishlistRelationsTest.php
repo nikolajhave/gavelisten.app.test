@@ -145,7 +145,7 @@ test('admin can sort relations by columns', function () {
     expect($firstUserAsc)->toBe('Aaron User');
 });
 
-test('admin page displays user last_login_at', function () {
+test('admin page displays user last_login_at as last online at', function () {
     $admin = User::factory()->admin()->create();
 
     $userWithLogin = User::factory()->create([
@@ -161,7 +161,7 @@ test('admin page displays user last_login_at', function () {
     $this->actingAs($admin);
 
     Livewire::test(WishlistRelations::class)
-        ->assertSee('Last Login At')
+        ->assertSee('Last Online At')
         ->assertSee('05 Oct 2026')
         ->assertSee('14:30:00')
         ->assertSee('—');
