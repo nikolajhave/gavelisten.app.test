@@ -9,6 +9,7 @@ use App\Models\Wishlist;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
 use Livewire\Attributes\Computed;
@@ -370,11 +371,13 @@ class WishlistManager extends Component
             $wish = $this->wishlist->wishes()->findOrFail($this->editingWishId);
             $wish->update($data);
         } else {
-            $maxSortOrder = (int) $this->wishlist->wishes()->max('sort_order');
-            $this->wishlist->wishes()->create([
-                ...$data,
-                'sort_order' => $maxSortOrder + 1,
-            ]);
+            DB::transaction(function () use ($data) {
+                $this->wishlist->wishes()->increment('sort_order');
+                $this->wishlist->wishes()->create([
+                    ...$data,
+                    'sort_order' => 0,
+                ]);
+            });
         }
 
         unset($this->wishes);

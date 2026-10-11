@@ -98,7 +98,51 @@ test('user can create a new wish', function () {
         'description' => 'With Mario Kart bundle',
         'url' => 'https://example.com/switch2',
         'price' => 3499.00,
-        'sort_order' => 1,
+        'sort_order' => 0,
+    ]);
+});
+
+test('new wishes are added to the top of the list and shift existing wishes down', function () {
+    $user = User::factory()->create();
+    $this->actingAs($user);
+
+    $component = Livewire::test(WishlistManager::class);
+
+    // Add first wish
+    $component
+        ->call('openCreateModal')
+        ->set('title', 'First Wish')
+        ->call('saveWish');
+
+    // Add second wish
+    $component
+        ->call('openCreateModal')
+        ->set('title', 'Second Wish')
+        ->call('saveWish');
+
+    // Add third wish
+    $component
+        ->call('openCreateModal')
+        ->set('title', 'Third Wish')
+        ->call('saveWish');
+
+    $wishlist = $user->wishlists()->first();
+    $wishes = $wishlist->wishes()->orderBy('sort_order')->get();
+
+    expect($wishes->pluck('title')->toArray())->toBe([
+        'Third Wish',
+        'Second Wish',
+        'First Wish',
+    ]);
+
+    expect($wishes->firstWhere('title', 'Third Wish')->sort_order)->toBe(0)
+        ->and($wishes->firstWhere('title', 'Second Wish')->sort_order)->toBe(1)
+        ->and($wishes->firstWhere('title', 'First Wish')->sort_order)->toBe(2);
+
+    $component->assertSeeInOrder([
+        'Third Wish',
+        'Second Wish',
+        'First Wish',
     ]);
 });
 

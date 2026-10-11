@@ -151,11 +151,11 @@ test('admin link appears in wishlist manager account menu for admin only', funct
 
     $this->actingAs($regularUser);
     Livewire::test(WishlistManager::class)
-        ->assertDontSee(__('Admin Panel'));
+        ->assertDontSee(route('admin.wishlists'));
 
     $this->actingAs($admin);
     Livewire::test(WishlistManager::class)
-        ->assertSee(__('Admin Panel'));
+        ->assertSee(route('admin.wishlists'));
 });
 
 test('wishlist user model correctly queries pivot table', function () {
