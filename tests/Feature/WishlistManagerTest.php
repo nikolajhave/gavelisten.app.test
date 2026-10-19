@@ -414,8 +414,10 @@ test('wishlist manager renders share dropdown button and responsive actions', fu
     $component = Livewire::test(WishlistManager::class);
 
     $component->assertSee(__('Share Wishlist'))
+        ->assertSee(__('Share'))
         ->assertSee(__('Copy Link'))
         ->assertSee(__('See Public Wishlist'))
+        ->assertSeeHtml('ml-auto sm:ml-0')
         ->assertSee($wishlist->share_token)
         ->assertSee(__('Friends'))
         ->assertSee(__('Sign out'));

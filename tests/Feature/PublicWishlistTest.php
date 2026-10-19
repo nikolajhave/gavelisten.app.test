@@ -199,6 +199,8 @@ test('public wishlist uses compact wish elements and mobile responsive buttons i
 
     $response->assertStatus(200);
     $response->assertSee('flex items-center justify-between', false);
+    $response->assertSee('ml-auto sm:ml-0', false);
+    $response->assertSee(__('Share'));
     $response->assertSee('hidden sm:inline', false);
     $response->assertSee('p-4 sm:p-5', false);
 });

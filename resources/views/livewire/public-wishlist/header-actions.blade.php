@@ -46,7 +46,7 @@
     <button
         type="button"
         @click="navigator.clipboard.writeText(shareUrl); copied = true; setTimeout(() => copied = false, 2500)"
-        class="inline-flex items-center justify-center gap-2 p-2.5 sm:px-4 sm:py-2.5 rounded-xl border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-900 hover:bg-neutral-50 dark:hover:bg-neutral-800 text-neutral-700 dark:text-neutral-200 text-sm font-medium transition cursor-pointer shadow-xs"
+        class="inline-flex items-center justify-center gap-2 px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-xl border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-900 hover:bg-neutral-50 dark:hover:bg-neutral-800 text-neutral-700 dark:text-neutral-200 text-sm font-medium transition cursor-pointer shadow-xs ml-auto sm:ml-0"
         title="{{ __('Share Wishlist') }}"
         aria-label="{{ __('Share Wishlist') }}"
         :title="copied ? '{{ __('Link Copied!') }}' : '{{ __('Share Wishlist') }}'"
@@ -58,6 +58,6 @@
         <svg x-show="copied" style="display: none;" class="w-4 h-4 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
         </svg>
-        <span class="hidden sm:inline" x-text="copied ? '{{ __('Link Copied!') }}' : '{{ __('Share Wishlist') }}'"></span>
+        <span x-text="copied ? '{{ __('Link Copied!') }}' : '{{ __('Share') }}'">{{ __('Share') }}</span>
     </button>
 </div>

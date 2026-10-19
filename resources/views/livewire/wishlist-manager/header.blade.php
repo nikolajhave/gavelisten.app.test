@@ -70,7 +70,7 @@
         </p>
     </div>
 
-    <div class="flex items-center gap-2 sm:gap-3 shrink-0">
+    <div class="w-full sm:w-auto flex items-center justify-between sm:justify-end gap-2 sm:gap-3 shrink-0">
         <button
             type="button"
             @click="$dispatch('open-create-modal')"
