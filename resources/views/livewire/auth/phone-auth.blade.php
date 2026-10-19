@@ -355,26 +355,6 @@
             <p class="mt-2 mb-6 text-xs text-neutral-600 dark:text-neutral-400">
                 Kh Nikolaj
             </p>
-
-            <div class="font-semibold text-neutral-900 dark:text-white mb-2">
-                Spørgsmål & Svar
-            </div>
-            <div class="mb-4">
-                <div class="mb-2">
-                    <div class="font-medium">Bliver mine ønsker overført fra det gamle system?</div>
-                    <div>Ja, det kan vi sagtens – men det kræver, at jeg kan koble dit login (telefonnummer / email) sammen med det gamle system, hvor man ikke loggede ind.</div>
-                </div>
-                <div class="mb-2">
-                    <div class="font-medium">Hvordan ser og redigerer jeg mine børns gavelister?</div>
-                    <div>Det gør du ikke lige nu. Er på vej!</div>
-                </div>
-                <div class="mb-2">
-                    <div class="font-medium">Kan det hele ikke bare være som før?</div>
-                    <div>Nej, fætter Anders - det kan det ikke 😁</div>
-                </div>
-            </div>
-
-
         </div>
     </div>
 </div>
