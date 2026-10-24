@@ -80,6 +80,11 @@ test('phone otp verification sets remember cookie for passwordless user', functi
 });
 
 test('google oauth callback sets remember cookie for passwordless user', function () {
+    $user = User::factory()->passwordless()->create([
+        'email' => 'remember@example.com',
+        'name' => 'Remember Me',
+    ]);
+
     $socialiteUser = Mockery::mock(SocialiteUserContract::class);
     $socialiteUser->shouldReceive('getId')->andReturn('google-123456');
     $socialiteUser->shouldReceive('getEmail')->andReturn('remember@example.com');
@@ -97,10 +102,9 @@ test('google oauth callback sets remember cookie for passwordless user', functio
     $response = $this->get(route('auth.google.callback'));
     $response->assertRedirect('/');
 
-    $this->assertAuthenticated();
+    $this->assertAuthenticatedAs($user);
 
-    $user = auth()->user();
-    expect($user->password)->toBeNull();
+    expect($user->fresh()->password)->toBeNull();
 
     $recallerName = Auth::guard('web')->getRecallerName();
     $response->assertCookie($recallerName);

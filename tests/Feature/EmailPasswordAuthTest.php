@@ -80,6 +80,9 @@ test('entering non-existent email transitions to registration step', function ()
         ->call('continueWithEmail')
         ->assertHasNoErrors()
         ->assertSet('step', 'email_register')
+        ->assertSet('isNewEmail', true)
+        ->assertSee(__('No account found with :email.', ['email' => 'newuser@example.com']))
+        ->assertSee(__('Would you like to create a profile with this email? Choose a password below to create your account.'))
         ->assertSee(__('Create Account'))
         ->assertDontSee(__('Your Name'))
         ->assertSee(__('Password'))
@@ -89,6 +92,28 @@ test('entering non-existent email transitions to registration step', function ()
         ->assertSeeHtml('autocomplete="new-password"');
 
     $this->assertGuest();
+});
+
+test('unregistered email registration renders danish and english translations', function () {
+    app()->setLocale('da');
+    Livewire::test(PhoneAuth::class)
+        ->set('authMode', 'email')
+        ->set('email', 'newuser@example.com')
+        ->call('continueWithEmail')
+        ->assertSet('step', 'email_register')
+        ->assertSee('Der blev ikke fundet en profil med newuser@example.com.')
+        ->assertSee('Vil du oprette en profil med denne e-mailadresse? Vælg en adgangskode nedenfor for at oprette din profil.')
+        ->assertSee('Skift e-mail');
+
+    app()->setLocale('en');
+    Livewire::test(PhoneAuth::class)
+        ->set('authMode', 'email')
+        ->set('email', 'newuser@example.com')
+        ->call('continueWithEmail')
+        ->assertSet('step', 'email_register')
+        ->assertSee('No account found with newuser@example.com.')
+        ->assertSee('Would you like to create a profile with this email? Choose a password below to create your account.')
+        ->assertSee('Change email');
 });
 
 test('entering passwordless existing user email transitions to register/set-password step', function () {
@@ -103,6 +128,8 @@ test('entering passwordless existing user email transitions to register/set-pass
         ->call('continueWithEmail')
         ->assertHasNoErrors()
         ->assertSet('step', 'email_register')
+        ->assertSet('isNewEmail', false)
+        ->assertDontSee(__('No account found with :email.', ['email' => 'googleuser@example.com']))
         ->assertSee(__('Create Account'))
         ->assertDontSee(__('Your Name'))
         ->assertSee(__('Password'));

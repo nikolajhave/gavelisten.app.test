@@ -4,9 +4,11 @@ namespace App\Livewire\Auth;
 
 use App\Actions\Auth\SendPhoneVerificationCode;
 use App\Actions\Auth\VerifyPhoneVerificationCode;
+use App\Models\SocialIdentity;
 use App\Models\User;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\RateLimiter;
@@ -33,7 +35,22 @@ class PhoneAuth extends Component
 
     public string $step = 'phone';
 
+    public bool $isNewEmail = false;
+
+    public ?array $googlePendingData = null;
+
     public ?string $statusMessage = null;
+
+    /**
+     * Initialize the component state, detecting any pending Google registration.
+     */
+    public function mount(): void
+    {
+        if (session()->has('google_auth_pending')) {
+            $this->googlePendingData = session('google_auth_pending');
+            $this->step = 'confirm_google_register';
+        }
+    }
 
     /**
      * Switch authentication mode between 'phone' and 'email'.
@@ -43,6 +60,7 @@ class PhoneAuth extends Component
         $this->authMode = in_array($mode, ['phone', 'email'], true) ? $mode : 'phone';
         $this->resetErrorBag();
         $this->statusMessage = null;
+        $this->isNewEmail = false;
     }
 
     /**
@@ -79,8 +97,10 @@ class PhoneAuth extends Component
         $this->statusMessage = null;
 
         if ($user && filled($user->password)) {
+            $this->isNewEmail = false;
             $this->step = 'email_password';
         } else {
+            $this->isNewEmail = $user === null;
             if ($user && filled($user->name)) {
                 $this->name = $user->name;
             }
@@ -203,6 +223,7 @@ class PhoneAuth extends Component
         $this->step = 'phone';
         $this->authMode = 'email';
         $this->password = '';
+        $this->isNewEmail = false;
         $this->statusMessage = null;
         $this->resetErrorBag();
     }
@@ -243,9 +264,54 @@ class PhoneAuth extends Component
     }
 
     /**
+     * Look up whether an existing user is registered with the current phone number.
+     */
+    public function phoneUserExists(): bool
+    {
+        $normalizedPhone = $this->getNormalizedPhone();
+
+        return $normalizedPhone !== null && User::query()->where('phone', $normalizedPhone)->exists();
+    }
+
+    /**
+     * Get the normalized E.164 phone number.
+     */
+    public function getNormalizedPhone(): ?string
+    {
+        $dummy = new User(['phone' => $this->phone]);
+
+        return $dummy->phone ?? (trim($this->phone) !== '' ? trim($this->phone) : null);
+    }
+
+    /**
      * Send the verification OTP code to the phone number.
      */
     public function sendOtp(SendPhoneVerificationCode $sender): void
+    {
+        $this->validate([
+            'phone' => ['required', 'string', 'min:6', 'max:25'],
+        ]);
+
+        if (! $this->phoneUserExists()) {
+            $this->step = 'confirm_phone_register';
+            $this->statusMessage = null;
+            $this->resetErrorBag();
+
+            return;
+        }
+
+        $sender->execute($this->phone);
+
+        $this->step = 'otp';
+        $this->statusMessage = __('A 6-digit code has been sent to :phone.', ['phone' => $this->phone]);
+        $this->code = '';
+        $this->resetErrorBag();
+    }
+
+    /**
+     * Confirm registration and send verification OTP code to the phone number.
+     */
+    public function confirmRegisterWithPhone(SendPhoneVerificationCode $sender): void
     {
         $this->validate([
             'phone' => ['required', 'string', 'min:6', 'max:25'],
@@ -330,6 +396,99 @@ class PhoneAuth extends Component
         $this->code = '';
         $this->name = '';
         $this->statusMessage = null;
+        $this->resetErrorBag();
+    }
+
+    /**
+     * Confirm registration and create account with the pending Google identity.
+     */
+    public function confirmRegisterWithGoogle(): mixed
+    {
+        $pending = session('google_auth_pending') ?? $this->googlePendingData;
+
+        if (! $pending || empty($pending['google_id'])) {
+            session()->forget('google_auth_pending');
+            $this->googlePendingData = null;
+            $this->step = 'phone';
+
+            return null;
+        }
+
+        $googleId = (string) $pending['google_id'];
+        $email = $pending['email'] ?? null;
+        $name = $pending['name'] ?? null;
+
+        $user = DB::transaction(function () use ($googleId, $email, $name) {
+            $socialIdentity = SocialIdentity::query()
+                ->where('provider_name', 'google')
+                ->where('provider_id', $googleId)
+                ->first();
+
+            if ($socialIdentity && $socialIdentity->user) {
+                return $socialIdentity->user;
+            }
+
+            $existingUser = $email ? User::query()->where('email', $email)->first() : null;
+
+            if ($existingUser) {
+                if ($name && empty($existingUser->name)) {
+                    $existingUser->name = $name;
+                }
+
+                if ($existingUser->email_verified_at === null) {
+                    $existingUser->email_verified_at = now();
+                }
+
+                $existingUser->save();
+
+                if ($socialIdentity) {
+                    $socialIdentity->update(['user_id' => $existingUser->id]);
+                } else {
+                    $existingUser->socialIdentities()->create([
+                        'provider_name' => 'google',
+                        'provider_id' => $googleId,
+                    ]);
+                }
+
+                return $existingUser;
+            }
+
+            $newUser = User::create([
+                'name' => $name,
+                'email' => $email,
+                'email_verified_at' => now(),
+            ]);
+
+            if ($socialIdentity) {
+                $socialIdentity->update(['user_id' => $newUser->id]);
+            } else {
+                $newUser->socialIdentities()->create([
+                    'provider_name' => 'google',
+                    'provider_id' => $googleId,
+                ]);
+            }
+
+            return $newUser;
+        });
+
+        session()->forget('google_auth_pending');
+        $this->googlePendingData = null;
+
+        Auth::login($user, remember: true);
+
+        session()->regenerate();
+
+        return redirect()->intended('/');
+    }
+
+    /**
+     * Cancel the pending Google registration and return to standard login.
+     */
+    public function cancelGoogleRegister(): void
+    {
+        session()->forget('google_auth_pending');
+        $this->googlePendingData = null;
+        $this->step = 'phone';
         $this->resetErrorBag();
     }
 

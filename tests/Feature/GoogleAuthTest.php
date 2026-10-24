@@ -1,5 +1,6 @@
 <?php
 
+use App\Livewire\Auth\PhoneAuth;
 use App\Models\SocialIdentity;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -7,6 +8,7 @@ use Illuminate\Support\Facades\DB;
 use Laravel\Socialite\Contracts\Provider;
 use Laravel\Socialite\Contracts\User as SocialiteUserContract;
 use Laravel\Socialite\Facades\Socialite;
+use Livewire\Livewire;
 use Symfony\Component\HttpFoundation\RedirectResponse as SymfonyRedirect;
 
 uses(RefreshDatabase::class);
@@ -27,7 +29,7 @@ test('google oauth redirect initiates socialite provider redirect', function () 
     $response->assertRedirect('https://accounts.google.com/o/oauth2/auth');
 });
 
-test('google callback creates a new user, social identity, and auto-provisions wishlist', function () {
+test('google callback redirects unregistered user to login with confirmation prompt, and confirming provisions user and wishlist', function () {
     $socialiteUser = Mockery::mock(SocialiteUserContract::class);
     $socialiteUser->shouldReceive('getId')->andReturn('google-unique-id-123');
     $socialiteUser->shouldReceive('getEmail')->andReturn('googleuser@example.com');
@@ -44,7 +46,29 @@ test('google callback creates a new user, social identity, and auto-provisions w
 
     $response = $this->get(route('auth.google.callback'));
 
-    $response->assertRedirect('/');
+    $response->assertRedirect(route('login'))
+        ->assertSessionHas('google_auth_pending', [
+            'google_id' => 'google-unique-id-123',
+            'email' => 'googleuser@example.com',
+            'name' => 'Google User',
+        ]);
+    $this->assertGuest();
+
+    session(['google_auth_pending' => [
+        'google_id' => 'google-unique-id-123',
+        'email' => 'googleuser@example.com',
+        'name' => 'Google User',
+    ]]);
+
+    Livewire::test(PhoneAuth::class)
+        ->assertSet('step', 'confirm_google_register')
+        ->assertSee(__('No account found with :email.', ['email' => 'googleuser@example.com']))
+        ->assertSee(__('Would you like to create a profile with this Google account?'))
+        ->assertSee(__('Yes, create profile'))
+        ->assertSee(__('Cancel'))
+        ->call('confirmRegisterWithGoogle')
+        ->assertRedirect('/');
+
     $this->assertAuthenticated();
 
     $user = auth()->user();
@@ -168,7 +192,21 @@ test('google callback recovers from orphaned social identity by creating new use
 
     $response = $this->get(route('auth.google.callback'));
 
-    $response->assertRedirect('/');
+    $response->assertRedirect(route('login'))
+        ->assertSessionHas('google_auth_pending');
+    $this->assertGuest();
+
+    session(['google_auth_pending' => [
+        'google_id' => 'orphaned-google-id-1',
+        'email' => 'orphan-new@example.com',
+        'name' => 'Recovered User',
+    ]]);
+
+    Livewire::test(PhoneAuth::class)
+        ->assertSet('step', 'confirm_google_register')
+        ->call('confirmRegisterWithGoogle')
+        ->assertRedirect('/');
+
     $this->assertAuthenticated();
 
     $user = auth()->user();
@@ -185,6 +223,58 @@ test('google callback recovers from orphaned social identity by creating new use
     DB::table('users')->delete();
     DB::statement('PRAGMA foreign_keys = ON;');
     DB::beginTransaction();
+});
+
+test('unregistered google user can cancel registration and return to phone step', function () {
+    session(['google_auth_pending' => [
+        'google_id' => 'google-cancel-id',
+        'email' => 'cancel@example.com',
+        'name' => 'Cancel User',
+    ]]);
+
+    Livewire::test(PhoneAuth::class)
+        ->assertSet('step', 'confirm_google_register')
+        ->call('cancelGoogleRegister')
+        ->assertSet('step', 'phone')
+        ->assertSet('googlePendingData', null);
+
+    expect(session('google_auth_pending'))->toBeNull();
+});
+
+test('unregistered google confirmation renders danish and english translations', function () {
+    app()->setLocale('da');
+    session(['google_auth_pending' => [
+        'google_id' => 'google-lang-id',
+        'email' => 'lang@example.com',
+        'name' => 'Lang User',
+    ]]);
+
+    Livewire::test(PhoneAuth::class)
+        ->assertSet('step', 'confirm_google_register')
+        ->assertSee('Der blev ikke fundet en profil med lang@example.com.')
+        ->assertSee('Vil du oprette en profil med denne Google-konto?')
+        ->assertSee('Ja, opret profil')
+        ->assertSee('Annuller');
+
+    app()->setLocale('en');
+    session(['google_auth_pending' => [
+        'google_id' => 'google-lang-id',
+        'email' => 'lang@example.com',
+        'name' => 'Lang User',
+    ]]);
+
+    Livewire::test(PhoneAuth::class)
+        ->assertSet('step', 'confirm_google_register')
+        ->assertSee('No account found with lang@example.com.')
+        ->assertSee('Would you like to create a profile with this Google account?')
+        ->assertSee('Yes, create profile')
+        ->assertSee('Cancel');
+});
+
+test('login view renders session error flash messages', function () {
+    $this->withSession(['error' => 'Something went wrong with login.'])
+        ->get(route('login'))
+        ->assertSee('Something went wrong with login.');
 });
 
 test('google callback recovers from orphaned social identity by linking existing email user', function () {

@@ -39,6 +39,8 @@ test('phone number is required to send otp', function () {
 });
 
 test('send otp dispatches code and switches to otp step', function () {
+    User::factory()->create(['phone' => '+4512345678']);
+
     $mockSms = Mockery::mock(SmsService::class);
     $mockSms->shouldReceive('sendOtp')->once()->andReturnTrue();
     $this->app->instance(SmsService::class, $mockSms);
@@ -54,6 +56,73 @@ test('send otp dispatches code and switches to otp step', function () {
     $this->assertDatabaseHas('phone_verification_codes', [
         'phone' => '+4512345678',
     ]);
+});
+
+test('submitting unregistered phone prompts for confirmation and does not dispatch sms until confirmed', function () {
+    $mockSms = Mockery::mock(SmsService::class);
+    $mockSms->shouldReceive('sendOtp')->never();
+    $this->app->instance(SmsService::class, $mockSms);
+
+    $component = Livewire::test(PhoneAuth::class)
+        ->set('phone', '87654321')
+        ->call('sendOtp')
+        ->assertHasNoErrors()
+        ->assertSet('step', 'confirm_phone_register')
+        ->assertSee(__('No account found with :phone.', ['phone' => '87654321']))
+        ->assertSee(__('Would you like to create a profile with this phone number?'))
+        ->assertSee(__('Yes, send code and create profile'))
+        ->assertSee(__('Edit phone number'));
+
+    $this->assertDatabaseMissing('phone_verification_codes', [
+        'phone' => '+4587654321',
+    ]);
+
+    $mockSmsRegister = Mockery::mock(SmsService::class);
+    $mockSmsRegister->shouldReceive('sendOtp')->with('+4587654321', Mockery::any())->once()->andReturnTrue();
+    $this->app->instance(SmsService::class, $mockSmsRegister);
+
+    $component->call('confirmRegisterWithPhone')
+        ->assertHasNoErrors()
+        ->assertSet('step', 'otp')
+        ->assertSee(__('Verify Your Phone'))
+        ->assertSee(__('A 6-digit code has been sent to :phone.', ['phone' => '87654321']));
+
+    $this->assertDatabaseHas('phone_verification_codes', [
+        'phone' => '+4587654321',
+    ]);
+});
+
+test('unregistered phone confirmation allows editing phone number', function () {
+    Livewire::test(PhoneAuth::class)
+        ->set('phone', '87654321')
+        ->call('sendOtp')
+        ->assertSet('step', 'confirm_phone_register')
+        ->call('editPhone')
+        ->assertSet('step', 'phone')
+        ->assertSet('authMode', 'phone')
+        ->assertSet('phone', '87654321');
+});
+
+test('unregistered phone confirmation renders danish and english translations', function () {
+    app()->setLocale('da');
+    Livewire::test(PhoneAuth::class)
+        ->set('phone', '87654321')
+        ->call('sendOtp')
+        ->assertSet('step', 'confirm_phone_register')
+        ->assertSee('Der blev ikke fundet en profil med 87654321.')
+        ->assertSee('Vil du oprette en profil med dette telefonnummer?')
+        ->assertSee('Ja, send kode og opret profil')
+        ->assertSee('Ret telefonnummer');
+
+    app()->setLocale('en');
+    Livewire::test(PhoneAuth::class)
+        ->set('phone', '87654321')
+        ->call('sendOtp')
+        ->assertSet('step', 'confirm_phone_register')
+        ->assertSee('No account found with 87654321.')
+        ->assertSee('Would you like to create a profile with this phone number?')
+        ->assertSee('Yes, send code and create profile')
+        ->assertSee('Edit phone number');
 });
 
 test('code is required and must be 6 characters to verify otp', function () {
@@ -169,6 +238,8 @@ test('verify otp logs in existing user with name and redirects immediately', fun
 });
 
 test('send otp accepts 8-digit danish phone number without country code', function () {
+    User::factory()->create(['phone' => '+4520231120']);
+
     $mockSms = Mockery::mock(SmsService::class);
     $mockSms->shouldReceive('sendOtp')->with('+4520231120', Mockery::any())->once()->andReturnTrue();
     $this->app->instance(SmsService::class, $mockSms);
@@ -185,6 +256,8 @@ test('send otp accepts 8-digit danish phone number without country code', functi
 });
 
 test('send otp accepts phone number with spaces and formatting', function () {
+    User::factory()->create(['phone' => '+4520231120']);
+
     $mockSms = Mockery::mock(SmsService::class);
     $mockSms->shouldReceive('sendOtp')->with('+4520231120', Mockery::any())->once()->andReturnTrue();
     $this->app->instance(SmsService::class, $mockSms);

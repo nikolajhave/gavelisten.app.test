@@ -35,7 +35,15 @@ test('google oauth new user signup triggers notification to admin email and sets
 
     $response = $this->get(route('auth.google.callback'));
 
-    $response->assertRedirect('/');
+    $response->assertRedirect(route('login'))
+        ->assertSessionHas('google_auth_pending');
+    $this->assertGuest();
+
+    Livewire::test(PhoneAuth::class)
+        ->assertSet('step', 'confirm_google_register')
+        ->call('confirmRegisterWithGoogle')
+        ->assertRedirect('/');
+
     $this->assertAuthenticated();
 
     $user = User::query()->where('email', 'newuser@example.com')->first();
